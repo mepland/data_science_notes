@@ -25,7 +25,7 @@ Transitioning to matrix form, this is simply:
 
 \noindent where we have set $X_{i0} =1$.
 
-The ordinary least squares estimate of the parameters $\hat{\bm{\beta}}$
+The ordinary least squares (OLS) estimate of the parameters $\hat{\bm{\beta}}$
 can be found by minimizing the squares of the residuals,
 \ie the objective function $S\left(\bm{\beta}\right)$:
 
@@ -59,6 +59,7 @@ S\left(\bm{\beta}\right) &= \sum_{i=1}^{n} \, \abs{y_{i} - \sum_{j=0}^{m} \, \be
 \end{enumerate}
 \item The errors are normally distributed (multivariate normality)\footnote{This is not strictly required, but if true the OLS is the MLE and hypothesis testing works.}.
 \end{enumerate}
+% TODO what goes wrong exactly when each assumption is violated
 
 % TODO weighted version exists
 % TODO R2, reduced chi square values
@@ -122,7 +123,7 @@ Some assumptions of the logistic regression approach are:
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Generalized Linear Models}
+% \section{Generalized Linear Models (GLM)}
 % \label{Regression:GLM}
 % TODO
 
@@ -137,16 +138,11 @@ Some assumptions of the logistic regression approach are:
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{ANOVA}
-% \label{Regression:ANOVA}
-% TODO
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Principal Component Regression}
+% \section{Principal Component Regression (PCA)}
 % \label{Regression:PCR}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \section{Gaussian Process Regression}
-% \label{Regression:GPR}
+% \label{Regression:kriging}
 % TODO also known as kriging

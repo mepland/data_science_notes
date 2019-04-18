@@ -15,7 +15,7 @@
 
 %-----------------------------------------------------------------------------%
 % Set documentclass
-\documentclass[oneside,11pt,letterpaper,openany]{book}
+\documentclass[nogradschool,singlespace,nobind]{dukedissertation_modified}
 
 %-----------------------------------------------------------------------------%
 % usepackages
@@ -43,10 +43,6 @@
 \usepackage[T1]{fontenc}
 
 \usepackage[top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
-\usepackage{titling}
-\renewcommand\maketitlehooka{\null\mbox{}\vfill}
-\renewcommand\maketitlehookd{\vfill\null}
-
 \usepackage{fancyhdr}
 \pagestyle{plain}
 
@@ -114,7 +110,7 @@
 %-----------------------------------------------------------------------------%
 \author{Matthew Epland, Ph.D.}
 \title{Data Science Notes}
-%\date{}
+\date{\today}
 %-----------------------------------------------------------------------------%
 
 %-----------------------------------------------------------------------------%
@@ -156,21 +152,16 @@
 \Crefname{appchap}{Appendix}{Appendices}
 \crefformat{equation}{(#2#1#3)}
 
-%-----------------------------------------------------------------------------%
-% make a Preface options
 \newcommand\preface{%
-   \chapter{Preface}
+   \nmchapter{Preface}
 }
 
 \begin{document}
-\frontmatter
 
 %-----------------------------------------------------------------------------%
 % TITLE PAGE
 %-----------------------------------------------------------------------------%
-\begin{titlingpage}
 \maketitle
-\end{titlingpage}
 
 %-----------------------------------------------------------------------------%
 % ABSTRACT -- included file should start with '\abstract'.
@@ -181,6 +172,9 @@
 % FRONTMATTER
 %-----------------------------------------------------------------------------%
 \tableofcontents % Automatically generated
+\backrefsetup{disable}
+\include{{sections/listofabbr}} % List of Abbreviations. Start file with '\abbreviations'
+\backrefsetup{enable}
 
 %-----------------------------------------------------------------------------%
 % PREFACE
@@ -194,7 +188,6 @@
 %
 %
 %-----------------------------------------------------------------------------%
-\mainmatter
 \include{{sections/stats}}
 \include{{sections/regression}}
 \include{{sections/ml}}
