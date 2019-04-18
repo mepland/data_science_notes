@@ -4,6 +4,8 @@ Matthew Epland
 matthew.epland@duke.edu  
 2019-  
 
+All rights reserved except the rights granted by the [Creative Commons Attribution-Noncommercial Licence](http://creativecommons.org/licenses/by-nc/3.0/us/)  
+
 
 ## Latex Editing Tips
 ---

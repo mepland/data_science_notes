@@ -2,9 +2,68 @@
 \label{chap:regression}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Linear Regression}
-% \label{regression:linear}
-% TODO
+\section{Linear Regression}
+\label{regression:linear}
+
+Linear regression fits the best hyperplane, or line in 1D,
+to a collection of $n$ points $\mathbf{x}_{i}, y_{i}$,
+typically via the method of least squares.
+If $\mathbf{x}$ has $m$ components we can represent the
+linear relationship between $\mathbf{x}$ and $y$ as:
+
+\begin{equation}\label{eq:linear:onepoint}
+y_{i} = \beta_{0} + \sum_{j=1}^{m}\, \beta_{j} x_{ij} + \epsilon_{i}\,,
+\end{equation}
+
+\noindent where $\beta_{j}$ are the parameters of the regression
+and $\epsilon$ represent random errors.
+Transitioning to matrix form, this is simply:
+
+\begin{equation}\label{eq:linear:matrix}
+\mathbf{y} = \mathbf{X} \bm{\beta} + \bm{\epsilon}\,,
+\end{equation}
+
+\noindent where we have set $X_{i0} =1$.
+
+The ordinary least squares estimate of the parameters $\hat{\bm{\beta}}$
+can be found by minimizing the squares of the residuals,
+\ie the objective function $S\left(\bm{\beta}\right)$:
+
+\begin{subequations} \label{eq:linear:ols}
+\begin{align}
+\hat{\bm{\beta}} &= \argmin_{\bm{\beta}} S\left(\bm{\beta}\right)\,, \label{eq:linear:argmin} \\
+S\left(\bm{\beta}\right) &= \sum_{i=1}^{n} \, \abs{y_{i} - \sum_{j=0}^{m} \, \beta_{j} x_{ij}}^{2} = \norm{\mathbf{y} - \mathbf{X} \bm{\beta}}^{2}\,. \label{eq:linear:S}
+\end{align}
+\end{subequations}
+
+\noindent The optimal $\hat{\bm{\beta}}$ of \cref{eq:linear:ols} has a closed form solution:
+
+\begin{equation}\label{eq:linear:betahat}
+\hat{\bm{\beta}} = \left(\mathbf{X}\transpose\mathbf{X}\right)^{-1}\mathbf{X}\transpose \mathbf{y}\,,
+\end{equation}
+
+\noindent provided the following assumptions hold:
+
+\begin{enumerate}[noitemsep]
+\item The underlying relationship between $\mathbf{x}$ and $y$ is linear.
+\item The columns of $\mathbf{X}$ are linearly independent, \ie $\mathrm{rank}\left(\mathbf{X}\right) = m$ (no multicollinearity).
+\item The errors $\epsilon$ have conditional mean 0, $E\left(\epsilon \mid \mathbf{X}\right) = 0$ (exogeneity). The errors thus:
+\begin{enumerate}[noitemsep]
+\item Have a mean of zero, $E\left(\epsilon\right) = 0$.
+\item Are not correlated with the input features, $E\left(\mathbf{X}\transpose\epsilon\right) = 0$.
+\end{enumerate}
+\item The errors are spherical, $\mathrm{Var}\left(\epsilon \mid \mathbf{X}\right) = \sigma^{2} \identity$. Thus:
+\begin{enumerate}[noitemsep]
+\item Each observation $\mathbf{x}_{i}$ has the same variance $\sigma^{2}$ (homoscedasticity).
+\item The errors are uncorrelated between observations, $E\left(\epsilon_{i}\epsilon_{j \neq i} \mid \mathbf{X}\right) = 0$ (no autocorrelation).
+\end{enumerate}
+\item The errors are normally distributed (multivariate normality)\footnote{This is not strictly required, but if true the OLS is the MLE and hypothesis testing works.}.
+\end{enumerate}
+
+% TODO weighted version exists
+% TODO R2, reduced chi square values
+% TODO Ridge regression
+% TODO Lasso regression
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Logistic Regression}
@@ -22,7 +81,7 @@ l = \text{logit}\left(p\right) = \log\left(\frac{p}{1-p}\right)
 $l$ is estimated linearly from $m$ input features $x_{i}$ with $m+1$ parameters $\beta_{i}$ as:
 
 \begin{equation}\label{eq:logistic:logicBeta}
-l = \beta_{0} + \sum_{i=1}^{m} \, \beta_{i}\,x_{i}.
+l = \beta_{0} + \sum_{i=1}^{m} \, \beta_{i}\,x_{i}\,.
 \end{equation}
 
 \noindent The probability $p$ is then
@@ -33,7 +92,7 @@ p = \frac{e^l}{e^l + 1} = \frac{1}{1+e^{-l}}
 
 \noindent which can be turned into a predicted class through the choice of a suitable decision threshold.
 
-The model parameters $\vec{\beta}$ are chosen by maximizing
+The model parameters $\bm{\beta}$ are chosen by maximizing
 the log of the likelihood $L$ \cref{eq:logistic:L} over $n$ known example points $x_{i}, y_{i}$.
 Note that $\mathrm{Pr}\left(y \mid x\right)$ \cref{eq:logistic:Pr} is simply the Bernoulli distribution.
 In practice this maximization is performed via gradient descent.
@@ -41,14 +100,14 @@ An example of logistic regression can be found in \cref{fig:logistic_regression_
 
 \begin{subequations} \label{eq:logistic:L_Pr}
 \begin{align}
-L\left(\vec{\beta} \mid x\right) &= \prod_{i=1}^{n} \, \mathrm{Pr}\left(y_{i} \mid x_{i}; \vec{\beta}\right) \label{eq:logistic:L} \\
+L\left(\bm{\beta} \mid x\right) &= \prod_{i=1}^{n} \, \mathrm{Pr}\left(y_{i} \mid x_{i}; \bm{\beta}\right) \label{eq:logistic:L} \\
 \mathrm{Pr}\left(y \mid x\right) &= p^y\left(1-p\right)^{1-y}, \quad y \in \{0, 1\} \label{eq:logistic:Pr}
 \end{align}
 \end{subequations}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/regression/Exam_pass_logistic_curve.jpeg}
+\includegraphics[width=0.8\textwidth]{figures/regression/Exam_pass_logistic_curve.jpeg}
 \caption{
 Example logistic regression curve on one input feature, by \href{https://en.wikipedia.org/wiki/File:Exam_pass_logistic_curve.jpeg}{Michaelg2015}.
 }
@@ -56,11 +115,43 @@ Example logistic regression curve on one input feature, by \href{https://en.wiki
 \end{figure}
 
 Some assumptions of the logistic regression approach are:
-$y$ is dichotomous (\ie either present or absent),
-there are minimal correlations between the $x_{i}$ features (\ie no multicollinearity),
-and there are no major outliers in the data.
+\begin{enumerate}[noitemsep]
+\item $y$ is either present or absent (dichotomous).
+\item There are minimal correlations between the $x_{i}$ features (no multicollinearity).
+\item There are no major outliers in the data.
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Gaussian Process}
-% \label{Regression:GP}
+% \section{Maximum Likelihood Estimation}
+% \label{Regression:MLE}
 % TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Generalized Linear Models}
+% \label{Regression:GLM}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Poisson Regression}
+% \label{Regression:poisson}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Mixed Models}
+% \label{Regression:mixed_models}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{ANOVA}
+% \label{Regression:ANOVA}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Principal Component Regression}
+% \label{Regression:PCR}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Gaussian Process Regression}
+% \label{Regression:GPR}
+% TODO also known as kriging
