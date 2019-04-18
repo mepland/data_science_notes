@@ -1,0 +1,214 @@
+%-----------------------------------------------------------------------------%
+% Set metadata
+\begingroup\newif\ifmy
+\IfFileExists{\jobname.xmpdata}{}{\mytrue}
+\ifmy
+\begin{filecontents*}{\jobname.xmpdata}
+\Title{Data Science Notes}
+\Author{Matthew Epland, Ph.D.}
+\Keywords{Data Science\sep Machine Learning\sep Statistics}
+\end{filecontents*}
+\fi\endgroup
+
+% \Subject{TODO}
+
+%-----------------------------------------------------------------------------%
+% Set documentclass
+\documentclass[oneside,11pt,letterpaper,notitlepage,openany]{book}
+
+%-----------------------------------------------------------------------------%
+% usepackages
+\usepackage{amsmath,amssymb,bbm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{textcomp} % needed to fix \mico \textmu from siunitx to work with microtype: https://tex.stackexchange.com/questions/74670/microtype-siunitx-and-micro-mysterious-warnings
+\usepackage[protrusion=true,expansion=true]{microtype} % make text flow nicely... might screw up duke dissertation template
+\usepackage{verbatim} % verbatim text and comment environment
+\usepackage{lmodern} % allowing font sizes at arbitrary sizes
+\usepackage{notoccite} % fixes citation numbering in captions with respect to lof & lot, see https://ctan.org/pkg/notoccite
+\usepackage[nocompress]{cite} % orders references numerically within one \cite{}, see https://tex.stackexchange.com/questions/69230/numbered-ordering-of-multiple-citations Also changes spacing after comma
+\usepackage{fnpct} % make multiple footnotes at one point look nice, https://tex.stackexchange.com/questions/28465/multiple-footnotes-at-one-point
+\usepackage[separate-uncertainty,multi-part-units=single,free-standing-units,product-units=repeat,use-xspace,binary-units]{siunitx} % units package, see https://www.ctan.org/pkg/siunitx
+\sisetup{range-phrase={\text{--}},range-units=single}
+\usepackage{physics}
+\usepackage{booktabs,array,multirow,diagbox}
+\renewcommand{\arraystretch}{1.5} % gives extra height to tabular rows for super/subscripts
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{lscape} % landscape https://ctan.org/pkg/lscape
+\usepackage{moresize}
+\usepackage{listings}
+\usepackage[T1]{fontenc}
+
+% use subcaption to get split figures, but the caption dependency doesn't know about the dukedissertation document class - turn off the warning with silence
+% load caption explicitly first to set it's options, subcaption says it passes them through but it doesn't seem to work
+% https://tex.stackexchange.com/questions/34579/is-there-really-something-wrong-with-using-the-caption-package-for-continuedflo
+% https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions#Subfloats
+% https://ctan.org/pkg/caption
+% https://ctan.org/pkg/subcaption
+\usepackage{silence}
+\WarningFilter{caption}{Unsupported document class}
+\WarningFilter{hyperref}{The PDF version number could not be set}
+\usepackage{setspace} % needed to specify, https://ctan.org/pkg/setspace
+\usepackage[style=base,skip=2pt,font={stretch=1.3},width=\textwidth]{caption}
+\usepackage[skip=1pt]{subcaption}
+\newsavebox{\largestimage} % see https://tex.stackexchange.com/questions/239128/subcaption-vertical-alignment-of-two-images-of-different-vertical-size
+
+% Don't let floats get before the subsection where they're included
+% https://tex.stackexchange.com/questions/32598/force-latex-image-to-appear-in-the-section-in-which-its-declared
+% https://tex.stackexchange.com/questions/279/how-do-i-ensure-that-figures-appear-in-the-section-theyre-associated-with/235312#235312
+% Also doesn't let a float go into a following subsection, results in a ton of blank space - probably better left off
+% \usepackage{placeins}
+%\let\Oldsubsection\subsection
+%\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+
+\usepackage{float} % to allow for H option. Works better than \FloatBarrier from placeins, though it is more manual
+\floatstyle{plaintop}
+\restylefloat{table}
+
+% keep footnotes from splitting, can still happen sometimes (10000 forces)
+% https://tex.stackexchange.com/questions/32208/footnote-runs-onto-second-page
+\interfootnotelinepenalty=9999
+
+% keep inline equations from splitting, can still happen sometimes (10000 forces)
+% https://tex.stackexchange.com/a/14243
+\relpenalty=9999
+\binoppenalty=9999
+
+%-----------------------------------------------------------------------------%
+% Other possibly useful packages
+% \usepackage{fancyvrb}
+% \usepackage{ulem}
+% \usepackage{overpic}
+% \usepackage{cancel}
+% \usepackage{amsfonts, amsthm, bm} % https://ctan.org/pkg/bm
+% \usepackage{mathabx}
+
+%-----------------------------------------------------------------------------%
+% Include abbreviations
+\input{abbreviations.tex}
+
+%-----------------------------------------------------------------------------%
+% Include tikz figures which can not be made standalone, only if they have internal references / citations. Also must be manually added to Makefile if they use feynmp
+
+%-----------------------------------------------------------------------------%
+% Theorem, Lemma, etc. environments
+%\newtheorem{theorem}{Theorem}%[section]
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{proposition}[theorem]{Proposition}
+%\newtheorem{corollary}[theorem]{Corollary}
+%\newtheorem{result}[theorem]{Result}
+
+%-----------------------------------------------------------------------------%
+% PREAMBLE
+%-----------------------------------------------------------------------------%
+\author{Matthew Epland, Ph.D.}
+\title{Data Science Notes}
+
+%\date{}
+%\copyrighttext{All rights reserved except the rights granted by the\\
+% \href{http://creativecommons.org/licenses/by-nc/3.0/us/}
+% {Creative Commons Attribution-Noncommercial Licence}
+%}
+%-----------------------------------------------------------------------------%
+
+%-----------------------------------------------------------------------------%
+% HYPERREF
+%-----------------------------------------------------------------------------%
+\usepackage[hyperpageref]{backref} % pages
+
+% need to load in this order to get proper a-1b format!!!
+\PassOptionsToPackage{hyperfootnotes,pagebackref}{hyperref}
+\usepackage[a-2b]{pdfx}
+
+\hypersetup{plainpages=false, bookmarksnumbered,
+            % draft, % for printing
+            colorlinks, linkcolor=blue, citecolor=blue, urlcolor=blue, % for web
+            % breaklinks=true,
+           }
+
+% adapted from https://tex.stackexchange.com/questions/183702/formatting-back-references-in-bibliography-bibtex
+\renewcommand*{\backrefalt}[4]{%
+%    \ifcase #1 Not cited.%
+    \ifcase #1% Not cited.%
+          \or Cited on page~#2.%
+          \else Cited on pages #2.%
+    \fi%
+    }
+
+%-----------------------------------------------------------------------------%
+% use cref and not ref, have to load last
+\usepackage[capitalise]{cleveref} % https://ctan.org/pkg/cleveref see section 7.1, if redefining need to make them caps
+\crefname{figure}{Figure}{Figures}
+\Crefname{figure}{Figure}{Figures}
+\crefname{tabular}{Table}{Tables}
+\Crefname{tabular}{Table}{Tables}
+\crefname{section}{Section}{Sections}
+\Crefname{section}{Section}{Sections}
+\crefname{chapter}{Chapter}{Chapters}
+\Crefname{chapter}{Chapter}{Chapters}
+\crefname{appchap}{Appendix}{Appendices}
+\Crefname{appchap}{Appendix}{Appendices}
+\crefformat{equation}{(#2#1#3)}
+
+%-----------------------------------------------------------------------------%
+% make a Preface options
+%\newcommand\preface{%
+%   \nmchapter{Preface}
+%}
+
+\begin{document}
+
+%-----------------------------------------------------------------------------%
+% TITLE PAGE
+%-----------------------------------------------------------------------------%
+\maketitle
+
+%-----------------------------------------------------------------------------%
+% ABSTRACT -- included file should start with '\abstract'.
+%-----------------------------------------------------------------------------%
+% \include{{sections/abstract}}
+
+%-----------------------------------------------------------------------------%
+% FRONTMATTER
+%-----------------------------------------------------------------------------%
+\tableofcontents % Automatically generated
+
+%-----------------------------------------------------------------------------%
+% PREFACE
+%-----------------------------------------------------------------------------%
+% \include{{sections/preface}}
+
+%==============================================================================
+%-----------------------------------------------------------------------------%
+%
+% MAIN BODY
+%
+%
+%-----------------------------------------------------------------------------%
+\include{{sections/introduction}}
+\include{{sections/regression}}
+\include{{sections/ml}}
+
+%==============================================================================
+
+%-----------------------------------------------------------------------------%
+% APPENDICES -- OPTIONAL. These are just chapters enumerated by Appendix A, Appendix B, Appendix C...
+%-----------------------------------------------------------------------------%
+% Start each appendix tex file with '\chapter{Title}'
+% \appendix
+% \include{{sections/appendixes/A}}
+
+%-----------------------------------------------------------------------------%
+% BIBLIOGRAPHY -- Change the style to match your discipline's standards.
+%-----------------------------------------------------------------------------%
+\bibliographystyle{./bib/atlasBibStyleWithTitle}
+\cleardoublepage
+\normalbaselines %Fixes spacing of bibliography
+% \addcontentsline{toc}{chapter}{Bibliography} % not needed on my system
+\bibliography{./bib/bib}
+%-----------------------------------------------------------------------------%
+
+%-----------------------------------------------------------------------------
+\end{document}

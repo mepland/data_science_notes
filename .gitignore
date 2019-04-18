@@ -1,0 +1,31 @@
+# Generic files to ignore
+*.aux
+*.bak
+*.bbl
+*.bcf
+*.blg
+*.lof
+*.lot
+*.brf
+*.nav
+*.out
+*.run.xml
+*.snm
+*.spl
+*.toc
+*.tdo
+*.vrb
+*.mp
+*.t1
+*.1
+*.swp
+*.log
+*.xmpdata
+*.xmpi
+*Notes.bib
+
+# Directories to ignore
+
+# Specific files to ignore
+comment.cut
+ds_notes-epland.pdf

@@ -1,0 +1,49 @@
+\usepackage{xspace}
+ % note that \xspace properly handles the abbreviation period spacing - producing a single regular space, not the end of a sentence spacing
+
+% https://tex.stackexchange.com/questions/7032/good-way-to-make-textcircled-numbers
+% \usepackage{tikz}
+% \DeclareRobustCommand{\circled}[1]{\tikz[baseline=(char.base)]{\node[shape=circle,draw,inner sep=1pt] (char) {#1};}}
+
+% general, https://tex.stackexchange.com/questions/2229/is-a-period-after-an-abbreviation-the-same-as-an-end-of-sentence-period/2230#2230
+\newcommand*{\ie}{\textit{i.e.}\@\xspace}
+\newcommand*{\eg}{\textit{e.g.}\@\xspace}
+%\newcommand*{\etc}{\textit{etc.}\@\xspace}
+\makeatletter
+\newcommand\etc{\textit{etc}\@ifnextchar.{}{.\@\xspace}}
+\makeatother
+
+% \newcommand{\orderof}{\ensuremath{\mathcal{O}}} % use \order from physics package instead
+\newcommand{\lagr}{\ensuremath{\mathcal{L}}\xspace}
+\newcommand{\transpose}{\ensuremath{^{\text{T}}}\xspace}
+\newcommand{\identity}{\ensuremath{I}\xspace} % note \mathbb{1} did not work
+% \newcommand{\dif}{\mathop{}\!\mathrm{d}} % I think dt looks just fine
+% \newcommand{\dif}{d} % I think dt looks just fine
+
+\newcommand*{\pvalue}{\ensuremath{p\text{-value}}\xspace}
+
+\newcommand*{\insitu}{\text{\textit{in~situ}}\xspace}
+\newcommand*{\Insitu}{\text{\textit{In~situ}}\xspace}
+\newcommand*{\InSitu}{\text{\textit{In~Situ}}\xspace}
+
+\newcommand*{\apriori}{\text{\textit{a~priori}}\xspace}
+
+\newcommand*{\CLs}{\ensuremath{CL_{s}}\xspace}
+
+\newcommand*{\yhatBDT}{\ensuremath{\hat{y}_{\text{BDT}}}\xspace}
+\newcommand*{\yhat}{\ensuremath{\hat{y}}\xspace}
+
+% Software packages
+\newcommand*{\xgboost}{\textsc{XGBoost}\xspace}
+\newcommand*{\uprootPackage}{\textsc{uproot}\xspace} % \uproot already exists
+\newcommand*{\pandas}{\textsc{Pandas}\xspace}
+\newcommand*{\numpy}{\textsc{NumPy}\xspace}
+\newcommand*{\scipy}{\textsc{SciPy}\xspace}
+\newcommand*{\skopt}{\textsc{Scikit-Optimize}\xspace}
+\newcommand*{\networkx}{\textsc{NetworkX}\xspace}
+\newcommand*{\ROOT}{\textsc{ROOT}\xspace}
+\newcommand*{\TMVA}{\textsc{TMVA}\xspace}
+\newcommand*{\HF}{\textsc{HistFitter}\xspace}
+\newcommand*{\hfactory}{\textsc{HistFactory}\xspace}
+\newcommand*{\roostats}{\textsc{RooStats}\xspace}
+\newcommand*{\roofit}{\textsc{RooFit}\xspace}
