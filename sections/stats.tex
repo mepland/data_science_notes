@@ -5,11 +5,19 @@
 \section{Bayes' Theorem}
 \label{stats:Bayes}
 
+Bayes' theorem follows from the probability of the intersection of two events $A$ and $B$:
+
+\begin{equation}\label{eq:stats:intersection}
+P\left(A \cap B\right) = P\left(A \mid B\right) P\left(B\right) = P\left(B \mid A\right) P\left(A\right).
+\end{equation}
+
+\noindent Dividing by $P\left(B\right)$ we have:
+
 \begin{equation}\label{eq:stats:Bayes}
 \begin{split}
-P\left(A \mid B\right) &= \frac{P\left(B \mid A\right) P\left(A\right)}{P\left(B\right)} \\
-&= \frac{P\left(B \mid A_{i}\right) P\left(A_{i}\right)}{\sum_{j} P\left(B \mid A_{j}\right)P\left(A_{j}\right)} \\
-\text{Posterior} &= \frac{\text{Likelihood} \times \text{Prior}}{\text{Normalization}}
+P\left(A \mid B\right) &= \frac{P\left(B \mid A\right) P\left(A\right)}{P\left(B\right)}\,, \\
+&= \frac{P\left(B \mid A_{i}\right) P\left(A_{i}\right)}{\sum_{j} P\left(B \mid A_{j}\right)P\left(A_{j}\right)}\,, \\
+\text{Posterior} &= \frac{\text{Likelihood} \times \text{Prior}}{\text{Normalization}}\,.
 \end{split}
 \end{equation}
 
@@ -19,11 +27,11 @@ What is the probability an individual has the disease if their test is positive?
 
 \begin{equation}\label{eq:stats:BayesEx}
 \begin{split}
-P\left(\text{Infected} \mid +\right) &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(+\right)} \\
+P\left(\text{Infected} \mid +\right) &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(+\right)}\,, \\
  &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{
-P\left(+ \mid \text{Infected}\right)P\left(\text{Infected}\right) + P\left(+ \mid \text{Healthy}\right)P\left(\text{Healthy}\right)} \\
-&= \frac{\num{0.99} \times \num{0.02}}{\num{0.99} \times \num{0.02} + \num{0.15} \times \left(1-\num{0.02}\right)} \\
-&\approx \num{0.57}
+P\left(+ \mid \text{Infected}\right)P\left(\text{Infected}\right) + P\left(+ \mid \text{Healthy}\right)P\left(\text{Healthy}\right)}\,, \\
+&= \frac{\num{0.99} \times \num{0.02}}{\num{0.99} \times \num{0.02} + \num{0.15} \times \left(1-\num{0.02}\right)}\,, \\
+&\approx \num{0.57}\,.
 \end{split}
 \end{equation}
 
@@ -31,9 +39,9 @@ P\left(+ \mid \text{Infected}\right)P\left(\text{Infected}\right) + P\left(+ \mi
 
 \begin{equation}\label{eq:stats:BayesEx2}
 \begin{split}
-P\left(\text{Infected} \mid ++\right) &= \frac{P\left(++ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(++\right)} \\
-&= \frac{\num{0.99}^{2} \times \num{0.02}}{\num{0.99}^{2} \times \num{0.02} + \num{0.15}^{2} \times \left(1-\num{0.02}\right)} \\
-&\approx \num{0.90}
+P\left(\text{Infected} \mid ++\right) &= \frac{P\left(++ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(++\right)}\,, \\
+&= \frac{\num{0.99}^{2} \times \num{0.02}}{\num{0.99}^{2} \times \num{0.02} + \num{0.15}^{2} \times \left(1-\num{0.02}\right)}\,, \\
+&\approx \num{0.90}\,.
 \end{split}
 \end{equation}
 
