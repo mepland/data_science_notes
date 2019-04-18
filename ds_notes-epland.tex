@@ -7,7 +7,7 @@
 \Title{Data Science Notes}
 \Author{Matthew Epland, Ph.D.}
 \Keywords{Data Science\sep Machine Learning\sep Statistics}
-\Copyright{CC BY-NC 3.0 US}
+\Copyright{CC-BY-4.0}
 \end{filecontents*}
 \fi\endgroup
 
@@ -114,12 +114,7 @@
 %-----------------------------------------------------------------------------%
 \author{Matthew Epland, Ph.D.}
 \title{Data Science Notes}
-
 %\date{}
-%\copyrighttext{All rights reserved except the rights granted by the\\
-% \href{http://creativecommons.org/licenses/by-nc/3.0/us/}
-% {Creative Commons Attribution-Noncommercial Licence}
-%}
 %-----------------------------------------------------------------------------%
 
 %-----------------------------------------------------------------------------%
@@ -163,9 +158,9 @@
 
 %-----------------------------------------------------------------------------%
 % make a Preface options
-%\newcommand\preface{%
-%   \nmchapter{Preface}
-%}
+\newcommand\preface{%
+   \chapter{Preface}
+}
 
 \begin{document}
 \frontmatter
@@ -190,7 +185,7 @@
 %-----------------------------------------------------------------------------%
 % PREFACE
 %-----------------------------------------------------------------------------%
-% \include{{sections/preface}}
+\include{{sections/preface}}
 
 %==============================================================================
 %-----------------------------------------------------------------------------%
@@ -200,7 +195,6 @@
 %
 %-----------------------------------------------------------------------------%
 \mainmatter
-\include{{sections/introduction}}
 \include{{sections/stats}}
 \include{{sections/regression}}
 \include{{sections/ml}}
