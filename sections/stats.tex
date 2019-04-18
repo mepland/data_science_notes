@@ -1,0 +1,64 @@
+\chapter{Statistics}
+\label{chap:stats}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bayes' Theorem}
+\label{stats:Bayes}
+
+\begin{equation}\label{eq:stats:Bayes}
+\begin{split}
+P\left(A \mid B\right) &= \frac{P\left(B \mid A\right) P\left(A\right)}{P\left(B\right)} \\
+&= \frac{P\left(B \mid A_{i}\right) P\left(A_{i}\right)}{\sum_{j} P\left(B \mid A_{j}\right)P\left(A_{j}\right)} \\
+\text{Posterior} &= \frac{\text{Likelihood} \times \text{Prior}}{\text{Normalization}}
+\end{split}
+\end{equation}
+
+Example: Testing for disease with an incidence rate in the population of \SI{2}{\percent}.
+The test has a \SI{99}{\percent} true positive rate and a \SI{15}{\percent} false positive rate.
+What is the probability an individual has the disease if their test is positive?
+
+\begin{equation}\label{eq:stats:BayesEx}
+\begin{split}
+P\left(\text{Infected} \mid +\right) &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(+\right)} \\
+ &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{
+P\left(+ \mid \text{Infected}\right)P\left(\text{Infected}\right) + P\left(+ \mid \text{Healthy}\right)P\left(\text{Healthy}\right)} \\
+&= \frac{\num{0.99} \times \num{0.02}}{\num{0.99} \times \num{0.02} + \num{0.15} \times \left(1-\num{0.02}\right)} \\
+&\approx \num{0.57}
+\end{split}
+\end{equation}
+
+\noindent And if we run a second, independent\footnote{$P\left(++\right) = P\left(+\right)P\left(+\right)$ \ldots}, test which also comes back positive?
+
+\begin{equation}\label{eq:stats:BayesEx2}
+\begin{split}
+P\left(\text{Infected} \mid ++\right) &= \frac{P\left(++ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(++\right)} \\
+&= \frac{\num{0.99}^{2} \times \num{0.02}}{\num{0.99}^{2} \times \num{0.02} + \num{0.15}^{2} \times \left(1-\num{0.02}\right)} \\
+&\approx \num{0.90}
+\end{split}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Gaussian Distribution}
+% \label{stats:GPR}
+% TODO might not need
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Binomial Distribution}
+% \label{stats:binomial}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Poisson Distribution}
+% \label{stats:poisson}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Maximum Likelihood Estimation}
+% \label{stats:MLE}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Principle Component Analysis}
+% \label{stats:PCA}
+% TODO
+
