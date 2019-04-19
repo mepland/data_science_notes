@@ -1,11 +1,10 @@
 sudo: required
-dist: trusty
+dist: xenial
 before_install:
 - sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends texlive-full lmodern
 script:
 - mkdir _build
-- make
-- mv ds_notes-epland.pdf _build
+- make && mv ds_notes-epland.pdf _build
 deploy:
   provider: releases
   api_key:
