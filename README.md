@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/mepland/data_science_notes.svg?branch=master)](https://travis-ci.org/mepland/data_science_notes)
 # Data Science Notes
 ---
 Matthew Epland  
