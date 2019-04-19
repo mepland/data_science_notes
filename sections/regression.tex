@@ -6,18 +6,18 @@
 \label{regression:linear}
 
 Linear regression fits the best hyperplane, or line in 1D,
-to a collection of $n$ points $\mathbf{x}_{i}, y_{i}$,
+to a collection of $m$ points $\mathbf{x}_{i}, y_{i}$,
 typically via the method of least squares.
-If $\mathbf{x}$ has $m$ components we can represent the
+If $\mathbf{x}$ has $n$ features we can represent the
 linear relationship between $\mathbf{x}$ and $y$ as:
 
 \begin{equation}\label{eq:linear:onepoint}
-y_{i} = \beta_{0} + \sum_{j=1}^{m}\, \beta_{j} x_{ij} + \epsilon_{i}\,,
+y_{i} = \beta_{0} + \sum_{j=1}^{n}\, \beta_{j} x_{ij} + \epsilon_{i}\,,
 \end{equation}
 
 \noindent where $\beta_{j}$ are the parameters of the regression
 and $\epsilon$ represent random errors.
-Transitioning to matrix form, this is simply:
+Transitioning to matrix notation, this is simply:
 
 \begin{equation}\label{eq:linear:matrix}
 \mathbf{y} = \mathbf{X} \bm{\beta} + \bm{\epsilon}\,,
@@ -32,7 +32,7 @@ can be found by minimizing the squares of the residuals,
 \begin{subequations} \label{eq:linear:ols}
 \begin{align}
 \hat{\bm{\beta}} &= \argmin_{\bm{\beta}} S\left(\bm{\beta}\right)\,, \label{eq:linear:argmin} \\
-S\left(\bm{\beta}\right) &= \sum_{i=1}^{n} \, \abs{y_{i} - \sum_{j=0}^{m} \, \beta_{j} x_{ij}}^{2} = \norm{\mathbf{y} - \mathbf{X} \bm{\beta}}^{2}\,. \label{eq:linear:S}
+S\left(\bm{\beta}\right) &= \sum_{i=1}^{m} \, \abs{y_{i} - \sum_{j=0}^{n} \, \beta_{j} x_{ij}}^{2} = \norm{\mathbf{y} - \mathbf{X} \bm{\beta}}^{2}\,. \label{eq:linear:S}
 \end{align}
 \end{subequations}
 
@@ -46,7 +46,7 @@ S\left(\bm{\beta}\right) &= \sum_{i=1}^{n} \, \abs{y_{i} - \sum_{j=0}^{m} \, \be
 
 \begin{enumerate}[noitemsep]
 \item The underlying relationship between $\mathbf{x}$ and $y$ is linear.
-\item The columns of $\mathbf{X}$ are linearly independent, \ie $\mathrm{rank}\left(\mathbf{X}\right) = m$ (no multicollinearity).
+\item The columns of $\mathbf{X}$ are linearly independent, \ie $\mathrm{rank}\left(\mathbf{X}\right) = n$ (no multicollinearity).
 \item The errors $\epsilon$ have conditional mean 0, $E\left(\epsilon \mid \mathbf{X}\right) = 0$ (exogeneity). The errors thus:
 \begin{enumerate}[noitemsep]
 \item Have a mean of zero, $E\left(\epsilon\right) = 0$.
@@ -79,10 +79,10 @@ l = \text{logit}\left(p\right) = \log\left(\frac{p}{1-p}\right)
 \end{equation}
 
 \noindent on the probability $p$ of class $1$.
-$l$ is estimated linearly from $m$ input features $x_{i}$ with $m+1$ parameters $\beta_{i}$ as:
+$l$ is estimated linearly from $n$ input features $x_{j}$ with $n+1$ parameters $\beta_{j}$ as:
 
 \begin{equation}\label{eq:logistic:logicBeta}
-l = \beta_{0} + \sum_{i=1}^{m} \, \beta_{i}\,x_{i}\,.
+l = \beta_{0} + \sum_{j=1}^{n} \, \beta_{j}\,x_{j}\,.
 \end{equation}
 
 \noindent The probability $p$ is then
@@ -94,15 +94,15 @@ p = \frac{e^l}{e^l + 1} = \frac{1}{1+e^{-l}}
 \noindent which can be turned into a predicted class through the choice of a suitable decision threshold.
 
 The model parameters $\bm{\beta}$ are chosen by maximizing
-the log of the likelihood $L$ \cref{eq:logistic:L} over $n$ known example points $x_{i}, y_{i}$.
+the log of the likelihood $L$ \cref{eq:logistic:L} over $m$ known example points $\mathbf{x}_{i}, y_{i}$.
 Note that $P\left(y \mid x\right)$ \cref{eq:logistic:Pr} is simply the Bernoulli distribution.
 In practice this maximization is performed via gradient descent.
 An example of logistic regression can be found in \cref{fig:logistic_regression_ex}.
 
 \begin{subequations} \label{eq:logistic:L_Pr}
 \begin{align}
-L\left(\bm{\beta} \mid x\right) &= \prod_{i=1}^{n} \, P\left(y_{i} \mid x_{i}; \bm{\beta}\right) \label{eq:logistic:L} \\
-P\left(y \mid x\right) &= p^y\left(1-p\right)^{1-y}, \quad y \in \{0, 1\} \label{eq:logistic:Pr}
+L\left(\bm{\beta} \mid \mathbf{x}\right) &= \prod_{i=1}^{m} \, P\left(y_{i} \mid \mathbf{x}_{i}; \bm{\beta}\right) \label{eq:logistic:L} \\
+P\left(y \mid \mathbf{x}\right) &= p^y\left(1-p\right)^{1-y}, \quad y \in \{0, 1\} \label{eq:logistic:Pr}
 \end{align}
 \end{subequations}
 
@@ -118,7 +118,7 @@ Example logistic regression curve on one input feature, by \href{https://en.wiki
 Some assumptions of the logistic regression approach are:
 \begin{enumerate}[noitemsep]
 \item $y$ is either present or absent (dichotomous).
-\item There are minimal correlations between the $x_{i}$ features (no multicollinearity).
+\item There are minimal correlations between the $x_{j}$ features (no multicollinearity).
 \item There are no major outliers in the data.
 \end{enumerate}
 
