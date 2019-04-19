@@ -11,5 +11,6 @@ deploy:
   api_key:
     secure: nKW0nOv+o1fezE3hlKZd7dA2bIqxJ6wf7jazlXxOdDcAdX3l/86b6TJuhFo/LIT9Kqg3rcOZloZ3+o00jS52EvC/V97xjXYhbD8dYfnnh30pGUQOVvV7+3Amj+WZk5ffIAVLX2TO54kUFMaT8dIH/rajIFV/rtMylBl10AclZ8ZdsiGmMZ6GcYThQ+y2q1loVX4BsBnPb4Kb6XH0Amq3JDkiWkiYX4zMXE2szaIM2lxrusDiW/dbXTzFQU7plmZJEZ9i3R6QEZubHzH5Zdp8doxM61dJO0cC8E5sp2HzQCXiu2g0UQ/xrjbD0+5ZZsnNdIWeLBrzgJox03nNkZRfFnAVzFOpTD5tzXyZ1RsUpw9ouYq+7QwxuA6PkJZSHk+bueItaxFVoIhOgvO7vNZ6NkpMM4zDLVbkw3yheObIi39UpA9XY/mkXYTV4nH2LdKD/bLoHuzqJr6J/p8xdZ2nezD2s0P12bonjff9LhX8K87cFFDU21uiVXG6U/zVnGWodE2DUbF06iGGIC5k91L42KMtHI/efc6lD1LPN4+jgkXmE8oHU3h2lXbJyrvaENc4ZhUtPDC0LiIJsuvJyC44fds94sgwtStmoiRvLwkSnEe7cg/c8myq4HhIVkG7u/0PCim2kAmhy7O+oa8bfD+CJxd+/iXYrqovuirckY1pnc4=
   file: _build/ds_notes-epland.pdf
+  skip_cleanup: true
   on:
     tags: true
