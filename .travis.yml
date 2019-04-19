@@ -1,8 +1,7 @@
 sudo: required
 dist: xenial
 before_install:
-- wget https://github.com/ivorypenguin/resourcespace/raw/master/iccprofiles/sRGB_IEC61966-2-1_black_scaled.icc
-- sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends icc-profiles lmodern texlive-full
+- sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends lmodern texlive-full
 script:
 - mkdir _build
 - make && mv ds_notes-epland.pdf _build
