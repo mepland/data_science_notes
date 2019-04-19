@@ -8,6 +8,7 @@
 \Author{Matthew Epland, Ph.D.}
 \Keywords{Data Science\sep Machine Learning\sep Statistics}
 \Copyright{CC-BY-4.0}
+\setRGBcolorprofile{sRGB_IEC61966-2-1_black_scaled.icc}{sRGB_IEC61966-2-1_black_scaled}{sRGB IEC61966 v2.1 with black scaling}{http://www.color.org}
 \end{filecontents*}
 \fi\endgroup
 
@@ -121,6 +122,7 @@
 % need to load in this order to get proper a-1b format!!!
 \PassOptionsToPackage{hyperfootnotes,pagebackref}{hyperref}
 \usepackage[a-2b]{pdfx}
+% \usepackage[a-2b,noerr]{pdfx} % Note pdfx does not work with travis CI due to latest ubuntu image being from 2016, thus containing this bug https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=877167 fixed in oct 2017. Can use locally if desired
 
 \hypersetup{plainpages=false, bookmarksnumbered,
             % draft, % for printing
