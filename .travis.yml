@@ -1,0 +1,17 @@
+sudo: required
+dist: trusty
+before_install:
+- sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends texlive-fonts-recommended texlive-latex-extra texlive-fonts-extra dvipng texlive-latex-recommended
+script:
+- mkdir _build
+- make
+- mv ds_notes-epland.pdf _build
+deploy:
+  provider: releases
+  api_key:
+    secure: "gPB1zc5iRYTTEkEgOOf4Bvneaz72OYFw04h/GDJHnxw0i3aKT4ZM3VLFQ7jjfUvKO9dL2FbYFH3VqrXMzwp7fKKk0Sjw7ysw2W0X0u3htfvv7vymmpK0EdN8lV1/+r6vdp6+ddk2fV8EE2lJncRfT0Bc1iEJOH/5t6GgFdKaOWYcCr9OdgNFUlVQfaby7rkmFzlA1WtTFaHLuWFYeZUaD3gdxdUkpnVdPSIkDapL7tphV8F9ikIDg7QP+sK9SMqn5meGCGjmm6aU34gaglNro2t0kgcQfI/n22f8cyGBA6LGYDzLUD6uj5njxfK0foS9SCtvqtwuNqcym/YGb7ms00xDO7mC34UNtlER4GAovFBxSuLln1k7NoHnr+7FR03CjaY+SRfa+BPPIvZltsptWs4y2CCcjr9+S/zUP8GLKcKaKvyRD6NYIVi5zAmi2857GaHM8jJwTH9k0fTAUkIcLcRsqYm0J+mFUxC5KVbSwkUYIZi9v3DSThWvXT1j5CnKOMKECHXcSJHcucY7wdsT5XT1A3An4wLRkJE4Ywhu2EdtceonKSVtq4vqkf2l8EJbRIbTDp8opWQTQNB2m73107ed6GB4/POcb6/rtSRTQggYbz2zUUdwfw7tgvsbQ0SRoqM8oami3x1c1aY6A6lRacA39PUt3909wemOE0gWDHk="
+  file:
+  - _build/ds_notes-epland.pdf
+  skip_cleanup: true
+  on:
+    tags: true

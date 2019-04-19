@@ -25,6 +25,7 @@
 *Notes.bib
 
 # Directories to ignore
+_build/
 
 # Specific files to ignore
 comment.cut
