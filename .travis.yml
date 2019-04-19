@@ -1,7 +1,9 @@
 sudo: required
 dist: xenial
 before_install:
-- sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends texlive-full lmodern icc-profiles
+- sudo deb http://ftp.fi.debian.org/debian/ buster main contrib non-free
+- sudo deb-src http://ftp.fi.debian.org/debian/ buster main contrib non-free
+- sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends icc-profiles lmodern texlive-full
 script:
 - mkdir _build
 - make && mv ds_notes-epland.pdf _build
