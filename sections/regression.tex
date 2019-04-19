@@ -52,7 +52,7 @@ S\left(\bm{\beta}\right) &= \sum_{i=1}^{n} \, \abs{y_{i} - \sum_{j=0}^{m} \, \be
 \item Have a mean of zero, $E\left(\epsilon\right) = 0$.
 \item Are not correlated with the input features, $E\left(\mathbf{X}\transpose\epsilon\right) = 0$.
 \end{enumerate}
-\item The errors are spherical, $\mathrm{Var}\left(\epsilon \mid \mathbf{X}\right) = \sigma^{2} \identity$. Thus:
+\item The errors are spherical, $\mathrm{var}\left(\epsilon \mid \mathbf{X}\right) = \sigma^{2} \identity$. Thus:
 \begin{enumerate}[noitemsep]
 \item Each observation $\mathbf{x}_{i}$ has the same variance $\sigma^{2}$ (homoscedasticity).
 \item The errors are uncorrelated between observations, $E\left(\epsilon_{i}\epsilon_{j \neq i} \mid \mathbf{X}\right) = 0$ (no autocorrelation).
@@ -95,14 +95,14 @@ p = \frac{e^l}{e^l + 1} = \frac{1}{1+e^{-l}}
 
 The model parameters $\bm{\beta}$ are chosen by maximizing
 the log of the likelihood $L$ \cref{eq:logistic:L} over $n$ known example points $x_{i}, y_{i}$.
-Note that $\mathrm{Pr}\left(y \mid x\right)$ \cref{eq:logistic:Pr} is simply the Bernoulli distribution.
+Note that $P\left(y \mid x\right)$ \cref{eq:logistic:Pr} is simply the Bernoulli distribution.
 In practice this maximization is performed via gradient descent.
 An example of logistic regression can be found in \cref{fig:logistic_regression_ex}.
 
 \begin{subequations} \label{eq:logistic:L_Pr}
 \begin{align}
-L\left(\bm{\beta} \mid x\right) &= \prod_{i=1}^{n} \, \mathrm{Pr}\left(y_{i} \mid x_{i}; \bm{\beta}\right) \label{eq:logistic:L} \\
-\mathrm{Pr}\left(y \mid x\right) &= p^y\left(1-p\right)^{1-y}, \quad y \in \{0, 1\} \label{eq:logistic:Pr}
+L\left(\bm{\beta} \mid x\right) &= \prod_{i=1}^{n} \, P\left(y_{i} \mid x_{i}; \bm{\beta}\right) \label{eq:logistic:L} \\
+P\left(y \mid x\right) &= p^y\left(1-p\right)^{1-y}, \quad y \in \{0, 1\} \label{eq:logistic:Pr}
 \end{align}
 \end{subequations}
 
