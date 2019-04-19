@@ -22,3 +22,6 @@ grep -rIn '.%' . > tmp.txt
 ```bash
 for f in $(find . -type f -name '*.tex') ; do aspell list < $f ; done | sort | uniq > tmp.txt
 ```
+
+## Travis CI
+Setup following the instructions on this [blog post](https://harshjv.com/blog/setup-latex-pdf-build-using-travis-ci/) and [associated repository](https://github.com/harshjv/travis-ci-latex-pdf).
