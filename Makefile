@@ -1,7 +1,7 @@
 DOCNAME = ds_notes-epland
 
 TEXENG = lualatex
-TEXFLAGS = --file-line-error --interaction=errorstopmode --halt-on-error
+TEXFLAGS = --file-line-error --interaction=nonstopmode --halt-on-error
 
 BIBENG = bibtex
 BIBFLAGS =
