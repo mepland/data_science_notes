@@ -17,7 +17,11 @@ y_{i} = \beta_{0} + \sum_{j=1}^{n}\, \beta_{j} x_{ij} + \epsilon_{i}\,,
 
 \noindent where $\beta_{j}$ are the parameters of the regression
 and $\epsilon$ represent random errors.
-Transitioning to matrix notation, this is simply:
+Transitioning to matrix notation\footnote{Note
+that \textit{linear} regression refers to the linearity in the model parameters
+$\bm{\beta}$, not $\mathbf{X}$.
+The components of $\mathbf{X}_{i}$ can be, and often are,
+non-linear functions of other input features.}, this is simply:
 
 \begin{equation}\label{eq:linear:matrix}
 \mathbf{y} = \mathbf{X} \bm{\beta} + \bm{\epsilon}\,,
@@ -88,7 +92,7 @@ l = \beta_{0} + \sum_{j=1}^{n} \, \beta_{j}\,x_{j}\,.
 \noindent The probability $p$ is then
 
 \begin{equation}\label{eq:logistic:p}
-p = \frac{e^l}{e^l + 1} = \frac{1}{1+e^{-l}}
+p = \frac{e^l}{e^l + 1} = \frac{1}{1+e^{-l}} = \text{logit}^{-1}\left(l\right)
 \end{equation}
 
 \noindent which can be turned into a predicted class through the choice of a suitable decision threshold.
@@ -96,7 +100,7 @@ p = \frac{e^l}{e^l + 1} = \frac{1}{1+e^{-l}}
 The model parameters $\bm{\beta}$ are chosen by maximizing
 the log of the likelihood $L$ \cref{eq:logistic:L} over $m$ known example points $\mathbf{x}_{i}, y_{i}$.
 Note that $P\left(y \mid x\right)$ \cref{eq:logistic:Pr} is simply the Bernoulli distribution.
-In practice this maximization is performed via gradient descent.
+In practice the log-likelihood $\log\left(L\right)$ is maximized via gradient descent.
 An example of logistic regression can be found in \cref{fig:logistic_regression_ex}.
 
 \begin{subequations} \label{eq:logistic:L_Pr}
