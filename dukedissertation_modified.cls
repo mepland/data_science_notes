@@ -495,7 +495,8 @@
 \ifthenelse{\boolean{oldstyle}}{ }
 {%
 \def\@makechapterhead#1{%
-\vspace*{1in} % Leave space at top of page
+%\vspace*{1in} % Leave space at top of page
+\vspace*{0in}
   { 
   \parindent \z@ \raggedright \normalfont
 		  \if@inappendix
@@ -511,9 +512,11 @@
 	 % Title format
 	 \parbox{\textwidth}{ \flushright{%
 	  \normalbaselines \LARGE  #1  \par\nobreak }}
-    \vskip 40\p@
+    % \vskip 40\p@
+    \vskip 10\p@
   }%
-  \vspace*{50\p@}%
+  % \vspace*{50\p@}%
+  \vspace*{10\p@}%
   }
 
 }
