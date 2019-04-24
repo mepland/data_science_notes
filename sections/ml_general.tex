@@ -43,7 +43,7 @@ the false negative rate (FNR) and false positive rate (FPR).
 \end{equation}
 
 \item True negative rate (TNR), \ie specificity, selectivity.
-\begin{equation} \label{eq:TPR}
+\begin{equation} \label{eq:TNR}
 \text{TNR} = \frac{\text{NP}}{\text{N}} = \frac{\text{TN}}{\text{TN}+\text{FP}} = 1 - \text{FPR} = P\left(\hat{-} \mid - \right)
 \end{equation}
 \end{enumerate}
@@ -103,7 +103,7 @@ The optimal decision threshold can then be found by maximizing $E\left(\text{pro
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Bias-Variance Tradeoff}
 \label{ml:general:biasVar}
-% TODO
+% TODO add graphs too
 
 \begin{enumerate}[noitemsep]
 \item Bias: Errors due to a model not learning about relationships between features, \ie underfitting.
@@ -114,6 +114,11 @@ The optimal decision threshold can then be found by maximizing $E\left(\text{pro
 \subsection{Gradient Decent}
 \label{ml:general:gradDec}
 % TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Normalization}
+\label{ml:general:normalization}
+% TODO normalization of input features (for faster training, more equal regularization), batch renormalization in neural networks
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Regularization}
@@ -134,9 +139,10 @@ The optimal decision threshold can then be found by maximizing $E\left(\text{pro
 \subsubsection{L2 -- Ridge}
 \label{ml:general:reg:L2}
 % TODO computationally fast
+% particularly useful when variance of data is high(?)
 
 \subsubsection{Elastic Net}
-\label{ml:general:reg:L2}
+\label{ml:general:reg:EN}
 
 \begin{equation} \label{eq:elastic_net}
 \Omega_{\text{EN}}\left(\bm{\beta}\right) = \lambda_{1} \norm{\bm{\beta}} + \lambda_{2} \norm{\bm{\beta}}^{2}
