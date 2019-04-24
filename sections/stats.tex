@@ -21,11 +21,15 @@ P\left(A \mid B\right) &= \frac{P\left(B \mid A\right) P\left(A\right)}{P\left(B
 \end{split}
 \end{equation}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Example: Medical Testing}
+\label{stats:Bayes:medical_test}
+
 Example: Testing for disease with a \SI{2}{\percent} incidence rate in the wider population.
 The test has a \SI{99}{\percent} true positive rate and a \SI{15}{\percent} false positive rate.
 What is the probability an individual has the disease if their test is positive?
 
-\begin{equation}\label{eq:stats:BayesEx}
+\begin{equation}\label{eq:stats:Bayes:medical_test_1}
 \begin{split}
 P\left(\text{Infected} \mid +\right) &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(+\right)}\,, \\
  &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{
@@ -37,13 +41,55 @@ P\left(+ \mid \text{Infected}\right)P\left(\text{Infected}\right) + P\left(+ \mi
 
 \noindent And if we run a second, independent, test which also comes back positive?
 
-\begin{equation}\label{eq:stats:BayesEx2}
+\begin{equation}\label{eq:stats:Bayes:medical_test_2}
 \begin{split}
 P\left(\text{Infected} \mid ++\right) &= \frac{P\left(++ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(++\right)}\,, \\
 &= \frac{\num{0.99}^{2} \times \num{0.02}}{\num{0.99}^{2} \times \num{0.02} + \num{0.15}^{2} \times \left(1-\num{0.02}\right)}\,, \\
 &\approx \num{0.90}\,.
 \end{split}
 \end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Example: Unfair Coin}
+\label{stats:Bayes:unfair_coin}
+
+Consider the case of a bag of $n$ fair coins and $m$ unfair coins.
+Let $P\left(H \mid \stcomp{F}\right) \equiv p_{H}$ be the \apriori probability of heads $H$ for an unfair coin $\stcomp{F}$.
+Drawing one coin from the bag, you flip it multiple times recording $h$ heads and $t$ tails.
+What is the probability you have drawn an unfair coin, $P\left(\stcomp{F} \mid h,t\right)$?
+
+\begin{equation}\label{eq:stats:Bayes:unfair_coin_setup}
+\begin{gathered}
+P\left(F\right) = \frac{n}{n+m}\,,\quad P\left(\stcomp{F}\right) = \frac{m}{n+m}\,, \\
+P\left(H \mid F\right) = \frac{1}{2}\,,\quad P\left(h,t \mid F\right) = \left(\frac{1}{2}\right)^{h}\,\left(\frac{1}{2}\right)^{t} = \frac{1}{2^{h+t}}\,, \\
+P\left(h,t \mid \stcomp{F}\right) = P\left(H \mid \stcomp{F}\right)^{h} P\left(\stcomp{H} \mid \stcomp{F}\right)^{t} = p_{H}^{h} \left(1-p_{H}\right)^{t}.
+\end{gathered}
+\end{equation}
+
+\begin{equation}\label{eq:stats:Bayes:unfair_coin_solution}
+\begin{split}
+P\left(\stcomp{F} \mid h,t\right) &= \frac{
+P\left(h,t \mid \stcomp{F}\right) P\left(\stcomp{F}\right)}{
+P\left(h,t \mid \stcomp{F}\right) P\left(\stcomp{F}\right) + P\left(h,t \mid F\right) P\left(F\right)} \\
+&= \frac{
+m\,p_{H}^{h} \left(1-p_{H}\right)^{t}}{
+m\,p_{H}^{h} \left(1-p_{H}\right)^{t} + n\,2^{-h-t}}\,.
+\end{split}
+\end{equation}
+
+Some example values are provided in \cref{tab:coin_table}.
+
+\begin{table}[H]
+\centering
+\begingroup
+\renewcommand*{\arraystretch}{1}
+\input{tables/coin_example/coin_example.tex}
+\endgroup
+\caption{
+$P\left(\stcomp{F} \mid h,t\right)$ for various values of $h$, $t$, and $p_{H}$ when $m = 50$, $n = 50$.
+}
+\label{tab:coin_table}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Gaussian Distribution}
