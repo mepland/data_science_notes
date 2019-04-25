@@ -29,26 +29,40 @@ P\left(A \mid B\right) &= \frac{P\left(B \mid A\right) P\left(A\right)}{P\left(B
 \label{stats:Bayes:medical_test}
 
 Example: Testing for disease with a \SI{2}{\percent} incidence rate in the wider population.
-The test has a \SI{99}{\percent} true positive rate and a \SI{15}{\percent} false positive rate.
+The test has a \SI{99}{\percent} true positive rate and a \SI{5}{\percent} false positive rate.
 What is the probability an individual has the disease if their test is positive?
 
+% https://www.wolframalpha.com/input/?i=(0.99*0.02)%2F((0.99*0.02)%2B(0.05*(1%E2%88%920.02)))
 \begin{equation}\label{eq:stats:Bayes:medical_test_1}
 \begin{split}
 P\left(\text{Infected} \mid +\right) &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(+\right)}\,, \\
  &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{
 P\left(+ \mid \text{Infected}\right)P\left(\text{Infected}\right) + P\left(+ \mid \text{Healthy}\right)P\left(\text{Healthy}\right)}\,, \\
-&= \frac{\num{0.99} \times \num{0.02}}{\num{0.99} \times \num{0.02} + \num{0.15} \times \left(1-\num{0.02}\right)}\,, \\
-&\approx \num{0.57}\,.
+&= \frac{\num{0.99} \times \num{0.02}}{\num{0.99} \times \num{0.02} + \num{0.05} \times \left(1-\num{0.02}\right)}\,, \\
+&\approx \num{0.288}\,.
 \end{split}
 \end{equation}
 
-\noindent And if we run a second, independent, test which also comes back positive?
+\noindent And if we then run a second, independent, test which also comes back positive?
 
+% https://www.wolframalpha.com/input/?i=(0.99*0.288)%2F((0.99*0.288)%2B(0.05*(1%E2%88%920.288)))
 \begin{equation}\label{eq:stats:Bayes:medical_test_2}
 \begin{split}
+P\left(\text{Infected} \mid ++\right) &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected} \mid +\right)}{
+P\left(+ \mid \text{Infected}\right)P\left(\text{Infected} \mid +\right) + P\left(+ \mid \text{Healthy}\right)P\left(\text{Healthy} \mid +\right)}\,, \\
+&= \frac{\num{0.99} \times \num{0.288}}{\num{0.99} \times \num{0.288} + \num{0.05} \times \left(1-\num{0.288}\right)}\,, \\
+&\approx \num{0.889}\,.
+\end{split}
+\end{equation}
+
+\noindent Note that if we ran both tests the first time we would still have:
+
+% https://www.wolframalpha.com/input/?i=(0.99%5E2*0.02)%2F((0.99%5E2*0.02)%2B(0.05%5E2*(1%E2%88%920.02)))
+\begin{equation}\label{eq:stats:Bayes:medical_test_3}
+\begin{split}
 P\left(\text{Infected} \mid ++\right) &= \frac{P\left(++ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(++\right)}\,, \\
-&= \frac{\num{0.99}^{2} \times \num{0.02}}{\num{0.99}^{2} \times \num{0.02} + \num{0.15}^{2} \times \left(1-\num{0.02}\right)}\,, \\
-&\approx \num{0.90}\,.
+&= \frac{\num{0.99}^{2} \times \num{0.02}}{\num{0.99}^{2} \times \num{0.02} + \num{0.05}^{2} \times \left(1-\num{0.02}\right)}\,, \\
+&\approx \num{0.889}\,.
 \end{split}
 \end{equation}
 
