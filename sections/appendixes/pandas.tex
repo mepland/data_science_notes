@@ -28,11 +28,17 @@ df_y = df.loc[:, ['y']]
 # select by value
 df_selection = df.loc[( ((df['x'] == x_value) & (df['y'] == y_value)) | (df['z'] > z_value))]
 
-# select row by index
-series = df.iloc[0]
-
 # select by value and assign new value
 df.loc[(df['x'] == x_value), 'y'] = y_value
+
+# select with query
+df_selection = df.query('x > 0')
+
+# select with isin
+df_selection = df.isin({'x': [x_value1, x_value2], 'y': [y_value]})
+
+# select row by index
+series = df.iloc[0]
 
 # apply an arbitrary function
 def func(x, y):
@@ -73,6 +79,8 @@ df = df.drop(['col_to_drop1', 'col_to_drop2'], axis=1)
 df = df.fillna(0.0)
 df = df.fillna(value={'x': x_nan_value, 'z': y_nan_value})
 \end{lstlisting}
+
+\clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -125,10 +133,3 @@ Example \pandas \texttt{pivot\_table} operation, by \href{http://pbpython.com/pa
 }
 \label{fig:pandas:pivot_table}
 \end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Filter}
-\label{pandas:filter}
-% TODO
-
