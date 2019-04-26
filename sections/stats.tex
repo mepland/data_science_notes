@@ -203,6 +203,21 @@ It is helpful to remember that
 \section{Student's \texorpdfstring{$t$}{t}-Distribution}
 \label{stats:t_dist}
 % TODO
+If we take a sample of size $n$ from a normal distribution
+we arrive at the Student's $t$-distribution.
+Letting $\nu = n-1$ be the number of degrees of freedom %TODO
+
+\begin{equation}\label{eq:stats:t_dist:P}
+P\left(t;\,\nu\right) = \frac{
+\Gamma\left(\frac{\nu+1}{2}\right)
+}{
+\sqrt{\nu \pi}\,\Gamma\left(\frac{\nu}{2}\right)
+} \left(1+\frac{t^{2}}{\nu}\right)^{-\frac{\nu+1}{2}}
+\end{equation}
+
+\noindent where $\Gamma\left(z\right)$ is the gamma function\footnote{$\Gamma\left(z\right) = \int_{0}^{\infty} x^{z-1} e^{-x} \, \dif x$,
+which simplifies to $\Gamma\left(n\right)=\left(n-1\right)!$ for integer $n$.}.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
