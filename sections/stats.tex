@@ -110,25 +110,93 @@ $P\left(\stcomp{F} \mid h,t\right)$ for various values of $h$, $t$, and $p_{H}$ 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Gaussian Distribution}
-\label{stats:gaus}
-% TODO
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Binomial Distribution}
 \label{stats:binomial}
-% TODO
+
+The binomial distribution \cref{eq:stats:binomial:P}
+gives the probability of observing $k$ successes in $n$ independent Boolean trials,
+when $p$ is the probability of success in any one trial.
+
+\begin{subequations}\label{eq:stats:binomial}
+\begin{align}
+P\left(k;\,n,p\right) &= {n \choose k}p^{k} \left(1-p\right)^{n-k}, \label{eq:stats:binomial:P} \\
+{n \choose k} &\equiv \frac{n!}{k!\left(n-k\right)!}\,. \label{eq:stats:binomial_coefficient}
+\end{align}
+\end{subequations}
+
+\noindent Here \cref{eq:stats:binomial_coefficient} is the binomial coefficient,
+representing the number of unordered combinations\footnote{There are
+$P_{k}^{n} = n! / \left(n-k\right)$ ways of selecting an ordered subset,
+or permutation, of $k$ from $n$.} which select $k$ elements from $n$ elements; $n$ choose $k$.
+
+The mean and variance of the binomial distribution are:
+
+\begin{subequations}\label{eq:stats:binomial:mean_variance}
+\begin{align}
+\expval{k} &= \sum_{k=0}^{n} kP\left(k;\,n,p\right) = n\,p\,, \label{eq:stats:binomial:mean} \\
+\sigma^{2} &= n\,p\left(1-p\right). \label{eq:stats:binomial:variance}
+\end{align}
+\end{subequations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Bernoulli Distribution}
+\label{stats:binomial:bernoulli}
+
+For the special case when $n=1$, we have the Bernoulli distribution:
+
+\begin{equation}\label{eq:stats:bernoulli}
+P\left(k;\,p\right) = p^{k} \left(1-p\right)^{1-k}, \quad \expval{k} = p\,, \quad  \sigma^{2} = p\left(1-p\right).
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Poisson Distribution}
 \label{stats:poisson}
-% TODO
 
-\subsubsection{Bernoulli Distribution}
-\label{stats:poisson:bernoulli}
-% TODO
+For rare processes with $p \ll 1$, and thus $\lambda \equiv n\,p \ll 1$,
+the binomial distribution reduces\footnote{See
+one \href{https://medium.com/@andrew.chamberlain/deriving-the-poisson-distribution-from-the-binomial-distribution-840cc1668239}{derivation here}.} to the
+Poisson distribution:
+
+\begin{equation}\label{eq:stats:poisson:P}
+P\left(k;\,\lambda\right) = \frac{\lambda^{k}}{k!}\,e^{-\lambda}\,. \\
+\end{equation}
+
+\noindent Note that here $\lambda$ is continuous, while $k$ is still an integer.
+
+Interestingly, the mean and variance of the Poisson distribution are identical and equal to $\lambda$:
+
+\begin{equation}\label{eq:stats:poisson:mean_variance}
+\expval{k} = \sigma^{2} = \lambda\,.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Gaussian Distribution}
+\label{stats:gaus}
+
+In the other directon, for common processes $\mu \equiv n\,p \gg 1$,
+the binomial distribution becomes\footnote{See
+one \href{http://scipp.ucsc.edu/~haber/ph116C/NormalApprox.pdf}{derivation here}.} the
+well-known  Gaussian distribution,
+
+\begin{equation}\label{eq:stats:gauss:P}
+P\left(x;\,\mu,\sigma\right) = \frac{1}{\sqrt{2\pi}\,\sigma} \exp\left( -\frac{1}{2} \left(\frac{x-\mu}{\sigma}\right)^{2} \right)\,,
+\end{equation}
+
+\noindent with mean $\mu$ and variance $\sigma^{2}$.
+
+It is helpful to remember that
+
+\begin{equation}\label{eq:stats:gauss:sigmas}
+\begin{split}
+\mu \pm 1\sigma &\approx \SI{68}{\percent}\,, \\
+\mu \pm 2\sigma &\approx \SI{95}{\percent}\,, \\
+\mu \pm 3\sigma &\approx \SI{99}{\percent}\,,
+\end{split}
+\end{equation}
+
+\noindent while the full width at half maximum (FWHM) $\Gamma = 2\sqrt{2 \ln{2}}\,\sigma \approx \num{2.355} \sigma$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
