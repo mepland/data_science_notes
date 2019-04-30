@@ -45,7 +45,7 @@ def func(x, y):
   return x*np.sin(y)
 df['z'] = np.vectorize(func)(df['x'], df['y'])
 
-# iterate through rows
+# iterate through rows (slow!)
 for index, row in df.iterrows():
   x_value = row['x']
 
