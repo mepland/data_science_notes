@@ -254,7 +254,7 @@ The covariance between two variables $u$ and $v$,
 
 \begin{equation}\label{eq:stats:covar}
 \begin{split}
-\sigma_{uv}^{2} = \text{cov}\left(u,v\right) &= \lim_{N\to\infty}\frac{1}{N}\sum_{i}^{N}\left(u_{i}-\bar{u}\right)\left(v_{i}-\bar{v}\right) \\
+\sigma_{uv}^{2} = \cov{u}{v} &= \lim_{N\to\infty}\frac{1}{N}\sum_{i}^{N}\left(u_{i}-\bar{u}\right)\left(v_{i}-\bar{v}\right) \\
 &= \expval{\left(u-\bar{u}\right)\left(v-\bar{v}\right)} \\
 &= \expval{uv} - \expval{u}\expval{v}\,,
 \end{split}
@@ -262,7 +262,15 @@ The covariance between two variables $u$ and $v$,
 
 \noindent is a measure of their joint variability,
 \ie a measure of any linear relationship which may exist between them.
+It is helpful to remember the following covariance relations:
 
+\begin{subequations}\label{eq:stats:covar_relations}
+\begin{align}
+\cov{X}{X} &= \variance{X} = \sigma_{X}^{2}\,, \label{eq:stats:covar_relations:var} \\
+\cov{X + a}{Y + b} &= \cov{X}{Y}, \label{eq:stats:covar_relations:add} \\
+\cov{a\,X}{b\,Y} &= ab\,\cov{X}{Y}. \label{eq:stats:covar_relations:mult}
+\end{align}
+\end{subequations}
 The correlation coefficient,
 
 \begin{equation}\label{eq:stats:corr}
