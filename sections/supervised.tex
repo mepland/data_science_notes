@@ -14,23 +14,6 @@ Note that $L$ is a measure of the model's bias and $\Omega$ is a measure of its 
 so $\text{obj}\left(\beta\right)$ captures both parts of the bias-variance tradeoff \cite{HastieTF09}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Loss Functions}
-\label{ml:supervised:loss_functions}
-
-\subsubsection{Binary Logistic}
-\label{ml:supervised:loss_functions:binary_logistic}
-
-In two class, signal $y=1$ and background $y=0$, classification problems the binary logistic function is an appropriate choice of $L$:
-
-\begin{equation} \label{eq:binary_logistic}
-L = \sum_{i} \left[y_{i} \ln\left(1 + \exp(-\yhat_{i})\right) +\left(1-y_{i}\right) \ln\left(1 + \exp(\yhat_{i})\right)\right].
-\end{equation}
-
-% TODO add more on the information theory aspect
-
-% TODO add more loss functions
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{N{a\"i}ve Bayes Classification}
 \label{ml:supervised:Bayes}
 % TODO
@@ -47,7 +30,7 @@ L = \sum_{i} \left[y_{i} \ln\left(1 + \exp(-\yhat_{i})\right) +\left(1-y_{i}\rig
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Decision Trees, \ie Classification and Regression Trees (CART)}
+\subsection{Decision Trees, \texorpdfstring{\ie}{ie} Classification and Regression Trees (CART)}
 \label{ml:supervised:CART}
 
 A basic classifier can be created from a tree of selections on $\mathbf{X}$ designed to
