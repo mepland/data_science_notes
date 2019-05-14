@@ -244,3 +244,74 @@ which simplifies to $\Gamma\left(n\right)=\left(n-1\right)!$ for integer $n$.}.
 \label{stats:PCA}
 % TODO
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Covariance and Correlation}
+\label{stats:corr_covar}
+% TODO
+
+The covariance between two variables $u$ and $v$,
+
+\begin{equation}\label{eq:stats:covar}
+\begin{split}
+\sigma_{uv}^{2} = \text{cov}\left(u,v\right) &= \lim_{N\to\infty}\frac{1}{N}\sum_{i}^{N}\left(u_{i}-\bar{u}\right)\left(v_{i}-\bar{v}\right) \\
+&= \expval{\left(u-\bar{u}\right)\left(v-\bar{v}\right)} \\
+&= \expval{uv} - \expval{u}\expval{v}\,,
+\end{split}
+\end{equation}
+
+\noindent is a measure of their joint variability,
+\ie a measure of any linear relationship which may exist between them.
+
+The correlation coefficient,
+
+\begin{equation}\label{eq:stats:corr}
+\rho = \frac{\sigma_{uv}^{2}}{\sigma_{u}\sigma_{v}} = \frac{\cov{u}{v}}{\sigma_{u}\sigma_{v}}\,,
+\end{equation}
+
+\noindent is a convenient dimensionless version, normalized to $-1 \leq \rho \leq 1$.
+Example distributions can be found in \cref{fig:stats:corr_ex}.
+
+% TODo replace with split up pdfs from Doug's notes
+\begin{figure}
+\centering
+\includegraphics[width=0.95\textwidth]{figures/stats/corr_ex.png}
+\caption{
+Example distributions for
+uncorrelated ($\rho \approx 0$),
+correlated ($\rho \approx 1$),
+and anticorrelated ($\rho \approx -1$)
+variables $u$ and $v$ \cite{DougNotes}.
+}
+\label{fig:stats:corr_ex}
+\end{figure}
+
+The covariance matrix,
+
+\begin{align}
+  \mathbf{M} = \begin{pmatrix}
+    \sigma_1^2   & \cov{1}{2} & \cov{1}{3} & \ldots \\
+    \cov{1}{2}   & \sigma_2^2 & \cov{2}{3} & \ldots \\
+    \cov{1}{3}   & \cov{2}{3} & \sigma_3^2 & \ldots \\
+    \vdots       & \vdots     & \vdots     & \ddots
+  \end{pmatrix}\,,
+\end{align}
+
+\noindent with elements $M_{ij} = \expval{\left(u_{i} - \bar{u}_{i}\right)\left(u_{j}-\bar{u}_{j}\right)}$
+is the higher dimensional extension of the covariance.
+We can visualize the covariance between variables with
+Gaussian error ellipses given by the probability distribution
+
+\begin{equation}\label{eq:stats:P_error_ellipse_k}
+P\left(x_{1},x_{2},\ldots,x_{k}\right) = \frac{1}{(2\pi)^{k/2}}\frac{1}{\abs{\mathbf{M}}^{1/2}}\exp\left[-\frac{1}{2}\left(\mathbf{x}-\bm{\mu}\right)^{\transpose}\mathbf{M}\left(\mathbf{x}-\bm{\mu}\right)\right]\,,
+\end{equation}
+
+\noindent where the ellipse semi-axes are directed along the eigenvectors of $\mathbf{M}$.
+In two dimensions it is easier to see the equation of the error ellipse itself:
+
+\begin{equation}\label{eq:stats:P_error_ellipse_2}
+\begin{split}
+P\left(u,v\right) &= \frac{1}{2\pi\sigma_{u}\sigma_{v}}\frac{1}{\sqrt{1-\rho^{2}}}\exp\bigg\{-\frac{1}{2}\bigg[ \\
+&\frac{1}{(1-\rho)^{2}}\left(\frac{\left(u-\bar{u}\right)^{2}}{\sigma_{u}^{2}}+\frac{\left(v-\bar{v}\right)^{2}}{\sigma_{v}^{2}}-\frac{2\rho \left(u-\bar{u}\right)\left(v-\bar{v}\right)}{\sigma_{u}\sigma_{v}}\right)\bigg]\bigg\}\,.
+\end{split}
+\end{equation}
