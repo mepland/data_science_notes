@@ -254,7 +254,35 @@ which simplifies to $\Gamma\left(n\right)=\left(n-1\right)!$ for integer $n$.}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Expectation Value and Variance}
 \label{stats:expval_and_var}
-% TODO
+
+The expectation value \cref{eq:stats:exp_relations} and variance \cref{eq:stats:var_relations} are introductory, yet essential, statistical measures.
+Their definitions and interesting properties are reproduced here for reference.
+Note that $s$ is the unbiased sample variance,
+and the sample mean $\bar{x}$ has $\mu_{\bar{x}} = \mu$, $\sigma_{\bar{x}} = \sigma / \sqrt{n}$,
+where $\mu$ and $\sigma$ are from the parent population.
+
+\begin{subequations}\label{eq:stats:exp_relations}
+\begin{align}
+E\left(X\right) = \expval{X} &= \sum_{i}^{n} x_{i} \, p_{i} = \int_{-\infty}^{\infty} x f\left(x\right) \, \dif x \label{eq:stats:exp_relations:def} \\
+\bar{x} = \mu &= \frac{1}{n} \sum_{i}^{n} x_{i}\,,\,\text{for uniform}~p_{i} \label{eq:stats:exp_relations:mean} \\
+\expval{X+Y} &= \expval{X} + \expval{X} \label{eq:stats:exp_relations:add} \\
+\expval{a X} &= a \expval{X} \label{eq:stats:exp_relations:mult} \\
+\expval{a} &= a \,\, \Rightarrow \, \expval{\expval{X}} = \expval{X} \label{eq:stats:exp_relations:self} \\
+\expval{X Y}^{2} &\leq \expval{X^{2}} \expval{Y^{2}} \label{eq:stats:exp_relations:cbs_ineq}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{eq:stats:var_relations}
+\begin{align}
+\sigma_{X}^{2} = \variance{X} &= \expval{\left(x-\bar{x}\right)^{2}} = \expval{X^{2}} - \expval{X}^{2} \label{eq:stats:var_relations:def} \\
+s^{2} &= \frac{1}{n-1} \sum_{i}^{n} \left( x_{i} - \bar{x}\right)^{2} \label{eq:stats:var_relations:sample} \\
+\variance{X+a} &= \variance{X} \label{eq:stats:var_relations:add} \\
+\variance{a X} &= a^{2} \, \variance{X} \label{eq:stats:var_relations:mult} \\
+\variance{a X \pm b Y} &= a^{2} \, \variance{X} + b^{2} \, \variance{Y} \pm 2ab \, \cov{X}{Y} \label{eq:stats:var_relations:linear} \\
+\variance{X \mid Y} &= \expval{\left(X - \expval{X \mid Y}\right)^{2} \mid Y} \label{eq:stats:var_relations:conditional1} \\
+\variance{X} &= \expval{\variance{X \mid Y}} + \variance{\expval{X \mid Y}} \label{eq:stats:var_relations:conditional2}
+\end{align}
+\end{subequations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -265,7 +293,7 @@ The covariance between two variables $u$ and $v$,
 
 \begin{equation}\label{eq:stats:covar}
 \begin{split}
-\sigma_{uv}^{2} = \cov{u}{v} &= \lim_{N\to\infty}\frac{1}{N}\sum_{i}^{N}\left(u_{i}-\bar{u}\right)\left(v_{i}-\bar{v}\right) \\
+\sigma_{uv}^{2} = \cov{u}{v} &= \lim_{n\to\infty}\frac{1}{n}\sum_{i}^{n}\left(u_{i}-\bar{u}\right)\left(v_{i}-\bar{v}\right) \\
 &= \expval{\left(u-\bar{u}\right)\left(v-\bar{v}\right)} \\
 &= \expval{uv} - \expval{u}\expval{v}\,,
 \end{split}
@@ -277,7 +305,7 @@ It is helpful to remember the following covariance relations:
 
 \begin{subequations}\label{eq:stats:covar_relations}
 \begin{align}
-\cov{X}{X} &= \variance{X} = \sigma_{X}^{2} = \expval{\left(x-\bar{x}\right)^{2}}, \label{eq:stats:covar_relations:var} \\
+\cov{X}{X} &= \variance{X}, \label{eq:stats:covar_relations:var} \\
 \cov{X + a}{Y + b} &= \cov{X}{Y}, \label{eq:stats:covar_relations:add} \\
 \cov{a\,X}{b\,Y} &= ab\,\cov{X}{Y}. \label{eq:stats:covar_relations:mult}
 \end{align}
