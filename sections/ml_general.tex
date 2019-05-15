@@ -32,25 +32,44 @@ with correctly classified instances appearing along the diagonal.
 
 \subsubsection{TPR \& TNR -- Sensitivity \& Specificity}
 \label{ml:general:eval:TPR_TNR}
+
 The true positive rate (TPR) and true negative rate (TNR) are
 relatively straight forward to compute and understand, along with their complements,
-the false negative rate (FNR) and false positive rate (FPR).
+the false negative rate (FNR), \ie miss rate, and false positive rate (FPR), \ie fall-out.
+Here the denominators are the number of true class members.
 
 \begin{enumerate}[noitemsep]
-\item True positive rate (TPR), \ie sensitivity, recall, hit rate.
+\item True positive rate (TPR), \ie sensitivity, recall, hit rate:
 \begin{equation} \label{eq:TPR}
 \text{TPR} = \frac{\text{TP}}{\text{P}} = \frac{\text{TP}}{\text{TP}+\text{FN}} = 1 - \text{FNR} = P\left(\hat{+} \mid + \right)
 \end{equation}
 
-\item True negative rate (TNR), \ie specificity, selectivity.
+\item True negative rate (TNR), \ie specificity, selectivity:
 \begin{equation} \label{eq:TNR}
-\text{TNR} = \frac{\text{NP}}{\text{N}} = \frac{\text{TN}}{\text{TN}+\text{FP}} = 1 - \text{FPR} = P\left(\hat{-} \mid - \right)
+\text{TNR} = \frac{\text{TN}}{\text{N}} = \frac{\text{TN}}{\text{TN}+\text{FP}} = 1 - \text{FPR} = P\left(\hat{-} \mid - \right)
 \end{equation}
 \end{enumerate}
 
-% TODO precision vs recall
+\subsubsection{PPV (Precision) \& NPV}
+\label{ml:general:eval:PPV_NPV}
 
-% TODO cite in text
+The positive predictive value (PPV), more commonly known as precision, and negative predictive value (NPV)
+are related metrics, but with predicted class members in the denominators.
+Their complements are the false discovery rate (FDR) and false omission rate (FOR).
+It is helpful to look at these metrics graphically, as in \cref{fig:graphical_CM_quantities}.
+
+\begin{enumerate}[noitemsep]
+\item Positive predictive value (PPV), \ie precision:
+\begin{equation} \label{eq:PPV}
+\text{PPV} = \frac{\text{TP}}{\hat{\text{P}}} = \frac{\text{TP}}{\text{TP}+\text{FP}} = 1 - \text{FDR} = P\left(+ \mid \hat{+} \right)
+\end{equation}
+
+\item Negative predictive value (NPV):
+\begin{equation} \label{eq:NPV}
+\text{NPV} = \frac{\text{TN}}{\hat{\text{N}}} = \frac{\text{TN}}{\text{TN}+\text{FN}} = 1 - \text{FOR} = P\left(- \mid \hat{-} \right)
+\end{equation}
+\end{enumerate}
+
 \begin{figure}
 \centering
   \begin{subfigure}[c]{0.48\textwidth}\centering
@@ -66,14 +85,38 @@ the false negative rate (FNR) and false positive rate (FPR).
   \end{subfigure}
 \caption{
 Graphical representation of
-precision versus recall, by \href{https://commons.wikimedia.org/wiki/File:Precisionrecall.svg}{Walber},
+precision versus recall (sensitivity), by \href{https://commons.wikimedia.org/wiki/File:Precisionrecall.svg}{Walber},
 and
-sensitivity versus specificity, by \href{http://en.wikipedia.org/wiki/File:Sensitivity_and_specificity.svg}{FeanDoe}.
+sensitivity (recall) versus specificity, by \href{http://en.wikipedia.org/wiki/File:Sensitivity_and_specificity.svg}{FeanDoe}.
 }
 \label{fig:graphical_CM_quantities}
 \end{figure}
 
-% TODO other scores: F1, etc
+\subsubsection{Other Scores}
+\label{ml:general:eval:other_scores}
+
+The accuracy (ACC), the proportion of correct predictions, is a natural metric for measuring a classifiers performance.
+Various F-scores, such as $F_{1}$ and $F_{\beta}$, combine precision and recall into one metric\footnote{Note that $F_{\beta}$ does not depend on TN at all, a potential shortcoming.}.
+$F_{1}$ balances precision and recall equally, and is their harmonic mean,
+while $F_{\beta}$ uses $\beta$ to assign different weights to each\footnote{$F_{2}$ weights recall over precision, $F_{0.5}$ weights precision over recall.}.
+
+\begin{enumerate}[noitemsep]
+\item Accuracy (ACC):
+\begin{equation} \label{eq:ACC}
+\text{ACC} = \frac{\text{TP}+\text{NP}}{\text{P}+\text{N}} = \frac{\text{TP}+\text{NP}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
+\end{equation}
+
+\item $F_{1}$ ($F_{1}=1$ is best, $F_{1}=0$ is worst):
+\begin{equation} \label{eq:F1}
+F_{1} = \left(\frac{\text{precision}^{-1}+\text{recall}^{-1}}{2}\right)^{-1} = 2\,\,\frac{\text{precision} \times \text{recall}}{\text{precision} + \text{recall}}
+\end{equation}
+
+\item $F_{\beta}$ (Larger $\beta$ weights recall over precision):
+\begin{equation} \label{eq:Fbeta}
+F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}}{\beta^{2}\,\text{precision} + \text{recall}} =
+\frac{\left(1+\beta^{2}\right) \text{TP}}{\left(1+\beta^{2}\right) \text{TP} + \beta^{2}\,\text{FN} + \text{FP}}
+\end{equation}
+\end{enumerate}
 
 \subsubsection{ROC Curves}
 \label{ml:general:eval:ROC}
@@ -103,7 +146,7 @@ The optimal decision threshold can then be found by maximizing $E\left(\text{pro
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Bias-Variance Tradeoff}
 \label{ml:general:biasVar}
-% TODO add graphs too
+% TODO add more, and some plots too
 
 \begin{enumerate}[noitemsep]
 \item Bias: Errors due to a model not learning about relationships between features, \ie underfitting.
