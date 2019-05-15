@@ -51,25 +51,63 @@ S\left(\bm{\beta}\right) &= \sum_{i=1}^{m} \, \abs{y_{i} - \sum_{j=0}^{n} \, \be
 
 \noindent provided the following assumptions hold:
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Assumptions}
+\label{regression:linear:assumptions}
+
 \begin{enumerate}[noitemsep]
-\item The underlying relationship between $\mathbf{x}$ and $y$ is linear.
-\item The columns of $\mathbf{X}$ are linearly independent, \ie $\mathrm{rank}\left(\mathbf{X}\right) = n$ (no multicollinearity).
-\item The errors $\epsilon$ have conditional mean 0, $E\left(\epsilon \mid \mathbf{X}\right) = 0$ (exogeneity). The errors thus:
+\item The underlying relationship between $\mathbf{x}$ and $y$ is linear, and there are no major outliers.\label{item:regression:linear:linear}
+\item The columns of $\mathbf{X}$, \ie features, are linearly independent, \ie $\mathrm{rank}\left(\mathbf{X}\right) = n$ (no multicollinearity).\label{item:regression:linear:multicollinearity}
+\item The errors $\epsilon$ have conditional mean 0, $E\left(\epsilon \mid \mathbf{X}\right) = 0$ (exogeneity). The errors thus:\label{item:regression:linear:exogeneity}
 \begin{enumerate}[noitemsep]
 \item Have a mean of zero, $E\left(\epsilon\right) = 0$.
 \item Are not correlated with the input features, $E\left(\mathbf{X}\transpose\epsilon\right) = 0$.
 \end{enumerate}
-\item The errors are spherical, $\mathrm{var}\left(\epsilon \mid \mathbf{X}\right) = \sigma^{2} \identity$. Thus:
+\item The errors are spherical, $\mathrm{var}\left(\epsilon \mid \mathbf{X}\right) = \sigma^{2} \identity$. Thus:\label{item:regression:linear:spherical}
 \begin{enumerate}[noitemsep]
-\item Each observation $\mathbf{x}_{i}$ has the same variance $\sigma^{2}$ (homoscedasticity).
+\item Each observation $\mathbf{x}_{i}$ has the same constant variance $\sigma^{2}$ (homoscedasticity).
 \item The errors are uncorrelated between observations, $E\left(\epsilon_{i}\epsilon_{j \neq i} \mid \mathbf{X}\right) = 0$ (no autocorrelation).
 \end{enumerate}
-\item The errors are normally distributed (multivariate normality)\footnote{This is not strictly required, but if true the OLS is the MLE and hypothesis testing works.}.
+\item The errors are normally distributed (multivariate normality)\footnote{This is not strictly required, but if true the OLS is the MLE and hypothesis testing works.}.\label{item:regression:linear:normality}
 \end{enumerate}
-% TODO what goes wrong exactly when each assumption is violated
 
-% TODO weighted version
+If these assumptions are violated the following issues arise,
+namely the model may be biased and or have a large or invalid estimated variance\footnote{A good reference may be found \href{http://people.duke.edu/~rnau/testing.htm}{here}.}:
+
+\begin{itemize}[noitemsep]
+\item[\ref{item:regression:linear:linear}.] If you are fitting nonlinear data the predictions will have large errors,
+particularly when extrapolated beyond the range of the fitted data.
+This will show up as systematic errors in the residuals plot,
+or may be obvious when comparing observed vs predicted values.
+Possible fixes include applying a nonlinear transformation to some of the features to linearize the data, \eg take the log,
+adding more combinations of features, \eg higher polynomial terms,
+or finding new independent features which may explain the nonlinearity.
+
+\item[\ref{item:regression:linear:multicollinearity}.] If some of the features are not linearly independent (multicollinearity),
+they can be biasing the model and should be removed in turn until linear independence is restored.
+Multicollinearity can be spotted in the input feature correlation matrix,
+or if the residuals correlate to any of the features.
+
+\item[\ref{item:regression:linear:exogeneity}. \& \ref{item:regression:linear:spherical}.] If something is wrong with the errors
+such that they correlate to the input features or across observations\footnote{Thus the residuals correlate with row number, \ie autocorrelation.},
+have a non-zero mean, or have a changing variance,
+the reported confidence intervals on the model parameters may be over or underestimated.
+
+\item[\ref{item:regression:linear:normality}.] If the errors are not normally distributed the confidence intervals are again suspect.
+This can be diagnosed by comparing the errors to the normal distribution with a normal probability plot, or normal quantile plot,
+or through a statistical method like the Anderson-Darling and Kolmogorov-Smirnov tests.
+Note that violating normality in the errors is not as much of an issue compared to the other assumptions
+since the fit will still give usable coefficients provided the assumed form of the model is correct.
+Problems of this kind can arise from nonlinear data or influential outliers.
+If the errors really are non-normal, a generalized linear model (GLM) could be employed to model them correctly.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Goodness of Fit}
+\label{regression:linear:goodness_of_fit}
+
 % TODO R2, reduced chi square values, F-test, t-test
+
 % TODO Ridge regression
 % TODO Lasso regression
 

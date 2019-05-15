@@ -232,6 +232,12 @@ which simplifies to $\Gamma\left(n\right)=\left(n-1\right)!$ for integer $n$.}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\texorpdfstring{$\chi^{2}$-Test}{Chi-Squared Test}}
+\label{stats:chi2_test}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Maximum Likelihood Estimation (MLE)}
 \label{stats:MLE}
 % TODO
@@ -248,7 +254,6 @@ which simplifies to $\Gamma\left(n\right)=\left(n-1\right)!$ for integer $n$.}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Covariance and Correlation}
 \label{stats:corr_covar}
-% TODO
 
 The covariance between two variables $u$ and $v$,
 
@@ -266,7 +271,7 @@ It is helpful to remember the following covariance relations:
 
 \begin{subequations}\label{eq:stats:covar_relations}
 \begin{align}
-\cov{X}{X} &= \variance{X} = \sigma_{X}^{2}\,, \label{eq:stats:covar_relations:var} \\
+\cov{X}{X} &= \variance{X} = \sigma_{X}^{2} = \expval{\left(x-\bar{x}\right)^{2}}, \label{eq:stats:covar_relations:var} \\
 \cov{X + a}{Y + b} &= \cov{X}{Y}, \label{eq:stats:covar_relations:add} \\
 \cov{a\,X}{b\,Y} &= ab\,\cov{X}{Y}. \label{eq:stats:covar_relations:mult}
 \end{align}
