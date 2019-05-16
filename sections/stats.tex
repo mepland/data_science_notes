@@ -112,6 +112,7 @@ $P\left(\stcomp{F} \mid h,t\right)$ for various values of $h$, $t$, and $p_{H}$ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Binomial Distribution}
 \label{stats:binomial}
+% TODO add figure
 
 The binomial distribution \cref{eq:stats:binomial:P}
 gives the probability of observing $k$ successes in $n$ independent Boolean trials,
@@ -152,6 +153,7 @@ P\left(k;\,p\right) = p^{k} \left(1-p\right)^{1-k}, \quad \expval{k} = p\,, \qua
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Poisson Distribution}
 \label{stats:poisson}
+% TODO add figure
 
 For rare processes with $p \ll 1$, and thus $\lambda \equiv n\,p \ll 1$,
 the binomial distribution reduces\footnote{See
@@ -179,6 +181,7 @@ Interestingly, the mean and variance of the Poisson distribution are identical a
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Gaussian Distribution}
 \label{stats:gaus}
+% TODO add figure
 
 In the other directon, for common processes $\mu \equiv n\,p \gg 1$,
 the binomial distribution becomes\footnote{See
@@ -207,22 +210,25 @@ It is helpful to remember that
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Student's \texorpdfstring{$t$}{t}-Distribution}
 \label{stats:t_dist}
-% TODO
-If we take a sample of size $n$ from a normal distribution
+% TODO add figure
+
+If we take a sample of size $m$ from a normal distribution
 we arrive at the Student's $t$-distribution.
-Letting $\nu = n-1$ be the number of degrees of freedom %TODO
+Letting $\nu = m-1$ be the number of degrees of freedom,
+the Student's $t$-distribution has the form:
 
 \begin{equation}\label{eq:stats:t_dist:P}
 P\left(t;\,\nu\right) = \frac{
 \Gamma\left(\frac{\nu+1}{2}\right)
 }{
 \sqrt{\nu \pi}\,\Gamma\left(\frac{\nu}{2}\right)
-} \left(1+\frac{t^{2}}{\nu}\right)^{-\frac{\nu+1}{2}}
+} \left(1+\frac{t^{2}}{\nu}\right)^{-\frac{\nu+1}{2}}\,,
 \end{equation}
 
 \noindent where $\Gamma\left(z\right)$ is the gamma function\footnote{$\Gamma\left(z\right) = \int_{0}^{\infty} x^{z-1} e^{-x} \, \dif x$,
 which simplifies to $\Gamma\left(n\right)=\left(n-1\right)!$ for integer $n$.}.
-
+The distribution TODO has a mean of \num{0} for $\nu > 1$,
+and variance of $\infty$ for $\nu =2$ and $\nu / \left(\nu-2\right)$ for $\nu > 2$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -232,9 +238,57 @@ which simplifies to $\Gamma\left(n\right)=\left(n-1\right)!$ for integer $n$.}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\texorpdfstring{$\chi^{2}$-Distribution}{Chi-Squared Distribution}}
+\label{stats:chi2_dist}
+% TODO add figure
+
+The $\chi^{2}$-distribution with $\nu$ degrees of freedom,
+\cref{eq:stats:chi2_dist:P} and TODO,
+is created by summing the squares of $\nu$ independent standard normal random variables.
+It therefore has a mean of $\nu$ and variance of $2\nu$, and is
+primary useful for conducting $\chi^{2}$-tests.
+
+\begin{equation}\label{eq:stats:chi2_dist:P}
+P\left(x;\,\nu\right) = \frac{
+x^{\frac{\nu}{2} - 1} e^{-\frac{x}{2}}
+}{
+2^{\frac{\nu}{2}} \Gamma\left(\frac{\nu}{2}\right)}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\texorpdfstring{$\chi^{2}$-Test}{Chi-Squared Test}}
 \label{stats:chi2_test}
-% TODO
+
+Pearson's $\chi^{2}$-test can be used to
+statistically compare a set of observations in
+$n$ variables, $x_{i}$, to prior expectations via the $\chi^{2}$-distribution.
+The \pvalue returned by the test estimates the probability of obtaining the observations
+assuming the null hypothesis, \ie the expectations, is true.
+The $\chi^{2}$-test statistic, $X^{2}$, is created with the assumption that
+the data are normally distributed and independent,
+which often is the case due to the central limit theorem.
+It is constructed by squaring the difference\footnote{Yates's
+correction for continuity $\left(x^{\text{obs}}_{j} - x^{\text{exp}}_{j}\right)^{2} \to \left(\abs{x^{\text{obs}}_{j} - x^{\text{exp}}_{j}}-0.5\right)^{2}$ may
+also be applied in some low statistics cases.} between
+an expected value, $x^{\text{exp}}_{i}$, and its corresponding observation, $x^{\text{obs}}_{i}$,
+and dividing by the expectation:
+
+\begin{equation}\label{eq:stats:chi2_score}
+X^{2} = \sum_{i=1}^{n} \frac{\left(x^{\text{obs}}_{i} - x^{\text{exp}}_{i}\right)^{2}}{x^{\text{exp}}_{i}}\,.
+\end{equation}
+
+In the limit that each $x^{\text{obs}}_{i}$ is normally distributed and $n$ is large, $X^{2} \to \chi^{2}$.
+We can then use the $\chi^{2}$ distribution with $\nu = n-1$ degrees of freedom to find the \pvalue as the area to the right of $X^{2}$.
+An easy way to compute $X^{2}$ and the \pvalue is to use the \texttt{scipy.stats.chisquare(f\_obs, f\_exp)}
+\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.chisquare.html}{function}.
+
+The $\chi^{2}$-test can also be used to test of the data's independence, or homogeneity,
+for $m$ samples of $n$ variables with $\nu = \left(n-1\right)\left(m-1\right)$ and
+
+\begin{equation}\label{eq:stats:chi2_score_ind}
+X^{2} = \sum_{i=1}^{n} \sum_{j=1}^{m} \frac{\left(x^{\text{obs}}_{i,j} - x^{\text{exp}}_{i,j}\right)^{2}}{x^{\text{exp}}_{i,j}}\,.
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -263,8 +317,8 @@ where $\mu$ and $\sigma$ are from the parent population.
 
 \begin{subequations}\label{eq:stats:exp_relations}
 \begin{align}
-E\left(X\right) = \expval{X} &= \sum_{i}^{n} x_{i} \, p_{i} = \int_{-\infty}^{\infty} x f\left(x\right) \, \dif x \label{eq:stats:exp_relations:def} \\
-\bar{x} = \mu &= \frac{1}{n} \sum_{i}^{n} x_{i}\,,\,\text{for uniform}~p_{i} \label{eq:stats:exp_relations:mean} \\
+E\left(X\right) = \expval{X} &= \sum_{j=1}^{m} x_{j} \, p_{j} = \int_{-\infty}^{\infty} x f\left(x\right) \, \dif x \label{eq:stats:exp_relations:def} \\
+\bar{x} = \mu &= \frac{1}{n} \sum_{j=1}^{m} x_{j}\,,\,\text{for uniform}~p_{j} \label{eq:stats:exp_relations:mean} \\
 \expval{X+Y} &= \expval{X} + \expval{X} \label{eq:stats:exp_relations:add} \\
 \expval{a X} &= a \expval{X} \label{eq:stats:exp_relations:mult} \\
 \expval{a} &= a \,\, \Rightarrow \, \expval{\expval{X}} = \expval{X} \label{eq:stats:exp_relations:self} \\
@@ -275,7 +329,7 @@ E\left(X\right) = \expval{X} &= \sum_{i}^{n} x_{i} \, p_{i} = \int_{-\infty}^{\i
 \begin{subequations}\label{eq:stats:var_relations}
 \begin{align}
 \sigma_{X}^{2} = \variance{X} &= \expval{\left(x-\bar{x}\right)^{2}} = \expval{X^{2}} - \expval{X}^{2} \label{eq:stats:var_relations:def} \\
-s^{2} &= \frac{1}{n-1} \sum_{i}^{n} \left( x_{i} - \bar{x}\right)^{2} \label{eq:stats:var_relations:sample} \\
+s^{2} &= \frac{1}{n-1} \sum_{j=1}^{m} \left( x_{j} - \bar{x}\right)^{2} \label{eq:stats:var_relations:sample} \\
 \variance{X+a} &= \variance{X} \label{eq:stats:var_relations:add} \\
 \variance{a X} &= a^{2} \, \variance{X} \label{eq:stats:var_relations:mult} \\
 \variance{a X \pm b Y} &= a^{2} \, \variance{X} + b^{2} \, \variance{Y} \pm 2 \, ab \, \cov{X}{Y} \label{eq:stats:var_relations:linear} \\
@@ -293,7 +347,7 @@ The covariance between two variables $u$ and $v$,
 
 \begin{equation}\label{eq:stats:covar}
 \begin{split}
-\sigma_{uv}^{2} = \cov{u}{v} &= \lim_{n\to\infty}\frac{1}{n}\sum_{i}^{n}\left(u_{i}-\bar{u}\right)\left(v_{i}-\bar{v}\right) \\
+\sigma_{uv}^{2} = \cov{u}{v} &= \lim_{n\to\infty}\frac{1}{n}\sum_{j=1}^{m}\left(u_{j}-\bar{u}\right)\left(v_{j}-\bar{v}\right) \\
 &= \expval{\left(u-\bar{u}\right)\left(v-\bar{v}\right)} \\
 &= \expval{uv} - \expval{u}\expval{v}\,,
 \end{split}
