@@ -17,8 +17,6 @@
 % Set documentclass
 \documentclass[nogradschool,singlespace,nobind]{dukedissertation_modified}
 
-% TODo make figure captions actually single spaced
-
 %-----------------------------------------------------------------------------%
 % usepackages
 \usepackage{amsmath,amssymb,bbm,bm} % https://ctan.org/pkg/bm
@@ -58,7 +56,7 @@
 \WarningFilter{caption}{Unsupported document class}
 \WarningFilter{hyperref}{The PDF version number could not be set}
 \usepackage{setspace} % needed to specify, https://ctan.org/pkg/setspace
-\usepackage[style=base,skip=2pt,font={stretch=1.3},width=\textwidth]{caption}
+\usepackage[style=base,skip=2pt,width=\textwidth]{caption} % ,font={stretch=1.3}
 \usepackage[skip=1pt]{subcaption}
 \newsavebox{\largestimage} % see https://tex.stackexchange.com/questions/239128/subcaption-vertical-alignment-of-two-images-of-different-vertical-size
 
