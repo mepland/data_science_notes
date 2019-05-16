@@ -147,6 +147,7 @@ The optimal decision threshold can then be found by maximizing $E\left(\text{pro
 \subsection{Bias-Variance Tradeoff}
 \label{ml:general:biasVar}
 % TODO add more, and some plots too
+% TODO ref in text \cref{fig:ml:supervised:early_stopping}
 
 \begin{enumerate}[noitemsep]
 \item Bias: Errors due to a model not learning about relationships between features, \ie underfitting.
@@ -211,18 +212,28 @@ is to constrain $\norm{\bm{\beta}}^{q} \leq t\left(\lambda\right)$ for some $t\l
 As can be seen in \cref{fig:ml:l1l2} the L1 norm constrains $\bm{\beta}$ to lie within a hypercube,
 while the L2 constraint is a hypersphere.
 
-% TODo replace with split up pdfs from figure 3.11 on page 71 (90 in pdf) of ESLII
+% TODo Replace with pdf versions from HastieTF09 figure 3.11 someday
 \begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{figures/ml/l1l2.png}
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}\centering
+      \includegraphics[width=\textwidth]{figures/ml/l1.png}
+  \caption{L1}
+  \label{fig:ml:l1l2:l1}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.48\textwidth}\centering
+      \includegraphics[width=\textwidth]{figures/ml/l2.png}
+  \caption{L2}
+  \label{fig:ml:l1l2:L2}
+  \end{subfigure}
 \caption{
 A graphical representation of the L1 and L2 regularization constraints on $\bm{\beta}$ \cite{HastieTF09}.
 The best value of $\bm{\beta}$ for optimizing the loss function $L$ is indicated as $\hat{\bm{\beta}}$.
 For a given contour in $L$, L1 will tend to force $\bm{\beta}$ along one of the axes,
 identically setting some $\beta_{i}$ coefficients to zero,
 while L2 is rotationally symmetric and has no such tendencies.
-}
 \label{fig:ml:l1l2}
+}
 \end{figure}
 
 \subsubsection{L1 -- LASSO}
@@ -267,4 +278,17 @@ or a shared $\lambda$ and mixing parameter $\alpha$.
 
 \subsubsection{Early Stopping}
 \label{ml:general:reg:early_stopping}
-% TODO nice figure on page 38 (57 in pdf) of ESLII
+% TODO
+% TODO ref in text \cref{fig:ml:supervised:early_stopping}
+
+% TODo Replace with pdf version from HastieTF09 figure 2.11 someday
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/ml/test_train_err_curves.png}
+\caption{
+Illustrated effects of increasing model complexity on the error rates for the test and train sets \cite{HastieTF09}.
+Early stopping would halt the training process when the test (or better yet, validation) set error stops decreasing.
+This is also another example of the bias-variance tradeoff in action.
+}
+\label{fig:ml:supervised:early_stopping}
+\end{figure}
