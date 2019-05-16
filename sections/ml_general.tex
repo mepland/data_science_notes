@@ -180,7 +180,7 @@ The optimal decision threshold can then be found by maximizing $E\left(\text{pro
 In two class, signal $y=1$ and background $y=0$, classification problems the binary logistic function is an appropriate choice of $L$:
 
 \begin{equation} \label{eq:binary_logistic}
-L = \sum_{i} \left[y_{i} \ln\left(1 + \exp(-\yhat_{i})\right) +\left(1-y_{i}\right) \ln\left(1 + \exp(\yhat_{i})\right)\right].
+L = \sum_{j=1}^{m} \left[y_{j} \ln\left(1 + \exp(-\yhat_{j})\right) +\left(1-y_{j}\right) \ln\left(1 + \exp(\yhat_{j})\right)\right].
 \end{equation}
 
 % TODO add more on the information theory aspect
