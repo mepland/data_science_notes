@@ -1,13 +1,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{General Concepts}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{General Machine Learning Concepts}
 \label{ml:general}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Evaluating Performance}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluating Performance}
 \label{ml:general:eval}
 
-\subsubsection{Confusion Matrix}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Confusion Matrix}
 \label{ml:general:eval:cm}
 
 The confusion matrix is a simple table of the number of actual, or truth, class instances
@@ -30,7 +33,8 @@ with correctly classified instances appearing along the diagonal.
   \label{table:CM}
 \end{table}
 
-\subsubsection{TPR \& TNR -- Sensitivity \& Specificity}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{TPR \& TNR -- Sensitivity \& Specificity}
 \label{ml:general:eval:TPR_TNR}
 
 The true positive rate (TPR) and true negative rate (TNR) are
@@ -50,7 +54,8 @@ Here the denominators are the number of true class members.
 \end{equation}
 \end{enumerate}
 
-\subsubsection{PPV (Precision) \& NPV}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{PPV (Precision) \& NPV}
 \label{ml:general:eval:PPV_NPV}
 
 The positive predictive value (PPV), more commonly known as precision, and negative predictive value (NPV)
@@ -92,7 +97,8 @@ sensitivity (recall) versus specificity, by \href{http://en.wikipedia.org/wiki/F
 \label{fig:graphical_CM_quantities}
 \end{figure}
 
-\subsubsection{Other Scores}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Other Scores}
 \label{ml:general:eval:other_scores}
 
 The accuracy (ACC), the proportion of correct predictions, is a natural metric for measuring a classifiers performance.
@@ -118,33 +124,9 @@ F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}
 \end{equation}
 \end{enumerate}
 
-\subsubsection{ROC Curves}
-\label{ml:general:eval:ROC}
-% TODO include small figure with TPR vs FPR (better in the upper left), and version with better in lower right
-
-\subsubsection{Selecting a Decision Threshold}
-\label{ml:general:eval:decision_threshold}
-
-% include \cref to significance section, if eventually added
-
-In physics we may try to maximize the significance $Z$ of a classifier\footnote{And or
-work with the \href{https://en.wikipedia.org/wiki/Neyman\%E2\%80\%93Pearson\_lemma}{Neyman-Pearson framework}.} by
-picking an optimal point along the ROC curve to set the decision threshold.
-However in data science it is often better to create a payoff matrix of the anticipated
-benefits associated with a TP or TN, and costs associated with a FP or FN,
-for the particular business case at hand.
-The expected value of any decision threshold can quickly be computed
-from the payoff matrix elements, $E\left( \hat{A} \mid B\right)$, as
-
-\begin{equation} \label{eq:E_profit}
-E\left(\text{profit}\right) = \sum_{A,B} E\left( \hat{A} \mid B\right) P\left(\hat{A} \mid B \right) P\left(B\right),
-\end{equation}
-
-\noindent where $A$ and $B$ are any two cases.
-The optimal decision threshold can then be found by maximizing $E\left(\text{profit}\right)$.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Bias-Variance Tradeoff}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bias-Variance Tradeoff}
 \label{ml:general:bias_variance_tradeoff}
 % TODO add more, and some plots too
 % TODO ref in text \cref{fig:ml:supervised:early_stopping}
@@ -155,38 +137,14 @@ The optimal decision threshold can then be found by maximizing $E\left(\text{pro
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Gradient Decent}
-\label{ml:general:gradDec}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Gradient Descent}
+\label{ml:general:grad_descent}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Normalization}
-\label{ml:general:normalization}
-% TODO normalization of input features (for faster training, more equal regularization), batch renormalization in neural networks
-
-\subsubsection{Batch Renormalization}
-\label{ml:general:reg:batch_renorm}
-% TODO
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Loss Functions}
-\label{ml:general:loss_func}
-
-% TODO add more loss functions such as log loss, OLS
-
-\subsubsection{Binary Logistic}
-\label{ml:supervised:loss_functions:binary_logistic}
-
-In two class, signal $y=1$ and background $y=0$, classification problems the binary logistic function is an appropriate choice of $L$:
-
-\begin{equation} \label{eq:binary_logistic}
-L = \sum_{j=1}^{m} \left[y_{j} \ln\left(1 + \exp(-\yhat_{j})\right) +\left(1-y_{j}\right) \ln\left(1 + \exp(\yhat_{j})\right)\right].
-\end{equation}
-
-% TODO add more on the information theory aspect
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Regularization}
+\section{Regularization}
 \label{ml:general:reg}
 
 Regularization is a method for controlling the variance (overfitting)
@@ -236,7 +194,8 @@ while L2 is rotationally symmetric and has no such tendencies.
 }
 \end{figure}
 
-\subsubsection{L1 -- LASSO}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{L1 -- LASSO}
 \label{ml:general:reg:L1}
 L1, or LASSO\footnote{Least absolute shrinkage and selection operator.},
 regression uses the norm $\norm{\bm{\beta}}$ \cref{eq:L1}, or taxi cab distance.
@@ -244,7 +203,8 @@ As it's geometric constraints on $\bm{\beta}$ are hypercubes,
 it tends to set some model parameters to 0, creating sparsity,
 and thereby acts as a form of built-in feature selection.
 
-\subsubsection{L2 -- Ridge}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{L2 -- Ridge}
 \label{ml:general:reg:L2}
 L2, or ridge, regression \cref{eq:L2} uses the square of the norm, or euclidean distance.
 Models made with L2 regularization are somewhat less interpretable than those made with L1,
@@ -253,42 +213,3 @@ The parameters are still shrunk toward zero, and each other,
 while highly correlated features are effectively averaged.
 L2 is slightly faster to run than L1 computationally as, unlike L1, it
 is not represented as a piecewise function and has a closed form expression.
-
-\subsubsection{Elastic Net}
-\label{ml:general:reg:EN}
-
-L1 and L2 regularization can be used in combination
-to take advantage of both of their benefits.
-Such a combination is known as the elastic net penalty \cref{eq:elastic_net},
-where the combination can be controlled via two $\lambda_{1}$, $\lambda_{2}$ hyperparameters,
-or a shared $\lambda$ and mixing parameter $\alpha$.
-
-\begin{equation} \label{eq:elastic_net}
-\begin{split}
-\Omega_{\text{EN}}\left(\bm{\beta}\right) &= \lambda_{1} \norm{\bm{\beta}} + \lambda_{2} \norm{\bm{\beta}}^{2}\\
-&= \lambda \left( \alpha\norm{\bm{\beta}} + \left(1-\alpha\right)\norm{\bm{\beta}}^{2} \right)
-\end{split}
-\end{equation}
-
-% TODo connections to SVM (https://en.wikipedia.org/wiki/Elastic_net_regularization#Reduction_to_support_vector_machine)
-
-\subsubsection{Drop Out}
-\label{ml:general:reg:Drop}
-% TODO
-
-\subsubsection{Early Stopping}
-\label{ml:general:reg:early_stopping}
-% TODO
-% TODO ref in text \cref{fig:ml:supervised:early_stopping}
-
-% TODo Replace with pdf version from HastieTF09 figure 2.11 someday
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{figures/ml/test_train_err_curves.png}
-\caption{
-Illustrated effects of increasing model complexity on the error rates for the test and train sets \cite{HastieTF09}.
-Early stopping would halt the training process when the test (or better yet, validation) set error stops decreasing.
-This is also another example of the bias-variance tradeoff in action.
-}
-\label{fig:ml:supervised:early_stopping}
-\end{figure}

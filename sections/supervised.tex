@@ -1,6 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Supervised Learning}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Supervised Learning}
 \label{ml:supervised}
 
 In supervised learning a model is trained over many known examples
@@ -14,19 +15,22 @@ Note that $L$ is a measure of the model's bias and $\Omega$ is a measure of its 
 so $\text{obj}\left(\beta\right)$ captures both parts of the bias-variance tradeoff \cite{HastieTF09}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{(Gaussian) N{a\"i}ve Bayes Classification (GNB)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{(Gaussian) N{a\"i}ve Bayes Classification (GNB)}
 \label{ml:supervised:Bayes}
 % TODO
 % TODO maximum a posteriori (italics) probability (MAP) estimator
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors (\texorpdfstring{$k$}{k}-NN)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\texorpdfstring{$k$}{k}-Nearest Neighbors (\texorpdfstring{$k$}{k}-NN)}
 \label{ml:supervised:kNN}
 % TODO
 % TODO also talk about collaborative filtering
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Support Vector Machines (SVM)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Support Vector Machines (SVM)}
 \label{ml:supervised:SVM}
 % TODO
 % TODO ref in text \cref{fig:svm}
@@ -53,7 +57,8 @@ Illustrations of SVMs in the separable and nonseparable case \cite{HastieTF09}.
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Decision Trees, \texorpdfstring{\ie}{ie} Classification and Regression Trees (CART)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Decision Trees, \texorpdfstring{\ie}{ie} Classification and Regression Trees (CART)}
 \label{ml:supervised:CART}
 
 A basic classifier can be created from a tree of selections on $\mathbf{X}$ designed to
@@ -82,7 +87,8 @@ Signal-like (background-like) events receive positive (negative) weights in the 
 % TODO include gini impurity / importance
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Boosted Decision Trees (BDT)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Boosted Decision Trees (BDT)}
 \label{ml:supervised:BDT}
 
 Individual CARTs are rather poor and limited models
@@ -110,7 +116,8 @@ stochastic gradient boosting \cite{10.2307/2699986,FRIEDMAN2002367}.
 The number of boosting rounds, and thus trees, $K$ can be chosen in advance
 but is better optimized during the training process via early stopping.
 
-\subsubsection{\xgboost}% would rather have the \textsc caps than italics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\xgboost}% would rather have the \textsc caps than italics
 \label{ml:supervised:BDT:xgboost}
 % TODO see https://towardsdatascience.com/boosting-algorithm-xgboost-4d9ec0207d
 % TODO how does the Hessian come into play
@@ -134,17 +141,20 @@ maximum tree depth, which sets a limit on the complexity of any tree via its dep
 and the early stopping validation threshold.
 For reference $\eta=0.3$ and a maximum depth of 6 are the default values.
 
-\subsubsection{AdaBoost}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{AdaBoost}
 \label{ml:supervised:BDT:AdaBoost}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Random Forest}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Random Forest}
 \label{ml:supervised:RF}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Artificial Neural Networks (NN)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Artificial Neural Networks (NN)}
 \label{ml:supervised:ANN}
 % TODO
 
