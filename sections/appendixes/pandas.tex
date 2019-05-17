@@ -75,7 +75,7 @@ df = df.sample(frac=1., replace=False, random_state=rnd_seed).reset_index(drop=T
 # drop columns
 df = df.drop(['col_to_drop1', 'col_to_drop2'], axis=1)
 
-# fill nans, for all columns and per column 
+# fill nans, for all columns and per column
 df = df.fillna(0.0)
 df = df.fillna(value={'x': x_nan_value, 'z': y_nan_value})
 \end{lstlisting}

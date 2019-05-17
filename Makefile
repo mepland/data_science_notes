@@ -21,6 +21,7 @@ clean:
 	-@rm -f *.aux
 	-@rm -f ./*/*.aux
 	-@rm -f ./*/*/*.aux
+	-@rm -f ./*/*/*/*.aux
 #	-@rm -f *.1
 #	-@rm -f *.t1
 #	-@rm -f *.mp
