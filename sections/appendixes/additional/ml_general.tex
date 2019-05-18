@@ -68,6 +68,8 @@ to take advantage of both of their benefits.
 Such a combination is known as the elastic net penalty \cref{eq:elastic_net},
 where the combination can be controlled via two $\lambda_{1}$, $\lambda_{2}$ hyperparameters,
 or a shared $\lambda$ and mixing parameter $\alpha$.
+Compared to LASSO, elastic net does better when given multiple highly correlated features
+and is more stable, \ie less dependent on the particular training data.
 
 \begin{equation} \label{eq:elastic_net}
 \begin{split}
