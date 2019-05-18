@@ -83,16 +83,16 @@ and thus equal to its own transpose, $\bm{\beta}\transpose \mathbf{X}\transpose 
 
 \begin{subequations} \label{eq:grad_relations}
 \begin{align}
-\partial_{\bm{\beta}} \, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{y} &= \mathbf{X}\transpose \mathbf{y}\,, \\
-\partial_{\bm{\beta}} \, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \bm{\beta} &= 2 \, \mathbf{X} \transpose \mathbf{X} \bm{\beta}\,.
+\partial_{\bm{\beta}} \, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{y} &= \mathbf{X}\transpose \mathbf{y}\,, \label{eq:grad_relations:1} \\
+\partial_{\bm{\beta}} \, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \bm{\beta} &= 2 \, \mathbf{X} \transpose \mathbf{X} \bm{\beta}\,. \label{eq:grad_relations:2}
 \end{align}
 \end{subequations}
 
 Consequently, the optimal $\hat{\bm{\beta}}$ of \cref{eq:linear:ols}
 has a closed form solution\footnote{The fitted prediction is $\hat{\mathbf{y}} = \mathbf{X} \hat{\bm{\beta}}$, with residuals $\hat{\bm{\epsilon}} = \mathbf{y} - \hat{\mathbf{y}}$.}:
 
-\begin{equation}\label{eq:linear:betahat}
-\hat{\bm{\beta}} = \left(\mathbf{X}\transpose\mathbf{X}\right)^{-1}\mathbf{X}\transpose \mathbf{y}\,,
+\begin{equation}\label{eq:linear:betahat_OLS}
+\hat{\bm{\beta}}^{\text{OLS}} = \left(\mathbf{X}\transpose\mathbf{X}\right)^{-1}\mathbf{X}\transpose \mathbf{y}\,,
 \end{equation}
 
 \noindent which is the best linear unbiased estimator (BLUE),
@@ -235,18 +235,75 @@ $\chi_{\nu}^{2} \ll 1$ & Extreme overfitting or overestimated $\sigma_{i}$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Coefficient Significance}
 \label{regression:linear:coeff_significance}
-% TODO what is the significance of any particular \beta_{i} coefficient, via t-test, chi2-test???
+% TODO what is the significance of any particular \beta_{i} coefficient, via t-test, chi2-test??? Should be able to get distribution of any \beta_{i} analytically for OLS, but can use bootstrap sampling for more complex models.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Ridge Regression (L2, or Tikhonov)}
+\label{regression:linear:ridge}
+
+Adding ridge (L2, or Tikhonov) regularization to OLS is much more straight forward than LASSO,
+so we shall discuss it first\footnote{See \href{https://stats.stackexchange.com/a/164546}{here} for an interesting geometric explanation.}.
+We wish to minimize the square errors $\norm{\bm{\epsilon}}^{2}$,
+now subject to the condition that $\norm{\bm{\beta}}^{2} < t$ for some $t \geq 0$.
+For any $t \geq 0$ there is a $\lambda \geq 0$ such that minimizing the following
+objective function $S\left(\bm{\beta}\right)$ without conditions is
+equivalent\footnote{This is sometimes termed soft-thresholding, but is really an application of Lagrange multipliers.}:
+% TODo add \cref{additional:misc:opt} to Lagrange multipliers in footnote when written
+
+\begin{equation} \label{eq:linear:ridge}
+S\left(\bm{\beta}\right) = \norm{\mathbf{y} - \mathbf{X} \bm{\beta}}^{2} + \lambda \norm{\bm{\beta}}^{2}\,.
+\end{equation}
+
+After taking the gradient, we have the same terms as \cref{eq:linear:grad_S},
+plus a new term\footnote{Note the similarity to \cref{eq:grad_relations:2}.} \cref{eq:linear:ridge_derivation:new}.
+Rearranging \cref{eq:linear:ridge_derivation:penultimate} we can move the new term in with the old,
+and quickly arrive at a modified version of the OLS solution \cref{eq:linear:ridge_derivation:betahat}.
+
+\begin{subequations} \label{eq:linear:ridge_derivation}
+\begin{align}
+\partial_{\bm{\beta}} \, S\left(\bm{\beta}\right)
+&= -2\, \mathbf{X}\transpose \mathbf{y} + 2\, \mathbf{X}\transpose \mathbf{X} \bm{\beta} \label{eq:linear:ridge_derivation:grad_S_repeat} \\
+&+ 2\,\lambda \bm{\beta} = 0 \,\, \Rightarrow \label{eq:linear:ridge_derivation:new} \\
+\mathbf{X}\transpose \mathbf{y} &= \left(\mathbf{X}\transpose \mathbf{X} + \lambda\,\identity\right) \bm{\beta} \label{eq:linear:ridge_derivation:penultimate} \\
+\hat{\bm{\beta}}^{\text{ridge}} &= \left(\mathbf{X}\transpose\mathbf{X} + \lambda\,\identity\right)^{-1}\mathbf{X}\transpose \mathbf{y} \label{eq:linear:ridge_derivation:betahat}
+\end{align}
+\end{subequations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{LASSO Regression (L1)}
 \label{regression:linear:lasso}
-% TODO
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Ridge Regression (L2)}
-\label{regression:linear:ridge}
-% TODO
+As promised, adding LASSO (L1) regularization to OLS is challenging
+as the condition, $\norm{\bm{\beta}} < t$ for some $t \geq 0$,
+is not differentiable, see the corners of \cref{fig:ml:l1l2:l1}, and must be dealt with carefully.
+In the special case that $\mathbf{X}$ is orthonormal, $\mathbf{X}\transpose \mathbf{X} = \identity$,
+a closed form solution \cref{eq:linear:lasso:betahat:1} can be derived on a case-by-case basis
+at the $\beta_{i}$ coordinate-level\footnote{See \href{https://stats.stackexchange.com/questions/17781/derivation-of-closed-form-lasso-solution}{here},
+\href{https://en.wikipedia.org/wiki/Lasso_(statistics)\#Orthonormal_covariates}{here},
+and \href{https://xavierbourretsicotte.github.io/lasso_derivation.html}{here}.}.
+In the general case, more sophisticated methods can find numerical solutions.
+
+\begin{subequations} \label{eq:linear:lasso:betahat_all}
+\begin{align}
+\hat{\bm{\beta}}^{\text{LASSO}}_{j}
+&= \hat{\bm{\beta}}^{\text{OLS}}_{j} \max\left(0, \frac{\lambda}{\abs{\hat{\bm{\beta}}^{\text{OLS}}_{j}}}\right) \label{eq:linear:lasso:betahat:1} \\
+&= \sign{\hat{\bm{\beta}}^{\text{OLS}}_{j}} \left(\abs{\hat{\bm{\beta}}^{\text{OLS}}_{j}} - \lambda\right)^{+} \label{eq:linear:lasso:betahat:2} \\
+\hat{\bm{\beta}}^{\text{OLS}}
+&= \left(\mathbf{X}\transpose\mathbf{X}\right)^{-1}\mathbf{X}\transpose \mathbf{y}
+= \mathbf{X}\transpose \mathbf{y} \label{eq:lasso:modified_betahat_OLS}
+\end{align}
+\end{subequations}
+
+\subsection{LASSO vs Ridge Regression}
+\label{regression:linear:lasso_vs_ridge}
+
+All the usual concepts from \cref{ml:general:reg} apply, but specifically for linear regression
+both LASSO and ridge allow us to relax the multicollinearity condition.
+Lasso tends to use one feature per group of correlated $\mathbf{x}_{j}$'s, setting the rest to $\approx 0$,
+while ridge will keep all of the associated $\beta{j}$'s at a similar magnitude.
+As one may expect from LASSO shrinking $\beta{j}$'s to zero,
+it does a better job when only some of the $n$ input features infuence $\hat{y}$,
+while ridge does better if most of the features have similar importances.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
