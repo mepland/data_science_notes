@@ -6,19 +6,38 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\label{sql:intro}
+
+\sql, or Structured Query Language, is way to
+communicate with a RDBMS, or Relational Database Management System.
+There data is stored as collection of tables with
+at least one common column to allow relational operators
+to join information across tables.
+Each SQL table must have an unique primary key for each row.
+When a column in one table relates to the primary key of another, it is known as a foreign key.
+A SQL query returns information from the database as a result set, and may contain subqueries.
+Note, in the next section for the ``select top 5 steam games\ldots'' query
+see \href{https://www.databasejournal.com/features/mysql/selecting-the-top-n-results-by-group-in-mysql.html}{here},
+and for more on \texttt{DATETIME}
+see \href{https://www.techotopia.com/index.php/Working_with_Dates_and_Times_in_MySQL}{here}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Basic Commands (MySQL)}
 \label{sql:basic}
 
 \begin{lstlisting}[language=SQL]
 -- create a new table, define columns & types
 CREATE TABLE t (id INT PRIMARY KEY,
- name VARCHAR(20), state VARCHAR(2));
+ name VARCHAR(20) NOT NULL, state CHAR(2), dob DATE);
 
 -- manually insert new rows
-INSERT INTO t VALUES (0, 'Matt', 'NJ');
-INSERT INTO t (id, name, state) VALUES (1, 'Jamie', 'NJ');
-INSERT INTO t VALUES (2,'Marry','IL'), (3,'Eddie','IL'),
- (4,'Bob','ND'), (5,'Peter','MN');
+INSERT INTO t VALUES (0, 'Matt', 'NJ', '1990-1-2');
+INSERT INTO t (id, name, state) VALUES
+                     (1, 'Jamie','NJ', '1990-3-4');
+INSERT INTO t VALUES (2,'Marry','IL', '1970-5-6'),
+ (3,'Eddie','IL','2010-7-8'),(4,'Bob','ND','1980-9-10');
 
 -- insert rows from another table
 INSERT INTO t SELECT * FROM other_t WHERE zip = 11111;
@@ -28,20 +47,22 @@ comparison ops: >, >=, =, <>, BETWEEN, LIKE, IN
 logical ops: AND, OR, NOT */
 SELECT id,name FROM t WHERE id > 0 ORDER BY name LIMIT 10;
 SELECT id,name FROM t WHERE id BETWEEN 1 AND 3;
-SELECT id,name FROM t WHERE name LIKE 'M\%';-- starts with M
+SELECT id,name FROM t WHERE name LIKE 'M%';-- starts with M
+SELECT id,name FROM t WHERE state LIKE 'N_';-- only one char
 SELECT id,name FROM t WHERE (id IN (0, 3)) OR (name = 'Bob');
-
--- select unique / distinct values
-SELECT DISTINCT name FROM t;
-
--- finding nulls, use IS, NOT IS; can't use <>, =
-SELECT id,name FROM t WHERE state IS NULL;
+SELECT name,dob FROM t WHERE YEAR(dob) > 1985 ORDER BY dob;
 
 -- aggregation commands
 SELECT count(1) AS 'nrows' FROM t;
 SELECT count(id) FROM t WHERE id NOT IN (0, 1);
 SELECT MIN(id) FROM t;
 -- plus MAX, AVG, and SUM
+
+-- select unique / distinct values
+SELECT DISTINCT name FROM t;
+
+-- finding nulls, use IS, NOT IS; can't use =, <>
+SELECT id,name FROM t WHERE state IS NULL;
 
 -- GROUP BY
 SELECT state,COUNT(id) FROM t GROUP BY state
@@ -54,7 +75,7 @@ SELECT state,COUNT(id) FROM t GROUP BY state
 -- WITH / subqueries
 WITH state_counts AS (
  SELECT count(id) AS 'count',state FROM t GROUP BY state )
-SELECT AVG(count) FROM state_counts WHERE state <> 'NC';
+ SELECT AVG(count) FROM state_counts WHERE state <> 'NC';
 
 -- update row
 UPDATE t SET name = 'Mar' WHERE id = 2;
@@ -63,7 +84,7 @@ UPDATE t SET name = 'Mar' WHERE id = 2;
 SELECT name,
   CASE
     WHEN state IS 'IL' THEN 'bears fan'
-    WHEN state IS 'NC' THEN 'bison fan'
+    WHEN state IS 'ND' THEN 'bison fan'
     ELSE CONCAT(name, ' (unknown)')
   END
 FROM t;
@@ -95,18 +116,23 @@ SELECT steamid, appid, playtime_forever
  ) ranked
  WHERE steamid_rank <= 5;
 \end{lstlisting}
-% For "select the top 5 steam games per user..." see https://www.databasejournal.com/features/mysql/selecting-the-top-n-results-by-group-in-mysql.html
-
-% TODO renaming columns
-% TODO change column types
-% TODO possible types
-% TODO dealing with dates?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Joining}
 \label{sql:join}
-% TODO
+
+\begin{lstlisting}[language=SQL]
+SELECT column1, column2 FROM
+ table1 LEFT JOIN table2 ON
+ table1.column_nameA = table2.column_nameB
+ WHERE table1.column_nameA > 0; -- WHERE is not required, but it can be included here
+\end{lstlisting}
+
+The four join types are the standard
+\texttt{INNER JOIN}, \texttt{LEFT JOIN}, \texttt{RIGHT JOIN},
+\texttt{FULL OUTER JOIN}\footnote{Note that \texttt{FULL JOIN} can also be used as an equivalent to \texttt{FULL OUTER JOIN}.} as
+shown in \cref{fig:sql:joins}.
 
 \begin{figure}[H]
 \centering
@@ -116,12 +142,6 @@ Illustration of the types of joins, by \href{https://www.w3schools.com/sql/sql_j
 }
 \label{fig:sql:joins}
 \end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Pivoting}
-\label{sql:pivoting}
-% TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -143,13 +163,20 @@ SET autocommit=0; SOURCE dump.sql; COMMIT;
 LOAD DATA LOCAL INFILE 'in.csv' INTO TABLE tnew
  FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 
--- delete a row, drop/add column, table, database
+-- rename column, change type, add new column
+ALTER TABLE t RENAME COLUMN old_col_name TO new_col_name;
+ALTER TABLE t MODIFY col_name new_type;
+ALTER TABLE t ADD new_col DOUBLE;
+
+-- delete all rows of a table, keep structure
+TRUNCATE TABLE t;
+
+-- delete a row, column, table, database
 DELETE FROM t WHERE id = 4;
 
 SHOW COLUMNS FROM t; /* or, also for MySQL */ DESCRIBE t;
-SHOW COLUMNS FROM t WHERE Type LIKE 'Varchar\%';
+SHOW COLUMNS FROM t WHERE Type LIKE 'Varchar%';
 ALTER TABLE t DROP COLUMN name;
-ALTER TABLE t ADD weight DOUBLE;
 
 SHOW TABLES;
 DROP TABLE IF EXISTS 't';
