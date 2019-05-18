@@ -44,9 +44,9 @@ The covariance between two variables $u$ and $v$,
 
 \begin{equation}\label{eq:stats:covar}
 \begin{split}
-\sigma_{uv}^{2} = \cov{u}{v} &= \lim_{n\to\infty}\frac{1}{n}\sum_{j=1}^{m}\left(u_{j}-\bar{u}\right)\left(v_{j}-\bar{v}\right) \\
+\sigma_{u,v}^{2} = \cov{u}{v} &= \lim_{n\to\infty}\frac{1}{n}\sum_{j=1}^{m}\left(u_{j}-\bar{u}\right)\left(v_{j}-\bar{v}\right) \\
 &= \expval{\left(u-\bar{u}\right)\left(v-\bar{v}\right)} \\
-&= \expval{uv} - \expval{u}\expval{v}\,,
+&= \expval{u v} - \expval{u}\expval{v}\,,
 \end{split}
 \end{equation}
 
@@ -64,7 +64,7 @@ It is helpful to remember the following covariance relations:
 The correlation coefficient,
 
 \begin{equation}\label{eq:stats:corr}
-\rho = \frac{\sigma_{uv}^{2}}{\sigma_{u}\sigma_{v}} = \frac{\cov{u}{v}}{\sigma_{u}\sigma_{v}}\,,
+\rho_{u,v} = \frac{\sigma_{u,v}^{2}}{\sigma_{u}\sigma_{v}} = \frac{\cov{u}{v}}{\sigma_{u}\sigma_{v}}\,,
 \end{equation}
 
 \noindent is a convenient dimensionless version, normalized to $-1 \leq \rho \leq 1$.
