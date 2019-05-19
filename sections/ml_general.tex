@@ -183,8 +183,10 @@ up to a point when the model is unable to adequately train on the available data
 
 \begin{subequations} \label{eq:L1_L2}
 \begin{align}
-\Omega_{\text{L1}}\left(\bm{\beta}\right) &= \lambda \norm{\bm{\beta}}\,,     \label{eq:L1} \\
-\Omega_{\text{L2}}\left(\bm{\beta}\right) &= \lambda \norm{\bm{\beta}}^{2}\,. \label{eq:L2}
+\Omega_{\text{L1}}\left(\bm{\beta}\right) &= \lambda \norm{\bm{\beta}}\hphantom{^{1}}
+= \sum_{j=1}^{n} \, \abs{\beta_{j}}\,, \label{eq:L1} \\
+\Omega_{\text{L2}}\left(\bm{\beta}\right) &= \lambda \norm{\bm{\beta}}^{2}
+= \sum_{j=1}^{n} \,\, \beta_{j}^{2}\,. \label{eq:L2}
 \end{align}
 \end{subequations}
 
