@@ -129,13 +129,10 @@ F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Bias-Variance Tradeoff}
 \label{ml:general:bias_variance_tradeoff}
-% TODO add more, and some plots too
-% TODO ref in text \cref{fig:ml:supervised:early_stopping}
-% TODO ref in text \cref{fig:ml:bias_variance_tradeoff}
 
 \begin{enumerate}[noitemsep]
-\item Bias: Errors due to a model not learning about relationships between features, \ie underfitting.
-\item Variance: Errors due to an overly complex model failing to generalize beyond the training data, \ie overfitting.
+\item Bias: Errors due to a model not learning about relationships between features in the training data, \ie underfitting. Caused by invalid relationships present in the model.
+\item Variance: Errors due to an overly complex model failing to generalize beyond the training data, \ie overfitting. Caused by sensitivity to small fluctuations in the training data.
 \end{enumerate}
 
 \begin{figure}[H]
@@ -164,6 +161,50 @@ by \href{http://scott.fortmann-roe.com/docs/BiasVariance.html}{Scott Fortmann-Ro
 }
 \end{figure}
 
+Every model makes a tradeoff between bias and variance,
+which is roughly controlled by its level of complexity
+as can be seen in \cref{fig:ml:bias_variance_tradeoff:error}.
+\Cref{fig:additional:ml:general:early_stopping} shows this in practice,
+as past a certain point of complexity the validation error grows
+while the training error continues to decrease.
+
+\subsubsection{MSE Decomposition}
+\label{ml:general:bias_variance_tradeoff:decop}
+
+We can analytically decompose the MSE into explicit
+bias, variance, and irreducable error components.
+Let $y = f\left(\mathbf{x}\right) + \epsilon$ represent
+the observed data, $y_{i}$, $\mathbf{x}_{i}$,
+where $f\left(\mathbf{x}\right)$ is the true parent distribution\footnote{$\expval{f} = f$ is deterministic,
+and acts as a constant as far as expectation values are concerned.} and
+$\epsilon$ is random noise\footnote{This is the source of the irreducible error.
+Since future data will still have $\epsilon$, the predictions can't be perfect
+-- even when neglecting the model's own bias and variance.}\footnote{Later we'll need
+$\sigma^{2} = \variance{\epsilon} = \expval{\epsilon^{2}} - \expval{\epsilon}^{2} = \expval{\epsilon^{2}}$.} having
+$\expval{\epsilon} = 0$, $\variance{\epsilon} = \sigma^{2}$.
+Representing the trained model\footnote{Note
+that $\cov{\epsilon}{\hat{f}} = 0 \Rightarrow \expval{\epsilon \hat{f}} = \expval{\epsilon} \expval{\hat{f}}$.} as
+$\hat{f}\left(\mathbf{x}\right)$, we expand the MSE:
+
+\begin{subequations} \label{eq:bias_variance_tradeoff:decop}
+\begin{align}
+\text{MSE} &= \expval{\left(y-\hat{f}\right)^{2}} \\
+&= \expval{\left(f + \epsilon - \hat{f} + \big[\expval{\hat{f}}-\expval{\hat{f}}\big]\right)^{2}}\,, \\
+&= \expval{\left(\big[f - \expval{\hat{f}}\big] + \epsilon - \big[\hat{f} - \expval{\hat{f}}\big]\right)^{2}}\,, \\
+&= \expval{\left(f-\expval{\hat{f}}\right)^{2}}
++\expval{\epsilon^{2}}
++\expval{\left(\hat{f}-\expval{\hat{f}}\right)^{2}}
++2\expval{\left(f-\expval{\hat{f}}\right)\epsilon} \\
+&\hphantom{=}-2\expval{\epsilon\left(\hat{f}-\expval{\hat{f}}\right)}
+-2\expval{\left(f-\expval{\hat{f}}\right)\left(\hat{f}-\expval{\hat{f}}\right)}\,, \\
+&= \left(-1\right)^{2}\left(\expval{\hat{f}}-f\right)^{2} +\sigma^{2} + \variance{\hat{f}}
++2\left(f-\expval{\hat{f}}\right)\cancelto{0}{\expval{\epsilon}} \\
+&\hphantom{=}-2\cancelto{0}{\expval{\epsilon}}\left(\expval{\hat{f}}-\expval{\hat{f}}\right)
+-2\left(f-\expval{\hat{f}}\right)\cancelto{0}{\left(\expval{\hat{f}}-\expval{\hat{f}}\right)}\,, \\
+&= \left(\bias{\hat{f}}\right)^{2} + \variance{\hat{f}} + \sigma^{2}\,.
+\end{align}
+\end{subequations}
+
 \clearpage% TODo hard coded
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -172,6 +213,8 @@ by \href{http://scott.fortmann-roe.com/docs/BiasVariance.html}{Scott Fortmann-Ro
 
 Regularization is a method for controlling the variance (overfitting)
 of a model by putting constraints on the size of its parameters.
+In terms of \cref{ml:general:bias_variance_tradeoff}, regularization forces the model's
+bias to grow on the training set in order to lower the variance on future data.
 The two main types of regularization are shown in \cref{eq:L1_L2}
 and depend on different powers of the norm\footnote{In
 the case of OLS linear regression the constant intercept term $\beta_{0}$ is not included in $\norm{\bm{\beta}}$.} of the model parameters $\bm{\beta}$.
