@@ -32,29 +32,104 @@ so $\text{obj}\left(\beta\right)$ captures both parts of the bias-variance trade
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Support Vector Machines (SVM)}
 \label{ml:supervised:SVM}
-% TODO
-% TODO ref in text \cref{fig:svm}
 
-% TODo Replace with pdf version from HastieTF09 figure 12.1 someday
+Basic support vector machines (SVM) work by finding a hyperplane in the $n$-dimensional
+feature space of the training data which best separate the different classes.
+This is done by maximizing the margin, $2/\norm{\mathbf{w}}$,
+around the hyperplane defined by $\innerproduct{\mathbf{w}}{\mathbf{x}} - b = 0$,
+where $\innerproduct{\mathbf{a}}{\mathbf{b}}$ is the inner product.
+For the separable case, as shown in \cref{fig:svm_sep}, this
+can be done by minimizing $\norm{\mathbf{w}}$, with the hard-margin condition that
+$y_{i} \left(\innerproduct{\mathbf{w}}{\mathbf{x}_{i}} - b\right)$ for all $1 \leq i \leq m$.
+
+However, in reality the data are frequently inseparable and we must switch
+to a soft-margin objective function \cref{eq:svm:soft_margin_obj}.
+A hinge loss function is included to penalize points on the ``wrong'' side of the margin
+proportionally to their distance from the margin.
+Here the $\lambda$ hyperparameter sets the tradeoff between
+margin size and ensuring points land on their correct sides.
+
+\begin{equation} \label{eq:svm:soft_margin_obj}
+\text{obj}\left(\mathbf{w}, b\right) =
+\lambda\, \norm{\mathbf{w}}^{2}
++ \frac{1}{m} \sum_{i=1}^{m} \,
+\max{\big(0,\, 1 - y_{i} \left(\innerproduct{\mathbf{w}}{\mathbf{x}_{i}} - b\right)\big)}
+\end{equation}
+
 \begin{figure}[H]
-  \centering
-  \begin{subfigure}[b]{0.48\textwidth}\centering
-      \includegraphics[width=\textwidth]{figures/ml/svm_separable.png}
-  \caption{Separable}
-  \label{fig:svm:separable}
-  \end{subfigure}
-  ~
-  \begin{subfigure}[b]{0.48\textwidth}\centering
-      \includegraphics[width=\textwidth]{figures/ml/svm_nonseparable.png}
-  \caption{Nonseparable}
-  \label{fig:svm:nonseparable}
-  \end{subfigure}
+\centering
+\includegraphics[width=0.42\textwidth]{figures/ml/svm_margin.png}
+\vspace{0.2cm}
 \caption{
-Illustrations of SVMs in the separable and nonseparable case \cite{HastieTF09}.
-% TODO add more...
-\label{fig:svm}
+Illustration of the SVM method in the separable case,
+by \href{https://en.wikipedia.org/wiki/File:SVM_margin.png}{Larhmam}.
+The trained hyperplane in red separates the two classes by the largest margin.
+The data points on the margin boundary with black boarders
+are known as support vectors, since out of all the data
+they are the points really fixing the hyperplane and margin.
 }
+\label{fig:svm_sep}
 \end{figure}
+
+To gain better performance still, we can recast the problem in
+a new higher dimensional space where the classes may be easier to separate with a hyperplane.
+Fortunately, we don't even need to fully specify the new space,
+just a non-linear kernel function\footnote{Common kernel choices include
+polynomials of the inner product,
+the Gaussian radial basis function,
+and the hyperbolic tangent.} $k\left(\mathbf{a},\mathbf{b}\right)$
+in place of the standard inner product. This is known as the kernel trick.
+The classification boundary in the original feature space can then become non-linear,
+as can be seen in \cref{fig:svm_kernel_trick}.
+
+\vspace{-0.2cm}% TODo hard coded to fit on one page
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/ml/kernel_trick_example.png}
+\caption{
+Graphical example of the kernel trick, by \href{https://en.wikipedia.org/wiki/File:Kernel_trick_idea.svg}{Shiyu Ji}.
+Here the kernel $k\left(\mathbf{a},\mathbf{b}\right) = \innerproduct{\mathbf{a}}{\mathbf{b}} + \norm{\mathbf{a}}^{2} \norm{\mathbf{b}}^{2}$
+transforms the red and purple classes, linearly inseparable in $n=2$ dimensions on the left,
+to a separable $3$-dimensional space on the right.
+}
+\label{fig:svm_kernel_trick}
+\end{figure}
+
+In practice minimizing $\text{obj}\left(\mathbf{w}, b\right)$ can be
+performed more readily by instead solving the Lagrangian dual problem,
+which is computationally efficient to solve with quadratic programming algorithms.
+Other modern techniques developed to tackle large and sparse data include
+sub-gradient methods and coordinate descent\footnote{Sub-gradient methods work better for large $m$,
+coordinate descent for large $n$.}.
+However, compared to other classifiers SVM training times
+tend to slow significantly for large data sets,
+in \sklearn\footnote{See the
+\href{https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}{documentation}
+for \texttt{sklearn.svm.SVC}.
+\texttt{LinearSVC} may be faster.
+The best performance I've seen quoted is $\order{n m \log{\left(m\right)}}$.} by
+at least $\order{m^{2}}$, limiting $m \sim \num{e4}$.
+
+% Replace with pdf version from HastieTF09 figure 12.1 if reused later
+%\begin{figure}[H]
+%  \centering
+%  \begin{subfigure}[b]{0.48\textwidth}\centering
+%      \includegraphics[width=\textwidth]{figures/ml/svm_separable.png}
+%  \caption{Separable}
+%  \label{fig:svm:separable}
+%  \end{subfigure}
+%  ~
+%  \begin{subfigure}[b]{0.48\textwidth}\centering
+%      \includegraphics[width=\textwidth]{figures/ml/svm_nonseparable.png}
+%  \caption{Nonseparable}
+%  \label{fig:svm:nonseparable}
+%  \end{subfigure}
+%\caption{
+%Illustrations of SVMs in the separable and nonseparable case \cite{HastieTF09}.
+%\label{fig:svm}
+%}
+%\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -129,7 +204,7 @@ its lead in recent years to newer libraries such as LightGBM \cite{LightGBM}
 and CatBoost \cite{CatBoost}.}.
 L1 and L2 regularization is incorporated via
 
-\begin{equation}
+\begin{equation} \label{eq:bdt_omega_reg}
 \Omega\left(f\right) = \alpha T + \frac{1}{2}\lambda \sum_{j=1}^T w_j^2\,,
 \end{equation}
 
