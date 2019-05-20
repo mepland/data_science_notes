@@ -109,7 +109,7 @@ while $F_{\beta}$ uses $\beta$ to assign different weights to each\footnote{$F_{
 \begin{enumerate}[noitemsep]
 \item Accuracy (ACC):
 \begin{equation} \label{eq:ACC}
-\text{ACC} = \frac{\text{TP}+\text{NP}}{\text{P}+\text{N}} = \frac{\text{TP}+\text{NP}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
+\text{ACC} = \frac{\text{TP}+\text{TN}}{\text{P}+\text{N}} = \frac{\text{TP}+\text{TN}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
 \end{equation}
 
 \item $F_{1}$ ($F_{1}=1$ is best, $F_{1}=0$ is worst):
@@ -220,21 +220,22 @@ and depend on different powers of the norm\footnote{In
 the case of OLS linear regression the constant intercept term $\beta_{0}$ is not included in $\norm{\bm{\beta}}$.} of the model parameters $\bm{\beta}$.
 In order to treat all features equally, normalization must be used before applying regularization.
 A hyperparameter $\lambda$ is included to tune the amount of regularization applied in the objective function,
-$\text{obj}\left(\bm{\beta}\right) = L + \Omega$.
+$S\left(\bm{\beta}\right) = L + \Omega$.
 As $\lambda$ is increased, it decreases the size the model's coefficients, and thereby its variance (overfitting),
 up to a point when the model is unable to adequately train on the available data and the bias (underfitting) begins to grow.
 
 \begin{subequations} \label{eq:L1_L2}
 \begin{align}
 \Omega_{\text{L1}}\left(\bm{\beta}\right) &= \lambda \norm{\bm{\beta}}\hphantom{^{1}}
-= \sum_{j=1}^{n} \, \abs{\beta_{j}}\,, \label{eq:L1} \\
+= \lambda \sum_{j=1}^{n} \, \abs{\beta_{j}}\,, \label{eq:L1} \\
 \Omega_{\text{L2}}\left(\bm{\beta}\right) &= \lambda \norm{\bm{\beta}}^{2}
-= \sum_{j=1}^{n} \,\, \beta_{j}^{2}\,. \label{eq:L2}
+= \lambda \sum_{j=1}^{n} \,\, \beta_{j}^{2}\,. \label{eq:L2}
 \end{align}
 \end{subequations}
 
-For a particular value of $\lambda$, the effect of L1 and L2 regularization
-is to constrain $\norm{\bm{\beta}}^{q} \leq t\left(\lambda\right)$ for some $t\left(\lambda\right)$.
+For a particular value of $\lambda$, the effect of L1 and L2 regularization\footnote{Here
+$q$ is being used as the power of $\norm{\bm{\beta}}$. For L1 (L2), $q=1$ ($q=2$).} is
+to constrain $\norm{\bm{\beta}}^{q} \leq t\left(\lambda\right)$ for some $t\left(\lambda\right)$.
 As can be seen in \cref{fig:ml:l1l2} the L1 norm constrains $\bm{\beta}$ to lie within a hypercube,
 while the L2 constraint is a hypersphere.
 
@@ -266,7 +267,7 @@ while L2 is rotationally symmetric and has no such tendencies.
 \subsection{L1 -- LASSO}
 \label{ml:general:reg:L1}
 L1, or LASSO\footnote{Least absolute shrinkage and selection operator.},
-regression uses the norm $\norm{\bm{\beta}}$ \cref{eq:L1}, or taxi cab distance.
+regularization uses the norm $\norm{\bm{\beta}}$ \cref{eq:L1}, or taxi cab distance.
 As it's geometric constraints on $\bm{\beta}$ are hypercubes,
 it tends to set some model parameters to 0, creating sparsity,
 and thereby acts as a form of built-in feature selection.
@@ -274,7 +275,7 @@ and thereby acts as a form of built-in feature selection.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{L2 -- Ridge}
 \label{ml:general:reg:L2}
-L2, or ridge, regression \cref{eq:L2} uses the square of the norm, or euclidean distance.
+L2, or ridge, regularization \cref{eq:L2} uses the square of the norm, or euclidean distance.
 Models made with L2 regularization are somewhat less interpretable than those made with L1,
 as L2 may make many parameters very small, but does not remove them entirely.
 The parameters are still shrunk toward zero, and each other,

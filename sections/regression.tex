@@ -182,7 +182,7 @@ R^{2} = \frac{
 }{
 \sum_{i=1}^{m} \left(y_{i} - \bar{y}\right)^{2}
 } = 1 - \frac{
-\sum_{i=1}^{m} \epsilon_{i}^{2}
+\sum_{i=1}^{m} \hat{\epsilon}_{i}^{2}
 }{
 \sum_{i=1}^{m} \left(y_{i} - \bar{y}\right)^{2}
 } = \rho_{y,\hat{y}}^{2}
@@ -193,7 +193,7 @@ fitted sample, $m-1$, and in the model, $m-n-1$, and is thus a better metric.
 
 \begin{equation}\label{eq:regression:linear:goodness_of_fit:R2_adj}
 R^{2}_{\text{adj}} = 1 - \frac{
-\left(\sum_{i=1}^{m} \epsilon_{i}^{2}\right)/\left(m-n-1\right)
+\left(\sum_{i=1}^{m} \hat{\epsilon}_{i}^{2}\right)/\left(m-n-1\right)
 }{
 \left(\sum_{i=1}^{m} \left(y_{i} - \bar{y}\right)^{2}\right)/\left(m-1\right)
 }
