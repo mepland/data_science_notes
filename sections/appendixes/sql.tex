@@ -47,10 +47,10 @@ comparison ops: >, >=, =, <>, BETWEEN, LIKE, IN
 logical ops: AND, OR, NOT */
 SELECT id,name FROM t WHERE id > 0 ORDER BY name LIMIT 10;
 SELECT id,name FROM t WHERE id BETWEEN 1 AND 3;
-SELECT id,name FROM t WHERE name LIKE 'M%';-- starts with M
-SELECT id,name FROM t WHERE state LIKE 'N_';-- only one char
-SELECT id,name FROM t WHERE (id IN (0, 3)) OR (name = 'Bob');
-SELECT name,dob FROM t WHERE YEAR(dob) > 1985 ORDER BY dob;
+SELECT id,name FROM t WHERE name LIKE 'M%';--starts with M
+SELECT id,name FROM t WHERE state LIKE 'N_';-- N+ 1 char
+SELECT id,name FROM t WHERE (id IN (0,3)) OR (name='Bob');
+SELECT name,dob FROM t WHERE YEAR(dob)>1985 ORDER BY dob;
 
 -- aggregation commands
 SELECT count(1) AS 'nrows' FROM t;
@@ -85,12 +85,12 @@ SELECT name,
   CASE
     WHEN state IS 'IL' THEN 'bears fan'
     WHEN state IS 'ND' THEN 'bison fan'
-    ELSE CONCAT(name, ' (unknown)')
+    ELSE CONCAT(state, ' (unknown)')
   END
 FROM t;
 
 -- return duplicate rows using a join
-SELECT  t1.*, t2.totalCount AS Nduplicates
+SELECT  t1.*, totalCount AS Nduplicates
 FROM    t t1
         INNER JOIN
         (
@@ -100,7 +100,7 @@ FROM    t t1
             HAVING  COUNT(*) >= 2
         ) b ON a.state = b.state
 
--- Select the top 5 steam games per user, having a min of 120 minutes of playtime
+-- Select the top 5 steam games per user, min of 2h play
 SELECT steamid, appid, playtime_forever
  FROM
  (
@@ -186,7 +186,7 @@ DROP DATABASE mydb;
 \end{lstlisting}
 
 \begin{lstlisting}[language=bash]
-# export selection to csv (from shell, no file permissions)
+# export selection to csv (from shell, no file perms)
 mysql -u user --password=pw --database=mydb
  --execute='SELECT ...;' -q -n -B -r > o.csv
  && sed -i '/\t/ s//,/g' o.csv
