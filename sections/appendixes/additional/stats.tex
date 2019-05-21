@@ -44,7 +44,7 @@ The covariance between two variables $u$ and $v$,
 
 \begin{equation}\label{eq:stats:covar}
 \begin{split}
-\sigma_{u,v}^{2} = \cov{u}{v} &= \lim_{n\to\infty}\frac{1}{n}\sum_{j=1}^{m}\left(u_{j}-\bar{u}\right)\left(v_{j}-\bar{v}\right) \\
+\sigma_{u,v}^{2} = \cov{u}{v} &= \frac{1}{m}\sum_{j=1}^{m}\left(u_{j}-\bar{u}\right)\left(v_{j}-\bar{v}\right) \\
 &= \expval{\left(u-\bar{u}\right)\left(v-\bar{v}\right)} \\
 &= \expval{u v} - \expval{u}\expval{v}\,,
 \end{split}
