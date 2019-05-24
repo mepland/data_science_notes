@@ -21,14 +21,14 @@ However in data science it is often better to create a payoff matrix of the anti
 benefits associated with a TP or TN, and costs associated with a FP or FN,
 for the particular business case at hand.
 The expected value of any decision threshold can quickly be computed
-from the payoff matrix elements, $E\left( \hat{A} \mid B\right)$, as
+from the payoff matrix elements, $\expvalE{\hat{A} \mid B}$, as
 
 \begin{equation} \label{eq:E_profit}
-E\left(\text{profit}\right) = \sum_{A,B} E\left( \hat{A} \mid B\right) P\left(\hat{A} \mid B \right) P\left(B\right),
+\expvalE{\text{profit}} = \sum_{A,B} \expvalE{\hat{A} \mid B} P\left(\hat{A} \mid B \right) P\left(B\right),
 \end{equation}
 
 \noindent where $A$ and $B$ are any two cases.
-The optimal decision threshold can then be found by maximizing $E\left(\text{profit}\right)$.
+The optimal decision threshold can then be found by maximizing $\expvalE{\text{profit}}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Normalization}
