@@ -109,15 +109,15 @@ the following assumptions hold\footnote{For additional details see
 \begin{enumerate}[noitemsep]
 \item The underlying relationship between $\mathbf{x}$ and $y$ is linear, and there are no major outliers.\label{item:regression:linear:linear}
 \item The columns of $\mathbf{X}$, \ie features, are linearly independent, \ie $\mathrm{rank}\left(\mathbf{X}\right) = n$ (no multicollinearity). This allows $\mathbf{X}\transpose\mathbf{X}$ to be inverted.\label{item:regression:linear:multicollinearity}
-\item The errors $\epsilon$ have conditional mean 0, $E\left(\epsilon \mid \mathbf{X}\right) = 0$ (exogeneity). The errors thus:\label{item:regression:linear:exogeneity}
+\item The errors $\epsilon$ have conditional mean 0, $\expvalE{\epsilon \mid \mathbf{X}} = 0$ (exogeneity). The errors thus:\label{item:regression:linear:exogeneity}
 \begin{enumerate}[noitemsep]
-\item Have a mean of zero, $E\left(\epsilon\right) = 0$.
-\item Are not correlated with the input features, $E\left(\mathbf{X}\transpose\epsilon\right) = 0$.
+\item Have a mean of zero, $\expvalE{\epsilon} = 0$.
+\item Are not correlated with the input features, $\expvalE{\mathbf{X}\transpose\epsilon} = 0$.
 \end{enumerate}
 \item The errors are spherical, $\mathrm{var}\left(\epsilon \mid \mathbf{X}\right) = \sigma^{2} \identity$. Thus:\label{item:regression:linear:spherical}
 \begin{enumerate}[noitemsep]
 \item Each observation $\mathbf{x}_{i}$ has the same constant variance $\sigma^{2}$ (homoscedasticity).
-\item The errors are uncorrelated between observations, $E\left(\epsilon_{i}\epsilon_{j \neq i} \mid \mathbf{X}\right) = 0$ (no autocorrelation).
+\item The errors are uncorrelated between observations, $\expvalE{\epsilon_{i}\epsilon_{j \neq i} \mid \mathbf{X}} = 0$ (no autocorrelation).
 \end{enumerate}
 \item The errors are normally distributed (multivariate normality)\footnote{This is not required for OLS to be the BLUE, but hypothesis testing works if true.}.\label{item:regression:linear:normality}
 \end{enumerate}
@@ -143,7 +143,7 @@ or if the residuals correlate to any of the features.
 such that they have a non-zero mean or correlate to the input features
 the OLS $\hat{\bm{\beta}}$ is biased and inconsistent.
 This can happen if there are omitted variables or measurement errors.
-Furthermore, if $E\left(\epsilon \mid \mathbf{X}\right) = c$ only the $\beta_{0}$ intercept is affected.
+Furthermore, if $\expvalE{\epsilon \mid \mathbf{X}} = c$ only the $\beta_{0}$ intercept is affected.
 
 \item[\ref{item:regression:linear:spherical}.] If something is wrong with the errors
 such that they have a changing variance or correlate across observations\footnote{Thus the residuals correlate with row number, \ie autocorrelation.}
