@@ -4,6 +4,23 @@
 \label{additional:unsupervised}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Bayesian Optimization}
+\label{additional:unsupervised:BO}
+
+Frequently we are fortunate enough to have a fairly explicit form of
+an objective function $S\left(\bm{\beta}\right)$ to be optimized in order to solve a problem.
+However, when $S\left(\bm{\beta}\right)$ is not well known, is expensive to compute, or is not differentiable,
+the typical gradient based approaches, such as SGD and Newton's method, break down.
+In these cases ``black box''\footnote{Black box as in we do not know $\grad S\left(\bm{\beta}\right)$.}\footnote{Evolutionary algorithms
+are another example of a black box optimizer.} methods,
+such as Bayesian optimization \cite{Brochu2010,1301.1942,Borisyak,Hutter2014}, may be used instead.
+% TODO double check Hutter2014 is BO
+
+In Bayseian optimization, a prior 
+
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gaussian Mixture Model (GMM)}
 \label{additional:unsupervised:GMM}
 % TODO
