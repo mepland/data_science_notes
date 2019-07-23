@@ -12,30 +12,56 @@ the objective function $S\left(\bm{\beta}\right)$ to be optimized in order to so
 However, when $S\left(\bm{\beta}\right)$ is not well known, is expensive to compute, or is not differentiable,
 the usual gradient based approaches, such as SGD and Newton's method, break down.
 In these cases ``black box''\footnote{Black box as in
-we do not have a closed-form expression for $S$, or know $\grad S$.}\footnote{Evolutionary algorithms and some tree based methods \cite{Hutter2011,Hutter2014}
+we do not have a closed-form expression for $S$, or know $\grad S$.}\footnote{Evolutionary algorithms
+and some tree based methods \cite{Hutter2011,Hutter2014}
 are other examples of black box optimizers.} methods,
 such as Bayesian optimization, may be used instead.
 
 In Bayesian optimization \cite{Brochu2010,1301.1942,Borisyak},
 we begin by assuming some reasonable prior distribution for $S$,
-typically in the form of a smooth Gaussian process\footnote{The
-kernel of the Gaussian process is a hyperparameter to be chosen in advance.
+typically in the form of a smooth Gaussian process (GP) fit
+to an initial random sample of $\bm{\beta}$, $S\left(\bm{\beta}\right)$ points.
+GPs \cref{eq:additional:unsupervised:BO:GP} are
+extensions of Gaussian distributions which return a Gaussian at any point along their domain.
+They are parameterized by a mean function\footnote{For convenience,
+the prior $m\left(\bm{x}\right)$ is usually assumed to be zero, $m\left(\bm{x}\right)=0$.}, $m\left(\bm{x}\right)$,
+and covariance function, $k\left(\bm{x}_{i}, \bm{x}_{j}\right)$,
+\ie kernel\footnote{The kernel of the GP is a hyperparameter to be chosen in advance.
 Standard kernel choices include
 the radial basis function kernel $k\left(\bm{x}_{i}, \bm{x}_{j}\right) = \exp\left(-\frac{1}{2\sigma^{2}}\norm{\bm{x}_{i}-\bm{x}{j}}^{2}\right)$,
 Mat\'{e}rn kernel,
-and white noise kernel $k\left(\bm{x}_{i}, \bm{x}_{j}\right) \propto \delta_{ij}$.} (GP) fit
-to an initial random sample of $\bm{\beta}$, $S\left(\bm{\beta}\right)$ points.
+and white noise kernel $k\left(\bm{x}_{i}, \bm{x}_{j}\right) \propto \delta_{ij}$.},
+instead of a constant mean $\mu$ and variance $\sigma^{2}$.
+An illustration of a GP is provided in \cref{fig:additional:unsupervised:BO:GP_ex}.
 
-From the GP estimated prior distribution, Bayesian optimization
-operates by iteratively sampling $S\left(\bm{\beta}\right)$ and updating the posterior distribution as needed.
+\begin{equation}\label{eq:additional:unsupervised:BO:GP}
+f\left(\bm{x}\right) \sim \mathcal{GP}\left(m\left(\bm{x}\right), k\left(\bm{x}_{i}, \bm{x}_{j}\right)\right).
+\end{equation}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.85\textwidth]{figures/ml/gp.pdf}
+\caption{
+Illustration of a Gaussian process (GP) in 1D \cite{Brochu2010}.
+Note that at any point $\bm{x}_{1}$, $\bm{x}_{2}$, $\bm{x}_{3}$ the GP
+returns a Gaussian distribution characterizing the estimated mean and uncertainty on the
+unknown true function, \ie the objective function $S\left(\bm{\beta}\right)$ in the case of Bayesian optimization.
+}
+\label{fig:additional:unsupervised:BO:GP_ex}
+\end{figure}
+
+From the estimated GP prior distribution, Bayesian optimization
+operates by iteratively sampling $S\left(\bm{\beta}\right)$ and updating the posterior distribution
+as each new point of information is gained.
 An acquisition function TODO
 
+% TODO how exactly is the GP updated?
 % TODO for acquisition function read Brochu2010 section 2.3
-% TODO discuss exploration-exploitation tradeoff
+% TODO mention exploration-exploitation tradeoff, discuss details in own section
 
-% TODO \skopt \cite{scikit-optimize}
+% TODO Bayesian optimization functionality provided by \skopt \cite{scikit-optimize}
 
-% TODO ref fig in text: \cref{fig:BO_ex}
+% TODO ref fig in text: \cref{fig:additional:unsupervised:BO:BO_ex}
 \begin{figure}
 \centering
 \includegraphics[width=0.85\textwidth]{figures/ml/toyGPtext3.pdf}
@@ -43,7 +69,7 @@ An acquisition function TODO
 Illustration of Bayesian optimization in a toy 1D problem \cite{Brochu2010}.
 TODO
 }
-\label{fig:BO_ex}
+\label{fig:additional:unsupervised:BO:BO_ex}
 \end{figure}
 
 % TODO remember to read Brochu2010 section 5
