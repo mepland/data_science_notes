@@ -9,7 +9,7 @@
 
 Frequently we are fortunate enough to have a fairly explicit form of
 the objective function $S\left(\bm{\beta}\right)$ to be optimized in order to solve a problem.
-However, when $S\left(\bm{\beta}\right)$ is not well known, is expensive to compute, or is not differentiable,
+However, when $S\left(\bm{\beta}\right)$ is not well known, is expensive to compute, or is non-differentiable,
 the usual gradient based approaches, such as SGD and Newton's method, break down.
 In these cases ``black box''\footnote{Black box as in
 we do not have a closed-form expression for $S$, or know $\grad S$.}\footnote{Evolutionary algorithms
@@ -53,26 +53,31 @@ unknown true function, \ie the objective function $S\left(\bm{\beta}\right)$ in 
 From the estimated GP prior distribution, Bayesian optimization
 operates by iteratively sampling $S\left(\bm{\beta}\right)$ and updating the posterior distribution
 as each new point of information is gained.
-An acquisition function TODO
+An acquisition function, $u\left(\cdot\right)$, directs the sampling,
+estimating where $S\left(\bm{\beta}\right)$ may be large
+due to a high predicted value, uncertainty, or some combination of both.
+The exploration-exploitation tradeoff inherent in $u\left(\cdot\right)$
+can be tuned in various ways, see Section 2.3 of \cite{Brochu2010} for a full description.
+The iterative nature of Bayesian optimization is illustrated in \cref{fig:additional:unsupervised:BO:BO_ex}.
 
-% TODO how exactly is the GP updated?
-% TODO for acquisition function read Brochu2010 section 2.3
-% TODO mention exploration-exploitation tradeoff, discuss details in own section
-
+% TODO how is the GP updated exactly?
 % TODO Bayesian optimization functionality provided by \skopt \cite{scikit-optimize}
 
-% TODO ref fig in text: \cref{fig:additional:unsupervised:BO:BO_ex}
 \begin{figure}
 \centering
 \includegraphics[width=0.85\textwidth]{figures/ml/toyGPtext3.pdf}
 \caption{
-Illustration of Bayesian optimization in a toy 1D problem \cite{Brochu2010}.
-TODO
+Illustration of Bayesian optimization over three iterations in a toy 1D problem \cite{Brochu2010}.
+Note that the maximum of the acquisition function $u\left(\cdot\right)$
+locates where $S\left(\bm{\beta}\right)$ should be sampled next.
+The GP estimated posterior distribution of $S\left(\bm{\beta}\right)$
+and $u\left(\cdot\right)$ are then updated.
+This iterative process is repeated until the estimated maximum is satisfactory.
 }
 \label{fig:additional:unsupervised:BO:BO_ex}
 \end{figure}
 
-% TODO remember to read Brochu2010 section 5
+% TODO remember to read Brochu2010 section 2.5, and section 5
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gaussian Mixture Model (GMM)}
