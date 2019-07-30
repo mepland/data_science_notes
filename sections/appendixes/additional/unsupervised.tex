@@ -52,16 +52,13 @@ unknown true function, \ie the objective function $S\left(\bm{\beta}\right)$ in 
 
 From the estimated GP prior distribution, Bayesian optimization
 operates by iteratively sampling $S\left(\bm{\beta}\right)$ and updating the posterior distribution
-as each new point of information is gained.
+as each new piece of information is gained.
 An acquisition function, $u\left(\cdot\right)$, directs the sampling,
 estimating where $S\left(\bm{\beta}\right)$ may be large
-due to a high predicted value, uncertainty, or some combination of both.
+due to a high predicted value, large uncertainty, or some combination of the two.
 The exploration-exploitation tradeoff inherent in $u\left(\cdot\right)$
 can be tuned in various ways, see Section 2.3 of \cite{Brochu2010} for a full description.
 The iterative nature of Bayesian optimization is illustrated in \cref{fig:additional:unsupervised:BO:BO_ex}.
-
-% TODO how is the GP updated exactly?
-% TODO Bayesian optimization functionality provided by \skopt \cite{scikit-optimize}
 
 \begin{figure}
 \centering
@@ -77,7 +74,7 @@ This iterative process is repeated until the estimated maximum is satisfactory.
 \label{fig:additional:unsupervised:BO:BO_ex}
 \end{figure}
 
-% TODO remember to read Brochu2010 section 2.5, and section 5
+% TODO Bayesian optimization functionality provided by \skopt \cite{scikit-optimize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gaussian Mixture Model (GMM)}
