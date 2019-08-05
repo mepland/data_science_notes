@@ -57,14 +57,20 @@ An acquisition function, $u\left(\cdot\right)$, directs the sampling,
 estimating where $S\left(\bm{\beta}\right)$ may be large
 due to a high predicted value, large uncertainty, or some combination of the two.
 The exploration-exploitation tradeoff inherent in $u\left(\cdot\right)$
-can be tuned in various ways, see Section 2.3 of \cite{Brochu2010} for a full description.
+can be tuned in various ways, see Section 2.3 of \cite{Brochu2010} for a full description\footnote{Common types of acquisition function include
+the Maximum Probability of Improvement (MPI),
+Upper Confidence Bound (UCB),
+and Expected Improvement (EI);
+$\text{argmax}_{\bm{\beta}}\,\text{EI}\left(\bm{\beta}\right) = \expvalE{\max\left(0,\,S\big(\bm{\beta}\big) - S\big(\hat{\bm{\beta}}\big)\right)}$
+where $S\big(\hat{\bm{\beta}}\big)$ is the current optimal value of $S$ .}.
 The iterative nature of Bayesian optimization is illustrated in \cref{fig:additional:unsupervised:BO:BO_ex}.
+An accessible implementation of Bayesian optimization is available in \skopt \cite{scikit-optimize}.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.85\textwidth]{figures/ml/toyGPtext3.pdf}
 \caption{
-Illustration of Bayesian optimization over three iterations in a toy 1D problem \cite{Brochu2010}.
+Illustration of Bayesian optimization over three iterations in a toy 1D maximization problem \cite{Brochu2010}.
 Note that the maximum of the acquisition function $u\left(\cdot\right)$
 locates where $S\left(\bm{\beta}\right)$ should be sampled next.
 The GP estimated posterior distribution of $S\left(\bm{\beta}\right)$
@@ -73,8 +79,6 @@ This iterative process is repeated until the estimated maximum is satisfactory.
 }
 \label{fig:additional:unsupervised:BO:BO_ex}
 \end{figure}
-
-% TODO Bayesian optimization functionality provided by \skopt \cite{scikit-optimize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gaussian Mixture Model (GMM)}
