@@ -71,10 +71,10 @@ due to a high predicted value, large uncertainty, or some combination of the two
 The exploration-exploitation tradeoff inherent in $u\left(\cdot\right)$
 can be tuned in various ways, see Section 2.3 of \cite{Brochu2010} for a full description\footnote{Common types of acquisition function include the
 Expected Improvement (EI);
-$\text{argmax}_{\bm{\beta}}\,\text{EI}\left(\bm{\beta}\right) = \expvalE{\max\left(0,\,S\big(\bm{\beta}\big) - S\big(\hat{\bm{\beta}}\big)\right)}$
+$\text{EI}\left(\bm{\beta}\right) = \expvalE{\max\left(0,\,S\big(\bm{\beta}\big) - S\big(\hat{\bm{\beta}}\big)\right)}$
 where $S\big(\hat{\bm{\beta}}\big)$ is the current optimal value of $S$,
 Upper Confidence Bound (UCB);
-$\text{UCB}\left(\bm{\beta}\right) = \expvalE{\bm{\beta}}_{\text{GP}} + \kappa\,\variance{\bm{\beta}}_{\text{GP}}$ where the mean and variance are of the GP and $\kappa$ sets the exploration-exploitation tradeoff,
+$\text{UCB}\left(\bm{\beta}\right) = E_{\text{GP}} \left(\bm{\beta}\right) + \kappa\,\text{var}_{\text{GP}} \left(\bm{\beta}\right)$ where the mean and variance are of the GP and $\kappa$ sets the exploration-exploitation tradeoff,
 and Maximum Probability of Improvement (MPI).}.
 The iterative nature of Bayesian optimization is illustrated in \cref{fig:additional:unsupervised:BO:BO_ex}.
 An accessible implementation of Bayesian optimization is available in \skopt \cite{scikit-optimize,Borisyak}.
