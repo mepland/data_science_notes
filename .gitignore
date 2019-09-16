@@ -26,6 +26,7 @@
 
 # Directories to ignore
 _build/
+*.DS_Store
 
 # Specific files to ignore
 comment.cut
