@@ -83,11 +83,11 @@ in place of the standard inner product. This is known as the kernel trick.
 The classification boundary in the original feature space can then become non-linear,
 as can be seen in \cref{fig:svm_kernel_trick}.
 
-\vspace{-0.2cm}% TODo hard coded to fit on one page
+\vspace{-0.3cm}% TODo hard coded to fit on one page
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/ml/kernel_trick_example.png}
+\includegraphics[width=0.8\textwidth,trim={4.0cm 0.8cm 4.0cm 1.4cm},clip]{figures/ml/kernel_trick_example.png}% trim={<left> <lower> <right> <upper>}
 \caption{
 Graphical example of the kernel trick, by \href{https://en.wikipedia.org/wiki/File:Kernel_trick_idea.svg}{Shiyu Ji}.
 Here the kernel $k\left(\mathbf{a},\mathbf{b}\right) = \innerproduct{\mathbf{a}}{\mathbf{b}} + \norm{\mathbf{a}}^{2} \norm{\mathbf{b}}^{2}$
@@ -112,17 +112,16 @@ for \texttt{sklearn.svm.SVC}.
 The best performance I've seen quoted is $\order{n m \log{\left(m\right)}}$.} by
 at least $\order{m^{2}}$, limiting $m \sim \num{e4}$.
 
-% Replace with pdf version from HastieTF09 figure 12.1 if reused later
 %\begin{figure}[H]
 %  \centering
 %  \begin{subfigure}[b]{0.48\textwidth}\centering
-%      \includegraphics[width=\textwidth]{figures/ml/svm_separable.png}
+%      \includegraphics[width=\textwidth]{figures/ml/svm_separable.pdf}
 %  \caption{Separable}
 %  \label{fig:svm:separable}
 %  \end{subfigure}
 %  ~
 %  \begin{subfigure}[b]{0.48\textwidth}\centering
-%      \includegraphics[width=\textwidth]{figures/ml/svm_nonseparable.png}
+%      \includegraphics[width=\textwidth]{figures/ml/svm_nonseparable.pdf}
 %  \caption{Nonseparable}
 %  \label{fig:svm:nonseparable}
 %  \end{subfigure}
