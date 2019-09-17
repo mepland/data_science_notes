@@ -129,16 +129,33 @@ SELECT column1, column2 FROM
  WHERE table1.column_nameA > 0; -- WHERE is not required, but it can be included here
 \end{lstlisting}
 
-The four join types are the standard
-\texttt{INNER JOIN}, \texttt{LEFT JOIN}, \texttt{RIGHT JOIN},
-\texttt{FULL OUTER JOIN}\footnote{Note that \texttt{FULL JOIN} can also be used as an equivalent to \texttt{FULL OUTER JOIN}.} as
+The three common join types are the standard
+\texttt{INNER JOIN}, \texttt{LEFT JOIN},
+and \texttt{FULL OUTER JOIN}\footnote{Note that \texttt{FULL JOIN} can also be used as an equivalent to \texttt{FULL OUTER JOIN}.} as
 shown in \cref{fig:sql:joins}.
+
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/sql/joins.png}
+  \begin{subfigure}[c]{0.3\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/sql/left_join.pdf}
+  %\caption{}
+  \label{fig:sql:joins:left_join}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[c]{0.3\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/sql/inner_join.pdf}
+  %\caption{}
+  \label{fig:sql:joins:inner_join}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[c]{0.3\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/sql/full_outer_join.pdf}
+  %\caption{}
+  \label{fig:sql:joins:full_outer_join}
+  \end{subfigure}
 \caption{
-Illustration of the types of joins, by \href{https://www.w3schools.com/sql/sql_join.asp}{w3schools.com}.
+Illustration of common types of joins, adapted from \href{http://stevestedman.com/2015/03/sql-server-join-types-poster-version-2}{Steve Stedman}.
 }
 \label{fig:sql:joins}
 \end{figure}
