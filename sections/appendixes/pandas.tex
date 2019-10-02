@@ -88,7 +88,7 @@ df = df.fillna(value={'x': x_nan_value, 'z': y_nan_value})
 \section{Joining}
 \label{pandas:join}
 
-\noindent See the \href{https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html}{documentation} and this \href{http://chrisalbon.com/python/data_wrangling/pandas_join_merge_dataframe/}{useful guide}.
+\noindent See the \href{https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html#database-style-dataframe-or-named-series-joining-merging}{documentation} and this \href{http://chrisalbon.com/python/data_wrangling/pandas_join_merge_dataframe/}{useful guide}.
 
 \begin{lstlisting}[language=Python]
 df = pd.merge(df_l, df_r, left_on='id_left', right_on='id_right', how='left')
@@ -105,7 +105,7 @@ df = pd.merge(df_l, df_r, left_on='id_left', right_on='id_right', how='left')
 \noindent \href{http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.pivot.html}{\texttt{pivot} documentation}.
 
 \begin{lstlisting}[language=Python]
-DataFrame.pivot(index=None, columns=None, values=None)
+df.pivot(index=None, columns=None, values=None)
 \end{lstlisting}
 
 \begin{figure}[H]
@@ -123,7 +123,7 @@ Example \pandas \texttt{pivot} operation, from the package \href{http://pandas.p
 \noindent \href{https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.pivot_table.html}{\texttt{pivot\_table} documentation}.
 
 \begin{lstlisting}[language=Python]
-pandas.pivot_table(data, values=None, index=None, columns=None, aggfunc='mean', fill_value=None, margins=False, dropna=True, margins_name='All')
+pd.pivot_table(df, values=None, index=None, columns=None, aggfunc='mean', fill_value=None, margins=False, dropna=True, margins_name='All')
 \end{lstlisting}
 
 \begin{figure}[H]
