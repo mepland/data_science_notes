@@ -1,0 +1,149 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Survival Analysis}
+\label{additional:Survival}
+
+Survival analysis is a subfield of statistics which examines problems involving the timing of events
+such as death, component failure, or exiting a line of therapy after an adverse effect, in a population of subjects under study.
+Using the appropriate models, quantities such as the lifetime, or failure rate, of a subject
+can be estimated, as well as their dependence on other independent variables.
+A variety of common models are available,
+each with their own assumptions, capabilities, and limitations,
+which make them best suited for certain applications.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Nomenclature}
+\label{additional:Survival:Nomenclature}
+
+\begin{symbollist}
+	\item[Event] The event of interest in a study.
+	\item[$t$] Time from the start of observation to an event, the conclusion of the study, or the withdrawal of a subject.
+	\item[$T$] Time that an event occurred
+	\item[$S\left(t\right)$] The survival function $S\left(t\right)$ is the probability that a subject survives longer than $t$, \ie $S\left(t\right) = P\left(T > t\right)$.
+	\item[$F\left(t\right)$] The lifetime distribution function $F\left(t\right)$ is the complement of the survival function, \ie $F\left(t\right) = 1 - S\left(t\right) = P\left(T \leq t\right)$.
+	\item[$f\left(t\right)$] The event density function $f\left(t\right)$ is the time derivative of the lifetime distribution function $F\left(t\right)$, $f\left(t\right) = \frac{d}{dt} F\left(t\right) = -\frac{d}{dt}S\left(t\right)$, if it exists.
+	\item[$\lambda\left(t\right)$] The hazard function $\lambda\left(t\right)$ is the event rate at $t$ conditional on survival to time $t$, \ie $T \geq t$, see \ref{eq:Survival:hazard}. In nuclear physics $\lambda\left(t\right) = \lambda$ is the constant exponential decay rate, decays per unit time.
+	\item[Censoring] Right\footnote{Left censored subjects enter the study after the event of interest has already occurred at an unknown $t < 0$.} censored subjects have no events during the observation period, either due to early withdrawal or the conclusion of the study. The true lifetime of these subjects is unavailable for analysis, \ie they have been censored.
+\end{symbollist}
+
+\begin{equation}\label{eq:Survival:hazard}
+\lambda\left(t\right) = \lim_{dt \to 0} \frac{P\left(t \leq T < t + dt\right)}{dt \, S\left(t\right)} = \frac{f\left(t\right)}{S\left(t\right)} = -\frac{1}{S\left(t\right)} \frac{d}{dt}S\left(t\right)
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Kaplan-Meier Estimator}
+\label{additional:Survival:KM}
+
+The Kaplan-Meier estimator $\hat{S}_{\text{KM}}\left(t\right)$ is a non-parametric estimate of $S\left(t\right)$ computed from empirical data.
+
+\begin{equation}\label{eq:Survival:KM}
+\hat{S}_{\text{KM}}\left(t\right) = \prod_{i:\,t_{i} < t} \left(1 - \frac{d_{i}}{n_{i}}\right)
+\end{equation}
+
+\noindent Here the product is over all times $t_{i}$ at which $d_{i}$ events occurred,
+and $n_{i}$ is the number of subjects still under study at $t_{i}$,
+\ie subjects who have not had an event or been censured.
+Due to its construction, $\hat{S}_{\text{KM}}\left(t\right)$ remains steady
+between $t_{i}$ but drops vertically at each data point.
+Therefore the derivative does not exist and we can not estimate $f\left(t\right)$ or $\lambda\left(t\right)$.
+
+
+We can apply the Kaplan-Meier estimator to different subsets of subjects partitioned by a categorical variable $x$
+in order to understand the dependence of $S\left(t\right)$ on $x$.
+Note that $x$ can not be a continuous variable, and must be binned to integer classes if that is the case.
+
+A simple example in \R utilizing the built in Acute myeloid leukemia (aml) dataset is provided below.
+The status variable represents the event, recurrence of leukemia, as $\text{status}=1$, and the censoring of a patient as $\text{status}=0$.
+Two different treatment paths are present in the data, $x=$ Maintained and Nonmaintained.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/survival/aml_km.pdf}
+\vspace{0.2cm}
+\caption{
+Kaplan-Meier plot of the aml dataset. Censoring events are displayed with tick marks.
+}
+\label{fig:aml_km}
+\end{figure}
+
+\begin{lstlisting}[language=R]
+> library(survival)
+> aml[with(aml, order(time)), ]
+   time status             x
+12    5      1 Nonmaintained
+13    5      1 Nonmaintained
+14    8      1 Nonmaintained
+15    8      1 Nonmaintained
+1     9      1    Maintained
+16   12      1 Nonmaintained
+2    13      1    Maintained
+3    13      0    Maintained
+17   16      0 Nonmaintained
+4    18      1    Maintained
+5    23      1    Maintained
+18   23      1 Nonmaintained
+19   27      1 Nonmaintained
+6    28      0    Maintained
+20   30      1 Nonmaintained
+7    31      1    Maintained
+21   33      1 Nonmaintained
+8    34      1    Maintained
+22   43      1 Nonmaintained
+9    45      0    Maintained
+23   45      1 Nonmaintained
+10   48      1    Maintained
+11  161      0    Maintained
+> km.model <- survfit(Surv(time, status) ~ x, data=aml, type="kaplan-meier")
+> summary(km.model)
+Call: survfit(formula = Surv(time, status) ~ x, data = aml, type = "kaplan-meier")
+
+                x=Maintained
+ time n.risk n.event survival std.err lower 95% CI upper 95% CI
+    9     11       1    0.909  0.0867       0.7541        1.000
+   13     10       1    0.818  0.1163       0.6192        1.000
+   18      8       1    0.716  0.1397       0.4884        1.000
+   23      7       1    0.614  0.1526       0.3769        0.999
+   31      5       1    0.491  0.1642       0.2549        0.946
+   34      4       1    0.368  0.1627       0.1549        0.875
+   48      2       1    0.184  0.1535       0.0359        0.944
+
+                x=Nonmaintained
+ time n.risk n.event survival std.err lower 95% CI upper 95% CI
+    5     12       2   0.8333  0.1076       0.6470        1.000
+    8     10       2   0.6667  0.1361       0.4468        0.995
+   12      8       1   0.5833  0.1423       0.3616        0.941
+   23      6       1   0.4861  0.1481       0.2675        0.883
+   27      5       1   0.3889  0.1470       0.1854        0.816
+   30      4       1   0.2917  0.1387       0.1148        0.741
+   33      3       1   0.1944  0.1219       0.0569        0.664
+   43      2       1   0.0972  0.0919       0.0153        0.620
+   45      1       1   0.0000     NaN           NA           NA
+
+> pdf('~/aml_km.pdf')
+> plot(km.model, conf.int=F, xlab='Time', ylab='S(t)', col=c('black', 'blue'), las=1, mark.time=T, lty=1:2, las=1)
+> legend(110, 1, c('Maintained', 'Nonmaintained'), col=c('black', 'blue'), lty=1:2, bty='n')
+> dev.off()
+\end{lstlisting}
+
+% TODO survdiff(Surv(time, status) ~ x, data=aml)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{}
+\label{additional:Survival:}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{}
+\label{additional:Survival:}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{}
+\label{additional:Survival:}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{}
+\label{additional:Survival:}
+% TODO
+
