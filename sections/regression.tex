@@ -126,7 +126,7 @@ If these assumptions are violated the following issues arise,
 namely the model may be biased and or have a large or invalid estimated variance:
 
 \begin{itemize}[noitemsep]
-\item[\ref{item:regression:linear:linear}.] If you are fitting nonlinear data the predictions will have large errors,
+\item[\cref{item:regression:linear:linear}.] If you are fitting nonlinear data the predictions will have large errors,
 particularly when extrapolated beyond the range of the fitted data.
 This will show up as systematic errors in the residuals plot,
 or may be obvious when comparing observed vs predicted values.
@@ -134,23 +134,23 @@ Possible fixes include applying a nonlinear transformation to some of the featur
 adding more combinations of features, \eg higher polynomial terms,
 or finding new independent features which may explain the nonlinearity.
 
-\item[\ref{item:regression:linear:multicollinearity}.] If some of the features are not linearly independent (multicollinearity),
+\item[\cref{item:regression:linear:multicollinearity}.] If some of the features are not linearly independent (multicollinearity),
 they can be biasing the model and should be removed in turn until linear independence is restored.
 Multicollinearity can be spotted in the input feature correlation matrix,
 or if the residuals correlate to any of the features.
 
-\item[\ref{item:regression:linear:exogeneity}.] If something is wrong with the errors
+\item[\cref{item:regression:linear:exogeneity}.] If something is wrong with the errors
 such that they have a non-zero mean or correlate to the input features
 the OLS $\hat{\bm{\beta}}$ is biased and inconsistent.
 This can happen if there are omitted variables or measurement errors.
 Furthermore, if $\expvalE{\epsilon \mid \mathbf{X}} = c$ only the $\beta_{0}$ intercept is affected.
 
-\item[\ref{item:regression:linear:spherical}.] If something is wrong with the errors
+\item[\cref{item:regression:linear:spherical}.] If something is wrong with the errors
 such that they have a changing variance or correlate across observations\footnote{Thus the residuals correlate with row number, \ie autocorrelation.}
 the reported confidence intervals on the model parameters may be over or underestimated.
 The OLS $\hat{\bm{\beta}}$ remains unbiased and has consistent coefficients, but will be biased for standard errors.
 
-\item[\ref{item:regression:linear:normality}.] If the errors are not normally distributed the confidence intervals are again suspect.
+\item[\cref{item:regression:linear:normality}.] If the errors are not normally distributed the confidence intervals are again suspect.
 This can be diagnosed by comparing the errors to the normal distribution with a normal probability plot, or normal quantile plot,
 or through a statistical method like the Anderson-Darling and Kolmogorov-Smirnov tests.
 Note that violating normality in the errors is not as much of an issue compared to the other assumptions
