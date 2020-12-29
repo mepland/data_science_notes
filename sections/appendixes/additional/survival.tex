@@ -24,9 +24,9 @@ which make them best suited for certain applications.
 	\item[$S\left(t\right)$] The survival function $S\left(t\right)$ is the probability that a subject survives longer than $t$, \ie $S\left(t\right) = P\left(T > t\right)$.
 	\item[$F\left(t\right)$] The lifetime distribution function $F\left(t\right)$ is the complement of the survival function, \ie $F\left(t\right) = 1 - S\left(t\right) = P\left(T \leq t\right)$.
 	\item[$f\left(t\right)$] The event density function $f\left(t\right)$ is the time derivative of the lifetime distribution function $F\left(t\right)$, $f\left(t\right) = \frac{dF}{dt} = -\frac{dS}{dt}$, if it exists.
-	\item[$\lambda\left(t\right)$] The hazard function $\lambda\left(t\right)$ is the event rate at $t$ conditional on survival to time $t$, \ie $T > t$, see \cref{eq:Survival:hazard_def}. Any $\lambda\left(t\right)$ can be a hazard function, provided it satisfies \cref{eq:Survival:hazard_cond}\footnote{In nuclear physics $\lambda\left(t\right) = \lambda$ is the constant exponential decay rate, decays per unit time. $\frac{dN}{dt} = -\lambda N$, $N\left(t\right) = N_{0} e^{-\lambda t}$, half-life $t_{1/2} = \ln\left(2\right) / \lambda = \tau \ln\left(2\right)$, where $\tau$ is the time constant.}.
+	\item[$\lambda\left(t\right)$] The hazard function $\lambda\left(t\right)$ is the event rate at $t$ conditional on survival to time $t$, \ie $T > t$, see \cref{eq:Survival:hazard_def}. Any $\lambda\left(t\right)$ can be a hazard function, provided it satisfies \cref{eq:Survival:hazard_cond}.
 	\item[$\Lambda\left(t\right)$] The cumulative hazard function $\Lambda\left(t\right)$ is the integral of $\lambda\left(t\right)$ with respect to time \cref{eq:Survival:cum_hazard:def}. Also see the relations in \cref{eq:Survival:cum_hazard:to_lambda,eq:Survival:cum_hazard:to_S}.
-	\item[HR] The hazard ratio (HR) compares the hazards of two subsets of subjects partitioned by $x$ at time $t$, $\text{HR} = \lambda\left(x_{i}\right) / \lambda\left(x_{0}\right)$. % TODO different from relative risk, also talk about log hazard
+	\item[HR] The hazard ratio (HR) compares the hazards of two subsets of subjects partitioned by $x$ at time $t$, $\text{HR} = \lambda\left(x = 1\right) / \lambda\left(x=0\right)$. % TODO different from relative risk, also talk about log hazard
 \end{symbollist}
 
 \begin{subequations}\label{eq:Survival:hazard_def}
@@ -111,6 +111,7 @@ Kaplan-Meier plot of the aml dataset. Censoring events are displayed with tick m
 \label{fig:aml_km}
 \end{figure}
 
+% TODO move R into own section, add other model examples to code and plot
 \begin{lstlisting}[language=R]
 > library(survival)
 > aml[with(aml, order(time)), ]
@@ -173,15 +174,93 @@ Call: survfit(formula = Surv(time, status) ~ x, data = aml, type = "kaplan-meier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Exponential Model}
 \label{additional:Survival:exp}
-% TODO
+The exponential model is a parametric estimate of $S\left(t\right)$
+valid when the hazard is expected to be constant with respect to $t$.
+In nuclear physics\footnote{$\frac{dN}{dt} = -\lambda N$, $N\left(t\right) = N_{0} e^{-\lambda t}$, half-life $t_{1/2} = \ln\left(2\right) / \lambda = \tau \ln\left(2\right)$, where $\tau$ is the time constant.} $\lambda\left(t\right) = \lambda$
+decays per unit time really is a constant.
+However, in most situations $\lambda = c$ is unrealistic over longer time scales.
+The exponential model can accommodate both categorical and continuous $x$ independent variables.
+
+The survival function for the exponential model is simply
+
+\begin{equation}\label{eq:Survival:exp}
+\hat{S}_{\text{Exp}}\left(t\right) = e^{-\lambda t}
+\end{equation}
+
+\noindent where the hazard can be expanded in terms of $\mathbf{x}$, $\bm{\beta}$ as in a regression analysis:
+
+\begin{equation}\label{eq:Survival:exp_lambda}
+\begin{aligned}
+\lambda\left(x\right) &= \exp\left(\beta_{0} + \sum_{j=1}^{n}\, \beta_{j} x_{j}\right) \\
+\log\left(\lambda\right) &= \mathbf{x} \bm{\beta}
+\end{aligned}
+\end{equation}
+
+\noindent Here we are making the {\em proportional hazards assumption},
+\ie the differences in $\lambda$ between subgroups in $x_{j}$
+are proportional\footnote{Really $\log\left(\lambda\right) \propto \beta$.} to $\beta_{j}$
+and constant over $t$.
+
+The hazard ratio for $x_{j}$ is then:
+
+\begin{equation}\label{eq:Survival:exp_HR}
+\begin{aligned}
+\text{HR}_{\text{Exp}} &= e^{\ldots+\beta_{j} 1+\ldots} / e^{\ldots+\beta_{j} 0+\ldots} \\
+&= e^{\beta_{j}}
+\end{aligned}
+\end{equation}
 
 \subsubsection{Weibull Model}
 \label{additional:Survival:weibull}
-% TODO
+The Weibull model expands on the standard exponential model
+by introducing a shape parameter $k$ to adjust the time dependence of the hazard:
+
+\begin{equation}\label{eq:Survival:weibull}
+\begin{aligned}
+\hat{S}_{\text{Weibull}}\left(t\right) &= e^{-\lambda_{\text{Weibull}} t} \\
+\lambda_{\text{Weibull}} &= \exp\left(\beta_{0} t^{k} + \sum_{j=1}^{n}\, \beta_{j} x_{j}\right) \\
+\text{HR}_{\text{Weibull}} &= e^{\beta_{j}}
+\end{aligned}
+\end{equation}
+
+\noindent Here $\beta_{0}$ is the scale parameter of the hazard with respect to $t$,
+while the other $\beta_{j}$ are scale parameters for the independent $x_{j}$.
+For $k<0$ ($k>0$) the hazard monotonically decreases (increases) over time,
+while $k=0$ returns the exponential model.
+This allows phenomena such as burn in and compounding component failures to be modeled.
+Numerous parameterizations and expansions of the Weibull model are available,
+however they all share the property that
+$\lambda = \exp\left(\beta_{0} f\left(t\right) + \sum_{j=1}^{n}\, \beta_{j} x_{j}\right)$
+where $f\left(t\right)$ is a {\em known}, almost always monotonic, function of $t$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Cox Proportional-Hazards Model}
 \label{additional:Survival:cox}
+The Cox proportional-hazards model is a
+semiparametric\footnote{Semiparametric as $\lambda_{0}\left(t\right)$ is unknown, but $\bm{\beta}$ are still parameters of $\lambda$.} model
+which further expands on the Weibull model by allowing
+the time dependence of $\lambda$ to be an unknown function.
+As the name suggests, the proportional hazards assumption is retained
+allowing us to compute useful HR values
+without even knowing $\lambda\left(t\right)$ or $S\left(t\right)$.
+
+In the Cox model we assume the hazard has the form of
+
+\begin{equation}\label{eq:Survival:cox_lambda}
+\lambda_{\text{Cox}} = \lambda_{0}\left(t\right) \exp\left(\sum_{j=1}^{n}\, \beta_{j} x_{j}\right)
+\end{equation}
+
+\noindent where $\lambda_{0}\left(t\right)$ is an unknown function of $t$.
+When computing hazard ratios $\lambda_{0}\left(t\right)$ then drops out:
+
+\begin{equation}\label{eq:Survival:cox_HR}
+\text{HR}_{\text{Exp}} = e^{\beta_{j}}
+\end{equation}
+
+% TODO
+
+\subsubsection{Assumptions}
+\label{additional:Survival:cox:assumptions}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -192,7 +271,7 @@ Call: survfit(formula = Surv(time, status) ~ x, data = aml, type = "kaplan-meier
 \begin{table}[H]
 \centering
 \begin{tabular}{l|l|l}
-\multicolumn{1}{c}{Kaplan-Meier} & \multicolumn{1}{c}{Exponential} & \multicolumn{1}{c}{Cox} \\
+\multicolumn{1}{c|}{Kaplan-Meier} & \multicolumn{1}{c|}{Exponential / Weibull} & \multicolumn{1}{c}{Cox} \\
 \cline{1-3}
 \begin{tabular}[c]{p{0.3\textwidth}}
 Pro
@@ -219,7 +298,8 @@ Pro
 \\
 Con
 \begin{itemize}
-	\item Limited $\lambda = c$, or $\lambda \propto t$, can be unrealistic
+	\item $\lambda\left(t\right) = c$ can be unrealistic
+	\item Weibull: $\lambda = f\left(t\right)$ of a known form
 \end{itemize}
 \end{tabular}
 
@@ -228,7 +308,7 @@ Con
 \begin{tabular}[c]{p{0.3\textwidth}}
 Pro
 \begin{itemize}
-	\item $\lambda$ can vary with $t$
+	\item $\lambda$ can be an unknown function of $t$
 	\item Can estimate HR
 \end{itemize}
 \\
@@ -241,8 +321,6 @@ Con
 \\
 \end{tabular}
 \end{table}
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{}
