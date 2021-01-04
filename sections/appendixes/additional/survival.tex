@@ -26,7 +26,7 @@ which make them best suited for certain applications.
 	\item[$f\left(t\right)$] The event density function $f\left(t\right)$ is the time derivative of the lifetime distribution function $F\left(t\right)$, $f\left(t\right) = \frac{dF}{dt} = -\frac{dS}{dt}$, if it exists.
 	\item[$\lambda\left(t\right)$] The hazard function $\lambda\left(t\right)$ is the event rate at $t$ conditional on survival to time $t$, \ie $T > t$, see \cref{eq:Survival:hazard_def}. Any $\lambda\left(t\right)$ can be a hazard function, provided it satisfies \cref{eq:Survival:hazard_cond}.
 	\item[$\Lambda\left(t\right)$] The cumulative hazard function $\Lambda\left(t\right)$ is the integral of $\lambda\left(t\right)$ with respect to time \cref{eq:Survival:cum_hazard:def}. Also see the relations in \cref{eq:Survival:cum_hazard:to_lambda,eq:Survival:cum_hazard:to_S}.
-	\item[HR] The hazard ratio (HR) compares the hazards of two subsets of subjects partitioned by $x$ at time $t$, $\text{HR} = \lambda\left(x = 1\right) / \lambda\left(x=0\right)$. % TODO different from relative risk, also talk about log hazard
+	\item[HR] The hazard ratio (HR) compares the hazards of two subsets of subjects partitioned by $x$ at time $t$, $\text{HR} = \lambda\left(x = 1\right) / \lambda\left(x=0\right)$.
 \end{symbollist}
 
 \begin{subequations}\label{eq:Survival:hazard_def}
@@ -54,32 +54,12 @@ S\left(t\right) = \exp\left(-\Lambda\left(t\right)\right) \label{eq:Survival:cum
 \end{gather}
 \end{subequations}
 
-\subsubsection{Expected Future Lifetime}
-\label{additional:Survival:Nomenclature:efl}
-The expected future lifetime $\expval{T-t_{0}}$ is the
-expected additional time of survival for a subject having already survived to $t_{0}$.
-We can derive $\expval{T-t_{0}}$ \cref{eq:Survival:efl_der:efl}
-from the probability of an event occurring between $t_{0}$ and $t_{0} + t$ \cref{eq:Survival:efl_der:P}
-using the prior work of \cref{eq:Survival:hazard_def} and integration by parts:
-
-\begin{subequations}\label{eq:Survival:efl_der}
-\begin{gather}
-P\left(T \leq t_{0} + t \mid T > t_{0}\right)
-= \frac{F\left(t_{0} + t\right) - F\left(t_{0}\right)}{S\left(t_{0}\right)} \label{eq:Survival:efl_der:P} \\
-\text{PDF}
-= \frac{d}{dt} P\left(T \leq t_{0} + t \mid T > t_{0}\right)
-= \frac{f\left(t_{0} + t\right)}{S\left(t_{0}\right)} \label{eq:Survival:efl_der:pdf} \\
-\expval{T-t_{0}}
-= \int_{0}^{\infty} t \, \text{PDF} \, \dif t
-= \frac{1}{S\left(t_{0}\right)} \int_{0}^{\infty} S\left(t\right) \, \dif t \label{eq:Survival:efl_der:efl}
-\end{gather}
-\end{subequations}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Kaplan-Meier Model}
 \label{additional:Survival:KM}
 
-The Kaplan-Meier model $\hat{S}_{\text{KM}}\left(t\right)$ is a non-parametric estimate of $S\left(t\right)$ computed from empirical data.
+The Kaplan-Meier model \cite{km} $\hat{S}_{\text{KM}}\left(t\right)$ is a non-parametric
+estimate of $S\left(t\right)$ computed from empirical data.
 
 \begin{equation}\label{eq:Survival:KM}
 \hat{S}_{\text{KM}}\left(t\right) = \prod_{i:\,t_{i} < t} \left(1 - \frac{d_{i}}{n_{i}}\right)
@@ -91,85 +71,11 @@ and $n_{i}$ is the number of subjects still under study at $t_{i}$,
 Due to its construction, $\hat{S}_{\text{KM}}\left(t\right)$ remains steady
 between $t_{i}$ but drops vertically at each data point.
 Therefore the derivative does not exist and we can not estimate $f\left(t\right)$ or $\lambda\left(t\right)$.
-
+See \cref{fig:aml_km} for one example of a Kaplan-Meier curve.
 
 We can apply the Kaplan-Meier estimator to different subsets of subjects partitioned by a categorical variable $x$
 in order to understand the dependence of $S\left(t\right)$ on $x$.
 Note that $x$ can not be a continuous variable, and must be binned to integer classes if that is the case.
-
-A simple example in \R utilizing the built in Acute myeloid leukemia (aml) dataset is provided below.
-The status variable represents the event, recurrence of leukemia, as $\text{status}=1$, and the censoring of a patient as $\text{status}=0$.
-Two different treatment paths are present in the data, $x=$ Maintained and Nonmaintained.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.7\textwidth]{figures/survival/aml_km.pdf}
-\vspace{0.2cm}
-\caption{
-Kaplan-Meier plot of the aml dataset. Censoring events are displayed with tick marks.
-}
-\label{fig:aml_km}
-\end{figure}
-
-% TODO move R into own section, add other model examples to code and plot
-\begin{lstlisting}[language=R]
-> library(survival)
-> aml[with(aml, order(time)), ]
-   time status             x
-12    5      1 Nonmaintained
-13    5      1 Nonmaintained
-14    8      1 Nonmaintained
-15    8      1 Nonmaintained
-1     9      1    Maintained
-16   12      1 Nonmaintained
-2    13      1    Maintained
-3    13      0    Maintained
-17   16      0 Nonmaintained
-4    18      1    Maintained
-5    23      1    Maintained
-18   23      1 Nonmaintained
-19   27      1 Nonmaintained
-6    28      0    Maintained
-20   30      1 Nonmaintained
-7    31      1    Maintained
-21   33      1 Nonmaintained
-8    34      1    Maintained
-22   43      1 Nonmaintained
-9    45      0    Maintained
-23   45      1 Nonmaintained
-10   48      1    Maintained
-11  161      0    Maintained
-> km.model <- survfit(Surv(time, status) ~ x, data=aml, type="kaplan-meier")
-> summary(km.model)
-Call: survfit(formula = Surv(time, status) ~ x, data = aml, type = "kaplan-meier")
-
-                x=Maintained
- time n.risk n.event survival std.err lower 95% CI upper 95% CI
-    9     11       1    0.909  0.0867       0.7541        1.000
-   13     10       1    0.818  0.1163       0.6192        1.000
-   18      8       1    0.716  0.1397       0.4884        1.000
-   23      7       1    0.614  0.1526       0.3769        0.999
-   31      5       1    0.491  0.1642       0.2549        0.946
-   34      4       1    0.368  0.1627       0.1549        0.875
-   48      2       1    0.184  0.1535       0.0359        0.944
-
-                x=Nonmaintained
- time n.risk n.event survival std.err lower 95% CI upper 95% CI
-    5     12       2   0.8333  0.1076       0.6470        1.000
-    8     10       2   0.6667  0.1361       0.4468        0.995
-   12      8       1   0.5833  0.1423       0.3616        0.941
-   23      6       1   0.4861  0.1481       0.2675        0.883
-   27      5       1   0.3889  0.1470       0.1854        0.816
-   30      4       1   0.2917  0.1387       0.1148        0.741
-   33      3       1   0.1944  0.1219       0.0569        0.664
-   43      2       1   0.0972  0.0919       0.0153        0.620
-   45      1       1   0.0000     NaN           NA           NA
-
-> pdf('~/aml_km.pdf')
-> plot(km.model, conf.int=F, xlab='Time', ylab='S(t)', col=c('black', 'blue'), las=1, mark.time=T, lty=1:2, las=1)
-> legend(110, 1, c('Maintained', 'Nonmaintained'), col=c('black', 'blue'), lty=1:2, bty='n')
-> dev.off()
-\end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Exponential Model}
@@ -178,7 +84,8 @@ The exponential model is a parametric estimate of $S\left(t\right)$
 valid when the hazard is expected to be constant with respect to $t$.
 In nuclear physics\footnote{$\frac{dN}{dt} = -\lambda N$, $N\left(t\right) = N_{0} e^{-\lambda t}$, half-life $t_{1/2} = \ln\left(2\right) / \lambda = \tau \ln\left(2\right)$, where $\tau$ is the time constant.} $\lambda\left(t\right) = \lambda$
 decays per unit time really is a constant.
-However, in most situations $\lambda = c$ is unrealistic over longer time scales.
+However, in most situations $\lambda = c$ is unrealistic over longer time scales,
+as illustrated in \cref{additional:Survival:additional:bathtub}.
 The exponential model can accommodate both categorical and continuous $x$ independent variables.
 
 The survival function for the exponential model is simply
@@ -200,8 +107,11 @@ The survival function for the exponential model is simply
 \ie the differences in $\lambda$ between subgroups in $x_{j}$
 are proportional\footnote{Really $\log\left(\lambda\right) \propto \beta$.} to $\beta_{j}$
 and constant over $t$.
+To find the best estimate of $\hat{\bm{\beta}}$,
+$\lambda$ is used to derive a likelihood function which is
+then optimized\footnote{The exact details of this optimization are handled by common software libraries and are omitted here. Similar approaches are also used to fit the later Weibull and Cox proportional-hazards models.}.
 
-The hazard ratio for $x_{j}$ is then:
+The hazard ratio for $x_{j}$ is:
 
 \begin{equation}\label{eq:Survival:exp_HR}
 \begin{aligned}
@@ -236,13 +146,13 @@ where $f\left(t\right)$ is a {\em known}, almost always monotonic, function of $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Cox Proportional-Hazards Model}
 \label{additional:Survival:cox}
-The Cox proportional-hazards model is a
-semiparametric\footnote{Semiparametric as $\lambda_{0}\left(t\right)$ is unknown, but $\bm{\beta}$ are still parameters of $\lambda$.} model
+The Cox proportional-hazards model \cite{cox} is a
+semiparametric\footnote{Semiparametric as $\lambda_{0}\left(t\right)$ is unspecified, but $\bm{\beta}$ are still parameters of $\lambda$.} model
 which further expands on the Weibull model by allowing
 the time dependence of $\lambda$ to be an unknown function.
 As the name suggests, the proportional hazards assumption is retained
 allowing us to compute useful HR values
-without even knowing $\lambda\left(t\right)$ or $S\left(t\right)$.
+without even knowing $\lambda\left(t\right)$, or $S\left(t\right)$.
 
 In the Cox model we assume the hazard has the form of
 
@@ -250,18 +160,12 @@ In the Cox model we assume the hazard has the form of
 \lambda_{\text{Cox}} = \lambda_{0}\left(t\right) \exp\left(\sum_{j=1}^{n}\, \beta_{j} x_{j}\right)
 \end{equation}
 
-\noindent where $\lambda_{0}\left(t\right)$ is an unknown function of $t$.
+\noindent where $\lambda_{0}\left(t\right)$ is the baseline hazard, an unspecified function of $t$.
 When computing hazard ratios $\lambda_{0}\left(t\right)$ then drops out:
 
 \begin{equation}\label{eq:Survival:cox_HR}
 \text{HR}_{\text{Exp}} = e^{\beta_{j}}
 \end{equation}
-
-% TODO
-
-\subsubsection{Assumptions}
-\label{additional:Survival:cox:assumptions}
-% TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Method Comparison}
@@ -323,9 +227,189 @@ Con
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{}
-\label{additional:Survival:}
+\subsection{Model Assumptions}
+\label{additional:Survival:assumptions}
+
+\begin{enumerate}[noitemsep]
+\item Any censoring is non-informative, \ie censoring is uncorrelated with the probabilities of different event outcomes.\label{item:Survival:assumptions:censoring}
+\item Survival times $t$ are uncorrelated across subjects.\label{item:Survival:assumptions:t_uncorr}
+\item $\mathbf{x}$ is constant over time, per subject.\label{item:Survival:assumptions:X_constant}
+\item Hazards are proportional, \ie hazard ratios are constant over time.\label{item:Survival:assumptions:prop_hazard}
+\item $\log\left(\lambda\right)$ is linear with respect to the numerical $x_{j}$ independent variables.\label{item:Survival:assumptions:X_linearity}
+\end{enumerate}
+
+\cref{item:Survival:assumptions:censoring,item:Survival:assumptions:t_uncorr,item:Survival:assumptions:X_constant}
+are assumptions for all survival models, while
+\cref{item:Survival:assumptions:prop_hazard,item:Survival:assumptions:X_linearity}
+apply to the exponential, Weibull and Cox models.
+
+\subsubsection{Tests and Corrections}
+\label{additional:Survival:assumptions:tests_and_corrections}
+
+\begin{itemize}[noitemsep]
+\item[\cref{item:Survival:assumptions:censoring}.] Exploratory data analysis to detect differences in $\mathbf{x}$ distributions between censored and non-censored subjects. If violated, better input data is needed, redesign study.
+
+\item[\cref{item:Survival:assumptions:t_uncorr}.] Exploratory data analysis, study design question. If violated, redesign study.
+
+\item[\cref{item:Survival:assumptions:X_constant}.] Exploratory data analysis, study design question. If unavoidable, can try a more complex time dependent covariate model.
+
+\item[\cref{item:Survival:assumptions:prop_hazard}.] Check with a complementary log-log plot or Schoenfeld test. If violated, stratify problematic $x_{j}$ variables into separate models, or use more complex models with time dependent $\beta$ coefficients.
+
+\item[\cref{item:Survival:assumptions:X_linearity}.] Check the appropriate residual plot. If violated, try to linearize the offending numerical $x_{j}$ with a transformation or bin to a categorical variable.
+\end{itemize}
+
+\subsubsection{Complementary Log-Log Plot}
+\label{additional:Survival:assumptions:cloglog}
+% TODO
+TODO \texttt{cloglog}
+
+\subsubsection{Schoenfeld Test}
+\label{additional:Survival:assumptions:schoenfeld}
 % TODO
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Additional Concepts}
+\label{additional:Survival:additional}
+
+\subsubsection{Logrank Test}
+\label{additional:Survival:additional:logrank}
+% TODO comparing survival curves
+
+\subsubsection{$G^{\rho}$ Test (survdiff)}
+\label{additional:Survival:additional:survdiff}
+% TODO comparing survival curves
+TODO \texttt{survdiff}
+
+\subsubsection{Relative Risk}
+\label{additional:Survival:additional:RR}
+% TODO relationship / differences from HR
+
+\subsubsection{Odds Ratio}
+\label{additional:Survival:additional:OR}
+% TODO relationship / differences from HR
+
+\subsubsection{Expected Future Lifetime}
+\label{additional:Survival::additional:efl}
+The expected future lifetime $\expval{T-t_{0}}$ is the
+expected additional time of survival for a subject having already survived to $t_{0}$.
+We can derive $\expval{T-t_{0}}$ \cref{eq:Survival:efl_der:efl}
+from the probability of an event occurring between $t_{0}$ and $t_{0} + t$ \cref{eq:Survival:efl_der:P}
+using the prior work of \cref{eq:Survival:hazard_def} and integration by parts:
+
+\begin{subequations}\label{eq:Survival:efl_der}
+\begin{gather}
+P\left(T \leq t_{0} + t \mid T > t_{0}\right)
+= \frac{F\left(t_{0} + t\right) - F\left(t_{0}\right)}{S\left(t_{0}\right)} \label{eq:Survival:efl_der:P} \\
+\text{PDF}
+= \frac{d}{dt} P\left(T \leq t_{0} + t \mid T > t_{0}\right)
+= \frac{f\left(t_{0} + t\right)}{S\left(t_{0}\right)} \label{eq:Survival:efl_der:pdf} \\
+\expval{T-t_{0}}
+= \int_{0}^{\infty} t \, \text{PDF} \, \dif t
+= \frac{1}{S\left(t_{0}\right)} \int_{0}^{\infty} S\left(t\right) \, \dif t \label{eq:Survival:efl_der:efl}
+\end{gather}
+\end{subequations}
+
+\subsubsection{Bathtub Curve}
+\label{additional:Survival:additional:bathtub}
+In reliability engineering the hazard function of many components
+can be estimated as a three part ``bathtub'' curve.
+Initially the failure, \ie event, rate decreases as defective components fail early,
+before reaching a constant plateau where failures are essentially random events.
+As components wear out and reach the end of their useful lifetimes, the failure rate increases again.
+Combining these three effects produces a bathtub-shaped curve, as seen in \cref{fig:bathtub_curve}.
+We can model these situations with the Cox proportional-hazards model,
+or a Weibull model with an appropriately shaped $\lambda\left(t\right)$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/survival/bathtub_curve.pdf}
+\vspace{0.2cm}
+\caption{
+Illustration of a bathrub curve hazard function, by \href{https://en.wikipedia.org/wiki/File:Bathtub_curve.svg}{Wyatts}.
+}
+\label{fig:bathtub_curve}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Example \R Code}
+\label{additional:Survival:Rcode}
+
+% TODO add subsubsections?
+% TODO link to code section from body section(s)
+
+A simple example in \R utilizing the built in Acute myeloid leukemia (aml) dataset is provided here.
+The status variable represents the event, recurrence of leukemia, as $\text{status}=1$,
+and the censoring of a patient as $\text{status}=0$.
+Two different treatment paths are present in the data, $x=$ Maintained and Nonmaintained.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/survival/aml_km.pdf}
+\vspace{0.2cm}
+\caption{
+Kaplan-Meier plot of the aml dataset. Censoring events are displayed with tick marks.
+}
+\label{fig:aml_km}
+\end{figure}
+
+% TODO add other model examples to code and plot
+\begin{lstlisting}[language=R]
+> library(survival)
+> aml[with(aml, order(time)), ]
+   time status             x
+12    5      1 Nonmaintained
+13    5      1 Nonmaintained
+14    8      1 Nonmaintained
+15    8      1 Nonmaintained
+1     9      1    Maintained
+16   12      1 Nonmaintained
+2    13      1    Maintained
+3    13      0    Maintained
+17   16      0 Nonmaintained
+4    18      1    Maintained
+5    23      1    Maintained
+18   23      1 Nonmaintained
+19   27      1 Nonmaintained
+6    28      0    Maintained
+20   30      1 Nonmaintained
+7    31      1    Maintained
+21   33      1 Nonmaintained
+8    34      1    Maintained
+22   43      1 Nonmaintained
+9    45      0    Maintained
+23   45      1 Nonmaintained
+10   48      1    Maintained
+11  161      0    Maintained
+> km.model <- survfit(Surv(time, status) ~ x, data=aml, type="kaplan-meier")
+> summary(km.model)
+Call: survfit(formula = Surv(time, status) ~ x, data = aml, type = "kaplan-meier")
+
+                x=Maintained
+ time n.risk n.event survival std.err lower 95% CI upper 95% CI
+    9     11       1    0.909  0.0867       0.7541        1.000
+   13     10       1    0.818  0.1163       0.6192        1.000
+   18      8       1    0.716  0.1397       0.4884        1.000
+   23      7       1    0.614  0.1526       0.3769        0.999
+   31      5       1    0.491  0.1642       0.2549        0.946
+   34      4       1    0.368  0.1627       0.1549        0.875
+   48      2       1    0.184  0.1535       0.0359        0.944
+
+                x=Nonmaintained
+ time n.risk n.event survival std.err lower 95% CI upper 95% CI
+    5     12       2   0.8333  0.1076       0.6470        1.000
+    8     10       2   0.6667  0.1361       0.4468        0.995
+   12      8       1   0.5833  0.1423       0.3616        0.941
+   23      6       1   0.4861  0.1481       0.2675        0.883
+   27      5       1   0.3889  0.1470       0.1854        0.816
+   30      4       1   0.2917  0.1387       0.1148        0.741
+   33      3       1   0.1944  0.1219       0.0569        0.664
+   43      2       1   0.0972  0.0919       0.0153        0.620
+   45      1       1   0.0000     NaN           NA           NA
+
+> pdf('~/aml_km.pdf')
+> plot(km.model, conf.int=F, xlab='Time', ylab='S(t)', col=c('black', 'blue'), las=1, mark.time=T, lty=1:2, las=1)
+> legend(110, 1, c('Maintained', 'Nonmaintained'), col=c('black', 'blue'), lty=1:2, bty='n')
+> dev.off()
+\end{lstlisting}
+
 % TODO survdiff(Surv(time, status) ~ x, data=aml)
-% TODO common assumptions, censuring is non-informative, \ie uncorrelated with event outcome
