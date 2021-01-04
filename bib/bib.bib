@@ -1,8 +1,35 @@
 % TODo Make sure everything has a date! Bibtex needs a journal to print the date for an article, switch to misc if not
+@article{km,
+  author = {E. L. Kaplan and Paul Meier},
+  title = {Nonparametric Estimation from Incomplete Observations},
+  ISSN = {01621459},
+  URL = {http://www.jstor.org/stable/2281868},
+  abstract = {In lifetesting, medical follow-up, and other fields the observation of the time of occurrence of the event of interest (called a death) may be prevented for some of the items of the sample by the previous occurrence of some other event (called a loss). Losses may be either accidental or controlled, the latter resulting from a decision to terminate certain observations. In either case it is usually assumed in this paper that the lifetime (age at death) is independent of the potential loss time; in practice this assumption deserves careful scrutiny. Despite the resulting incompleteness of the data, it is desired to estimate the proportion P(t) of items in the population whose lifetimes would exceed t (in the absence of such losses), without making any assumption about the form of the function P(t). The observation for each item of a suitable initial event, marking the beginning of its lifetime, is presupposed. For random samples of size N the product-limit (PL) estimate can be defined as follows: List and label the N observed lifetimes (whether to death or loss) in order of increasing magnitude, so that one has 0 ≤ t1' ≤ t2' ≤ ⋯ ≤ tN'. Then $\hat{P}(t) = \prod_r \lbrack(N - r)/(N - r + 1)\rbrack$, where r assumes those values for which tr' ≤ t and for which tr' measures the time to death. This estimate is the distribution, unrestricted as to form, which maximizes the likelihood of the observations. Other estimates that are discussed are the actuarial estimates (which are also products, but with the number of factors usually reduced by grouping); and reduced-sample (RS) estimates, which require that losses not be accidental, so that the limits of observation (potential loss times) are known even for those items whose deaths are observed. When no losses occur at ages less than t, the estimate of P(t) in all cases reduces to the usual binomial estimate, namely, the observed proportion of survivors.},
+  journal = {Journal of the American Statistical Association},
+  number = {282},
+  pages = {457--481},
+  publisher = {[American Statistical Association, Taylor \& Francis, Ltd.]},
+  volume = {53},
+  year = {1958}
+}
+
+@article{cox,
+  author = {D. R. Cox},
+  title = {Regression Models and Life-Tables},
+  ISSN = {00359246},
+  URL = {http://www.jstor.org/stable/2985181},
+  abstract = {The analysis of censored failure times is considered. It is assumed that on each individual are available values of one or more explanatory variables. The hazard function (age-specific failure rate) is taken to be a function of the explanatory variables and unknown regression coefficients multiplied by an arbitrary and unknown function of time. A conditional likelihood is obtained, leading to inferences about the unknown regression coefficients. Some generalizations are outlined.},
+  journal = {Journal of the Royal Statistical Society. Series B (Methodological)},
+  number = {2},
+  pages = {187--220},
+  publisher = {[Royal Statistical Society, Wiley]},
+  volume = {34},
+  year = {1972}
+}
 
 @misc{bissuel_2019,
   title={Hyper-parameter optimization algorithms: a short review},
-  publisher={Criteo R&D Blog},
+  publisher={Criteo R\&D Blog},
   author={Bissuel, Alo\"is},
   year={2019},
   month={Apr},
