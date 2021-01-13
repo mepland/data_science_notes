@@ -56,12 +56,12 @@ S\left(t\right) = \exp\left(-\Lambda\left(t\right)\right) \label{eq:Survival:cum
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Kaplan-Meier Model}
-\label{additional:Survival:KM}
+\label{additional:Survival:km}
 
 The Kaplan-Meier model \cite{km} $\hat{S}_{\text{KM}}\left(t\right)$ is a non-parametric
 estimate of $S\left(t\right)$ computed from empirical data.
 
-\begin{equation}\label{eq:Survival:KM}
+\begin{equation}\label{eq:Survival:km}
 \hat{S}_{\text{KM}}\left(t\right) = \prod_{i:\,t_{i} < t} \left(1 - \frac{d_{i}}{n_{i}}\right)
 \end{equation}
 
@@ -71,7 +71,7 @@ and $n_{i}$ is the number of subjects still under study at $t_{i}$,
 Due to its construction, $\hat{S}_{\text{KM}}\left(t\right)$ remains steady
 between $t_{i}$ but drops vertically at each data point.
 Therefore the derivative does not exist and we can not estimate $f\left(t\right)$ or $\lambda\left(t\right)$.
-See \cref{fig:aml_km} for one example of a Kaplan-Meier curve.
+See \cref{fig:stanford_km:km} for one example of a Kaplan-Meier curve.
 
 We can apply the Kaplan-Meier estimator to different subsets of subjects partitioned by a categorical variable $x$
 in order to understand the dependence of $S\left(t\right)$ on $x$.
@@ -80,6 +80,7 @@ Note that $x$ can not be a continuous variable, and must be binned to integer cl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Exponential Model}
 \label{additional:Survival:exp}
+
 The exponential model is a parametric estimate of $S\left(t\right)$
 valid when the hazard is expected to be constant with respect to $t$.
 In nuclear physics\footnote{$\frac{dN}{dt} = -\lambda N$, $N\left(t\right) = N_{0} e^{-\lambda t}$, half-life $t_{1/2} = \ln\left(2\right) / \lambda = \tau \ln\left(2\right)$, where $\tau$ is the time constant.} $\lambda\left(t\right) = \lambda$
@@ -122,6 +123,7 @@ The hazard ratio for $x_{j}$ is:
 
 \subsubsection{Weibull Model}
 \label{additional:Survival:weibull}
+
 The Weibull model expands on the standard exponential model
 by introducing a shape parameter $k$ to adjust the time dependence of the hazard:
 
@@ -146,6 +148,7 @@ where $f\left(t\right)$ is a {\em known}, almost always monotonic, function of $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Cox Proportional-Hazards Model}
 \label{additional:Survival:cox}
+
 The Cox proportional-hazards model \cite{cox} is a
 semiparametric\footnote{Semiparametric as $\lambda_{0}\left(t\right)$ is unspecified, but $\bm{\beta}$ are still parameters of $\lambda$.} model
 which further expands on the Weibull model by allowing
@@ -170,7 +173,6 @@ When computing hazard ratios $\lambda_{0}\left(t\right)$ then drops out:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Method Comparison}
 \label{additional:Survival:comp}
-% TODO
 
 \begin{table}[H]
 \centering
@@ -260,12 +262,33 @@ apply to the exponential, Weibull and Cox models.
 
 \subsubsection{Complementary Log-Log Plot}
 \label{additional:Survival:assumptions:cloglog}
-% TODO
-TODO \texttt{cloglog}
+
+For categorical variables we can look at the
+complementary log-log plot
+of $\log\left(-\log\left(S\left(t\right)\right)\right)$ versus $\log\left(t\right)$.
+An example complementary log-log plot is provided in \cref{fig:stanford_cloglog}.
+If the different categories have parallel curves
+the proportional hazards assumption is
+valid for the variable in question.
 
 \subsubsection{Schoenfeld Test}
 \label{additional:Survival:assumptions:schoenfeld}
-% TODO
+
+Schoenfeld residuals are similar in concept to normal residuals in regression analyses,
+but instead of looking at the difference between the true and estimated values of $y$,
+$\hat{\bm{\epsilon}} = \mathbf{y} - \mathbf{X} \hat{\bm{\beta}}$,
+we look at the difference in $\bm{\beta}$ and $\hat{\bm{\beta}}$ for a particular $y$ value.
+In this way, Schoenfeld residuals represent the difference in the
+coefficient $\beta_{j}$ fit from all data points, and a single point.
+To validate the proportional hazards assumption
+the Schoenfeld residuals \cite{schoenfeld} must not change over time.
+An example Schoenfeld residual plot is provided in
+\cref{fig:cox:schoenfeld_residuals}.
+Besides graphically looking at the residuals,
+we can use $\chi^{2}$-tests to compute {\pvalue}s
+to test the null hypothesis, \ie the Schoenfeld residuals and time are independent.
+In this case, the proportional hazards assumption is supported
+if we find large, non-significant {\pvalue}s.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Additional Concepts}
@@ -280,6 +303,10 @@ TODO \texttt{cloglog}
 % TODO comparing survival curves
 TODO \texttt{survdiff}
 
+\subsubsection{Concordance Statistic}
+\label{additional:Survival:additional:concordance}
+% TODO
+
 \subsubsection{Relative Risk}
 \label{additional:Survival:additional:RR}
 % TODO relationship / differences from HR
@@ -290,6 +317,7 @@ TODO \texttt{survdiff}
 
 \subsubsection{Expected Future Lifetime}
 \label{additional:Survival::additional:efl}
+
 The expected future lifetime $\expval{T-t_{0}}$ is the
 expected additional time of survival for a subject having already survived to $t_{0}$.
 We can derive $\expval{T-t_{0}}$ \cref{eq:Survival:efl_der:efl}
@@ -311,6 +339,7 @@ P\left(T \leq t_{0} + t \mid T > t_{0}\right)
 
 \subsubsection{Bathtub Curve}
 \label{additional:Survival:additional:bathtub}
+
 In reliability engineering the hazard function of many components
 can be estimated as a three part ``bathtub'' curve.
 Initially the failure, \ie event, rate decreases as defective components fail early,
@@ -322,10 +351,10 @@ or a Weibull model with an appropriately shaped $\lambda\left(t\right)$.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{figures/survival/bathtub_curve.pdf}
+\includegraphics[width=0.7\textwidth]{figures/survival/bathtub_curve}
 \vspace{0.2cm}
 \caption{
-Illustration of a bathrub curve hazard function, by \href{https://en.wikipedia.org/wiki/File:Bathtub_curve.svg}{Wyatts}.
+Illustration of a bathtub curve hazard function, by \href{https://en.wikipedia.org/wiki/File:Bathtub_curve.svg}{Wyatts}.
 }
 \label{fig:bathtub_curve}
 \end{figure}
@@ -334,82 +363,264 @@ Illustration of a bathrub curve hazard function, by \href{https://en.wikipedia.o
 \subsection{Example \R Code}
 \label{additional:Survival:Rcode}
 
-% TODO add subsubsections?
 % TODO link to code section from body section(s)
 
-A simple example in \R utilizing the built in Acute myeloid leukemia (aml) dataset is provided here.
-The status variable represents the event, recurrence of leukemia, as $\text{status}=1$,
+A simple example survival analysis in \R utilizing the built-in
+\texttt{stanford2} Stanford heart transplant dataset is provided in this section.
+The full code can also be found in
+\href{https://github.com/mepland/data_science_notes/blob/master/sections/appendixes/additional/example_survival.R}{\texttt{example\_survival.R}}.
+The status variable represents the event, death of a patient, as $\text{status}=1$,
 and the censoring of a patient as $\text{status}=0$.
-Two different treatment paths are present in the data, $x=$ Maintained and Nonmaintained.
+Three independent variables $x$ are available,
+age in years,
+age categories - under or over 40,
+and the numeric T5 mismatch score between donor and recipient.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{figures/survival/aml_km.pdf}
-\vspace{0.2cm}
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/survival/stanford_km}
+  \caption{Kaplan-Meier}
+  \label{fig:stanford_km:km}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/survival/stanford_km_annotated}
+  \caption{Annotated}
+  \label{fig:stanford_km:annotated}
+  \end{subfigure}
 \caption{
-Kaplan-Meier plot of the aml dataset. Censoring events are displayed with tick marks.
+Kaplan-Meier plot of the Stanford heart transplant dataset. Censored patients are displayed with marks.
+The version on the right adds additional annotations, such as
+subplots for patients at risk and censoring events,
+the \pvalue from \texttt{survdiff}, and a median reference line.
 }
-\label{fig:aml_km}
+\label{fig:stanford_km}
 \end{figure}
 
-% TODO add other model examples to code and plot
+\subsubsection{Initialization}
+\label{additional:Survival:Rcode:init}
+
 \begin{lstlisting}[language=R]
-> library(survival)
-> aml[with(aml, order(time)), ]
-   time status             x
-12    5      1 Nonmaintained
-13    5      1 Nonmaintained
-14    8      1 Nonmaintained
-15    8      1 Nonmaintained
-1     9      1    Maintained
-16   12      1 Nonmaintained
-2    13      1    Maintained
-3    13      0    Maintained
-17   16      0 Nonmaintained
-4    18      1    Maintained
-5    23      1    Maintained
-18   23      1 Nonmaintained
-19   27      1 Nonmaintained
-6    28      0    Maintained
-20   30      1 Nonmaintained
-7    31      1    Maintained
-21   33      1 Nonmaintained
-8    34      1    Maintained
-22   43      1 Nonmaintained
-9    45      0    Maintained
-23   45      1 Nonmaintained
-10   48      1    Maintained
-11  161      0    Maintained
-> km.model <- survfit(Surv(time, status) ~ x, data=aml, type="kaplan-meier")
-> summary(km.model)
-Call: survfit(formula = Surv(time, status) ~ x, data = aml, type = "kaplan-meier")
+> install.packages(c("survival", "survminer"))
+> library("survival")
+> library("survminer")
 
-                x=Maintained
- time n.risk n.event survival std.err lower 95% CI upper 95% CI
-    9     11       1    0.909  0.0867       0.7541        1.000
-   13     10       1    0.818  0.1163       0.6192        1.000
-   18      8       1    0.716  0.1397       0.4884        1.000
-   23      7       1    0.614  0.1526       0.3769        0.999
-   31      5       1    0.491  0.1642       0.2549        0.946
-   34      4       1    0.368  0.1627       0.1549        0.875
-   48      2       1    0.184  0.1535       0.0359        0.944
+> df <- stanford2
+> df$agecat <- cut(df$age, breaks=c(0,40, Inf), labels=c('Under 40', 'Over 40'), right=FALSE)
+> df <- df[with(df, order(time)),]
 
-                x=Nonmaintained
- time n.risk n.event survival std.err lower 95% CI upper 95% CI
-    5     12       2   0.8333  0.1076       0.6470        1.000
-    8     10       2   0.6667  0.1361       0.4468        0.995
-   12      8       1   0.5833  0.1423       0.3616        0.941
-   23      6       1   0.4861  0.1481       0.2675        0.883
-   27      5       1   0.3889  0.1470       0.1854        0.816
-   30      4       1   0.2917  0.1387       0.1148        0.741
-   33      3       1   0.1944  0.1219       0.0569        0.664
-   43      2       1   0.0972  0.0919       0.0153        0.620
-   45      1       1   0.0000     NaN           NA           NA
+> df[1:5,c('time', 'status', 'age', 'agecat', 't5')]
+    time status age   agecat   t5
+21   0.5      1  41  Over 40 0.87
+133  1.0      1  21 Under 40 0.47
+184  1.0      0  27 Under 40   NA
+16   1.0      1  54  Over 40 0.47
+183  2.0      0  39 Under 40   NA
+> summary(df[c('time', 'agecat', 't5')])
+      time              agecat          t5
+ Min.   :   0.50   Under 40: 65   Min.   :0.000
+ 1st Qu.:  64.75   Over 40 :119   1st Qu.:0.690
+ Median : 351.00                  Median :1.040
+ Mean   : 696.94                  Mean   :1.117
+ 3rd Qu.:1160.75                  3rd Qu.:1.460
+ Max.   :3695.00                  Max.   :3.050
+                                  NA's   :27
+\end{lstlisting}
 
-> pdf('~/aml_km.pdf')
-> plot(km.model, conf.int=F, xlab='Time', ylab='S(t)', col=c('black', 'blue'), las=1, mark.time=T, lty=1:2, las=1)
-> legend(110, 1, c('Maintained', 'Nonmaintained'), col=c('black', 'blue'), lty=1:2, bty='n')
+\subsubsection{Kaplan-Meier Model}
+\label{additional:Survival:Rcode:km}
+
+\begin{lstlisting}[language=R]
+> km.model <- survfit(Surv(time, status) ~ agecat, data=df, type='kaplan-meier')
+> summary(km.model)$table
+                records n.max n.start events   *rmean *se(rmean) median 0.95LCL 0.95UCL
+agecat=Under 40      65    65      65     32 1520.783   220.1031   1271     731      NA
+agecat=Over 40      119   119     119     81 1123.229   143.3516    431     202     897
+
+> survdiff(Surv(time, status) ~ agecat, data=df)
+Call:
+survdiff(formula = Surv(time, status) ~ agecat, data = df)
+
+                  N Observed Expected (O-E)^2/E (O-E)^2/V
+agecat=Under 40  65       32     41.3      2.10      3.32
+agecat=Over 40  119       81     71.7      1.21      3.32
+
+ Chisq= 3.3  on 1 degrees of freedom, p= 0.07
+
+> pdf('~/stanford_km.pdf')
+> ggsurvplot(km.model, xlab='Time', ylab='S(t)', size = 1, linetype = 'strata', palette=c('#4e79a7', '#f28e2b'), conf.int = TRUE, legend = c(0.85, 0.85), legend.y = 1, legend.title = '', legend.labs = c('Under 40', 'Over 40'))
+> dev.off()
+
+> pdf('~/stanford_km_annotated.pdf')
+> ggsurvplot(km.model, xlab='Time', ylab='S(t)', size = 1, linetype = 'strata', palette=c('#4e79a7', '#f28e2b'), conf.int = TRUE, legend = c(0.85, 0.85), legend.y = 1, legend.title = '', legend.labs = c('Under 40', 'Over 40'),
+pval = TRUE, # Add survdiff p-value
+risk.table = TRUE, # Absolute number at risk
+risk.table.y.text.col = FALSE, risk.table.col = "strata",
+ncensor.plot = TRUE, # plot censored patients vs time
+surv.median.line = "h", # add horizontal median
+)
 > dev.off()
 \end{lstlisting}
 
-% TODO survdiff(Surv(time, status) ~ x, data=aml)
+\subsubsection{Cox Proportional-Hazards Model}
+\label{additional:Survival:Rcode:cox}
+
+\begin{lstlisting}[language=R]
+> cox.model_age <- coxph(Surv(time, status) ~ age, data=df[!is.na(df$t5), ])
+> summary(cox.model_age)
+Call:
+coxph(formula = Surv(time, status) ~ age, data = df[!is.na(df$t5),
+    ])
+
+  n= 157, number of events= 102
+
+       coef exp(coef) se(coef)     z Pr(>|z|)
+age 0.02990   1.03035  0.01136 2.633  0.00846 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+    exp(coef) exp(-coef) lower .95 upper .95
+age      1.03     0.9705     1.008     1.054
+
+Concordance= 0.595  (se = 0.034 )
+Likelihood ratio test= 7.62  on 1 df,   p=0.006
+Wald test            = 6.93  on 1 df,   p=0.008
+Score (logrank) test = 7.01  on 1 df,   p=0.008
+
+> cox.model_age_t5 <- coxph(Surv(time, status) ~ age + t5, data=df[!is.na(df$t5), ])
+> summary(cox.model_age_t5)
+Call:
+coxph(formula = Surv(time, status) ~ age + t5, data = df[!is.na(df$t5),
+    ])
+
+  n= 157, number of events= 102
+
+       coef exp(coef) se(coef)     z Pr(>|z|)
+age 0.02961   1.03006  0.01136 2.608  0.00911 **
+t5  0.17041   1.18579  0.18326 0.930  0.35243
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+    exp(coef) exp(-coef) lower .95 upper .95
+age     1.030     0.9708     1.007     1.053
+t5      1.186     0.8433     0.828     1.698
+
+Concordance= 0.59  (se = 0.034 )
+Likelihood ratio test= 8.47  on 2 df,   p=0.01
+Wald test            = 7.81  on 2 df,   p=0.02
+Score (logrank) test = 7.87  on 2 df,   p=0.02
+
+> anova(cox.model_age, cox.model_age_t5, test='LRT')
+Analysis of Deviance Table
+ Cox model: response is  Surv(time, status)
+ Model 1: ~ age
+ Model 2: ~ age + t5
+   loglik Chisq Df P(>|Chi|)
+1 -447.29
+2 -446.86 0.851  1    0.3563
+\end{lstlisting}
+
+\subsubsection{Checking Assumptions}
+\label{additional:Survival:Rcode:assumptions}
+
+\begin{lstlisting}[language=R]
+# proportional hazards
+> cox.model_age.ph <- cox.zph(cox.model_age)
+> cox.model_age.ph
+       chisq df    p
+age     0.76  1 0.38
+GLOBAL  0.76  1 0.38
+
+> cox.model_age_t5.ph <- cox.zph(cox.model_age_t5)
+> cox.model_age_t5.ph
+       chisq df    p
+age     0.83  1 0.36
+t5      2.06  1 0.15
+GLOBAL  2.77  2 0.25
+
+> pdf('~/stanford_cox_age_schoenfeld_residuals.pdf')
+> ggcoxzph(cox.model_age.ph)
+> dev.off()
+
+> pdf('~/stanford_cloglog.pdf')
+> plot(km.model, fun='cloglog', xlab='log(t)', ylab='log(-log(S(t)))', col=c('#4e79a7', '#f28e2b'))
+> legend('bottomright', inset=.02, legend=c('Under 40', 'Over 40'), col=c('#4e79a7', '#f28e2b'), lty=1:2, box.lty=0)
+> dev.off()
+
+# linearity
+
+> pdf('~/stanford_cox_age_martingale_residuals.pdf')
+> ggcoxfunctional(Surv(time, status) ~ age + log(age) + sqrt(age), data = df)
+> dev.off()
+
+# outliers
+
+> pdf('~/stanford_cox_age_dfbeta.pdf')
+> ggcoxdiagnostics(cox.model_age, type = "dfbeta", linear.predictions = FALSE)
+> dev.off()
+
+> pdf('~/stanford_cox_age_deviance_residuals.pdf')
+> ggcoxdiagnostics(cox.model_age, type = "deviance", linear.predictions = FALSE)
+> dev.off()
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/survival/stanford_cox_age_schoenfeld_residuals}
+\vspace{0.2cm}
+\caption{
+Schoenfeld residual plot for
+an univariate Cox model fit to the Stanford heart transplant dataset.
+The residuals do not appear dependent on time,
+which is supported by the non-significant \pvalue,
+and shows that proportional hazards assumption
+has been satisfied for this model.
+}
+\label{fig:cox:schoenfeld_residuals}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/survival/stanford_cloglog}
+\vspace{0.2cm}
+\caption{
+Complementary log-log plot for categorized patient age
+in the Stanford heart transplant dataset.
+These curves are not parallel,
+the proportional hazards assumption is violated in this variable.
+}
+\label{fig:stanford_cloglog}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/survival/stanford_cox_age_martingale_residuals}
+\vspace{0.2cm}
+\caption{
+TODO Martingale residuals
+}
+\label{fig:cox:martingale_residuals}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/survival/stanford_cox_age_dfbeta}
+  \caption{dfbeta}
+  \label{fig:cox:outliers:dfbeta}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/survival/stanford_cox_age_deviance_residuals}
+  \caption{Deviance}
+  \label{fig:cox:outliers:deviance}
+  \end{subfigure}
+\caption{
+TODO Outliers
+
+TODO dfbeta and deviance residual plots for
+an univariate Cox model fit to the Stanford heart transplant dataset.
+}
+\label{fig:cox:outliers}
+\end{figure}
