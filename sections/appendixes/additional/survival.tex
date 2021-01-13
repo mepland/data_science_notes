@@ -255,21 +255,10 @@ apply to the exponential, Weibull and Cox models.
 
 \item[\cref{item:Survival:assumptions:X_constant}.] Exploratory data analysis, study design question. If unavoidable, can try a more complex time dependent covariate model.
 
-\item[\cref{item:Survival:assumptions:prop_hazard}.] Check with a complementary log-log plot or Schoenfeld test. If violated, stratify problematic $x_{j}$ variables into separate models, or use more complex models with time dependent $\beta$ coefficients.
+\item[\cref{item:Survival:assumptions:prop_hazard}.] Check with a Schoenfeld test or complementary log-log plot. If violated, stratify problematic $x_{j}$ variables into separate models, or use more complex models with time dependent $\beta$ coefficients.
 
 \item[\cref{item:Survival:assumptions:X_linearity}.] Check the appropriate residual plot. If violated, try to linearize the offending numerical $x_{j}$ with a transformation or bin to a categorical variable.
 \end{itemize}
-
-\subsubsection{Complementary Log-Log Plot}
-\label{additional:Survival:assumptions:cloglog}
-
-For categorical variables we can look at the
-complementary log-log plot
-of $\log\left(-\log\left(S\left(t\right)\right)\right)$ versus $\log\left(t\right)$.
-An example complementary log-log plot is provided in \cref{fig:stanford_cloglog}.
-If the different categories have parallel curves
-the proportional hazards assumption is
-valid for the variable in question.
 
 \subsubsection{Schoenfeld Test}
 \label{additional:Survival:assumptions:schoenfeld}
@@ -289,6 +278,17 @@ we can use $\chi^{2}$-tests to compute {\pvalue}s
 to test the null hypothesis, \ie the Schoenfeld residuals and time are independent.
 In this case, the proportional hazards assumption is supported
 if we find large, non-significant {\pvalue}s.
+
+\subsubsection{Complementary Log-Log Plot}
+\label{additional:Survival:assumptions:cloglog}
+
+For categorical variables we can look at the
+complementary log-log plot
+of $\log\left(-\log\left(S\left(t\right)\right)\right)$ versus $\log\left(t\right)$.
+An example complementary log-log plot is provided in \cref{fig:stanford_cloglog}.
+If the different categories have parallel curves
+the proportional hazards assumption is
+valid for the variable in question.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Additional Concepts}
@@ -618,7 +618,6 @@ TODO Martingale residuals
   \end{subfigure}
 \caption{
 TODO Outliers
-
 TODO dfbeta and deviance residual plots for
 an univariate Cox model fit to the Stanford heart transplant dataset.
 }
