@@ -237,7 +237,7 @@ Con
 \item Survival times $t$ are uncorrelated across subjects.\label{item:Survival:assumptions:t_uncorr}
 \item $\mathbf{x}$ is constant over time, per subject.\label{item:Survival:assumptions:X_constant}
 \item Hazards are proportional, \ie hazard ratios are constant over time.\label{item:Survival:assumptions:prop_hazard}
-\item $\log\left(\lambda\right)$ is linear with respect to the numerical $x_{j}$ independent variables.\label{item:Survival:assumptions:X_linearity}
+\item $\log\left(\lambda\right)$ is linear with respect to the continuous $x_{j}$ independent variables.\label{item:Survival:assumptions:X_linearity}
 \end{enumerate}
 
 \cref{item:Survival:assumptions:censoring,item:Survival:assumptions:t_uncorr,item:Survival:assumptions:X_constant}
@@ -257,7 +257,7 @@ apply to the exponential, Weibull and Cox models.
 
 \item[\cref{item:Survival:assumptions:prop_hazard}.] Check with a Schoenfeld test or complementary log-log plot. If violated, stratify problematic $x_{j}$ variables into separate models, or use more complex models with time dependent $\beta$ coefficients.
 
-\item[\cref{item:Survival:assumptions:X_linearity}.] Check the appropriate residual plot. If violated, try to linearize the offending numerical $x_{j}$ with a transformation or bin to a categorical variable.
+\item[\cref{item:Survival:assumptions:X_linearity}.] Check the appropriate residual plots. If violated, try to linearize the offending continuous $x_{j}$ with a transformation or bin to a categorical variable.
 \end{itemize}
 
 \subsubsection{Schoenfeld Test}
@@ -290,22 +290,65 @@ If the different categories have parallel curves
 the proportional hazards assumption is
 valid for the variable in question.
 
+\subsubsection{Other Residual Plots}
+\label{additional:Survival:assumptions:linearity}
+
+To test the linearity of $\log\left(\lambda\right)$ with respect to the continuous $x_{j}$
+we may plot the Martingale residuals.
+Martingale residuals range from $-\infty$ to $1$
+and measure the difference between the observed and predicted survival for a subject.
+Subjects who have an event ``to early'' will have residuals near one,
+where as subjects who have an event ``to late'' will have residuals near $-\infty$.
+The mean of the residuals should be $0$, see \cref{fig:cox:martingale_residuals:prediction} for an example.
+We can also plot the Martingale residuals versus any particular $x_{j}$
+to judge the linearity along that specific dimension, see \cref{fig:cox:martingale_residuals:age}.
+
+The Martingale residuals can be symmetrized into deviance residuals,
+which have a mean of $0$ and standard deviation of $1$,
+for easier interpretation, see \cref{fig:cox:outliers:deviance}.
+
+Lastly, we can recompute the model fit leaving out event $i$
+and measure the resulting change in the $\beta_{j}$ coefficients,
+$\hat{\Delta}_{ij} = \hat{\beta}_{j} - \hat{\beta}_{j}^{\left(i\right)}$, \ie ``dfbeta''.
+Plotting $\hat{\Delta}_{ij}$ versus event number $i$
+can then point to overly influential events, see \cref{fig:cox:outliers:dfbeta}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Additional Concepts}
 \label{additional:Survival:additional}
 
 \subsubsection{Logrank Test}
 \label{additional:Survival:additional:logrank}
-% TODO comparing survival curves
 
-\subsubsection{$G^{\rho}$ Test (survdiff)}
-\label{additional:Survival:additional:survdiff}
-% TODO comparing survival curves
-TODO \texttt{survdiff}
+The logrank test is a method for comparing the survival functions of two different groups.
+Survival status versus group membership $2\times2$ tables are computed at each distinct time $t_{i}$,
+before being combined into one $\chi_{\text{logrank}}^{2}$ test statistic
+with the Cochran-Mantel-Haenszel test\footnote{Sometimes
+the logrank test is itself referred to as the Mantel-Haenszel test.}.
+$\chi_{\text{logrank}}^{2}$ approximately has the $\chi^{2}$ distribution with 1 degree of freedom,
+allowing the production of {\pvalue}s to test the null hypothesis
+that there is {\em no} difference in the group's survival functions.
+
+The logrank test is most accurate when the proportional hazards assumption is satisfied,
+but is still somewhat usable if the difference in hazard ratios has only one sign,
+\ie the $S\left(t\right)$ curves do not cross as can be checked with a complementary log-log plot.
+In \R the logrank test can be computed with the \texttt{survdiff} function,
+with the parameter $\rho$ left at its default value of $0$.
 
 \subsubsection{Concordance Statistic}
 \label{additional:Survival:additional:concordance}
-% TODO
+The concordance statistic, or C-statistic, is a measure of goodness of fit
+for binary problems such as survival analysis or logistic regression.
+Two subjects are picked at random, if the ordering of model's predicted $\hat{y}$ values
+agrees with the order of the observed $y$ values, the pair of subjects is said to be concordant.
+In terms of survival analysis, if the subject of the pair the model predicted to have a longer lifetime
+in fact did have the longer observed lifetime, the pair is concordant.
+
+By measuring the fraction of concordant pairs over all pairs,
+we arrive at the concordance statistic which ranges from $0$ to $1$,
+with $0.5$ being equivalent to random guessing and $1$ representing ideal performance.
+The ROC AUC and C-statistic are equivalent in
+logistic regression\footnote{The pairs here must have a $y=0$ and $y=1$ subject, with the $y=1$ subject receiving the higher $\hat{y}$.}.
 
 \subsubsection{Relative Risk}
 \label{additional:Survival:additional:RR}
@@ -363,8 +406,6 @@ Illustration of a bathtub curve hazard function, by \href{https://en.wikipedia.o
 \subsection{Example \R Code}
 \label{additional:Survival:Rcode}
 
-% TODO link to code section from body section(s)
-
 A simple example survival analysis in \R utilizing the built-in
 \texttt{stanford2} Stanford heart transplant dataset is provided in this section.
 The full code can also be found in
@@ -393,13 +434,16 @@ and the numeric T5 mismatch score between donor and recipient.
 Kaplan-Meier plot of the Stanford heart transplant dataset. Censored patients are displayed with marks.
 The version on the right adds additional annotations, such as
 subplots for patients at risk and censoring events,
-the \pvalue from \texttt{survdiff}, and a median reference line.
+the \pvalue from the logrank test, and a median reference line.
 }
 \label{fig:stanford_km}
 \end{figure}
 
 \subsubsection{Initialization}
 \label{additional:Survival:Rcode:init}
+
+Here we load the necessary packages and data,
+and create the categorical age variable \texttt{agecat}.
 
 \begin{lstlisting}[language=R]
 > install.packages(c("survival", "survminer"))
@@ -430,6 +474,12 @@ the \pvalue from \texttt{survdiff}, and a median reference line.
 
 \subsubsection{Kaplan-Meier Model}
 \label{additional:Survival:Rcode:km}
+
+The Kaplan-Meier model for this data partitioned by \texttt{agecat}
+shows a median survival time of \num{1271} (\num{431}) for patients Under 40 (Over 40).
+The logrank test, \texttt{survdiff}, returned a \pvalue of \num{0.07},
+thus while the survival curves appear visually different we {\em can not} reject the null hypothesis,
+the survival curves are the same, at the standard \pvalue of \num{0.05}.
 
 \begin{lstlisting}[language=R]
 > km.model <- survfit(Surv(time, status) ~ agecat, data=df, type='kaplan-meier')
@@ -465,6 +515,7 @@ surv.median.line = "h", # add horizontal median
 
 \subsubsection{Cox Proportional-Hazards Model}
 \label{additional:Survival:Rcode:cox}
+% TODO add text descriptions of results, including coefficents / HRs, and \pvalues where approach
 
 \begin{lstlisting}[language=R]
 > cox.model_age <- coxph(Surv(time, status) ~ age, data=df[!is.na(df$t5), ])
@@ -523,9 +574,9 @@ Analysis of Deviance Table
 
 \subsubsection{Checking Assumptions}
 \label{additional:Survival:Rcode:assumptions}
+% TODO add text descriptions of results, \pvalues where approach
 
 \begin{lstlisting}[language=R]
-# proportional hazards
 > cox.model_age.ph <- cox.zph(cox.model_age)
 > cox.model_age.ph
        chisq df    p
@@ -548,20 +599,20 @@ GLOBAL  2.77  2 0.25
 > legend('bottomright', inset=.02, legend=c('Under 40', 'Over 40'), col=c('#4e79a7', '#f28e2b'), lty=1:2, box.lty=0)
 > dev.off()
 
-# linearity
-
 > pdf('~/stanford_cox_age_martingale_residuals.pdf')
-> ggcoxfunctional(Surv(time, status) ~ age + log(age) + sqrt(age), data = df)
+> ggcoxdiagnostics(cox.model_age, type = "martingale", ox.scale='linear.predictions')
 > dev.off()
 
-# outliers
-
-> pdf('~/stanford_cox_age_dfbeta.pdf')
-> ggcoxdiagnostics(cox.model_age, type = "dfbeta", linear.predictions = FALSE)
+> pdf('~/stanford_cox_age_martingale_residuals_age.pdf')
+> ggcoxfunctional(Surv(time, status) ~ age, data = df)
 > dev.off()
 
 > pdf('~/stanford_cox_age_deviance_residuals.pdf')
-> ggcoxdiagnostics(cox.model_age, type = "deviance", linear.predictions = FALSE)
+> ggcoxdiagnostics(cox.model_age, type = "deviance", ox.scale='linear.predictions')
+> dev.off()
+
+> pdf('~/stanford_cox_age_dfbeta.pdf')
+> ggcoxdiagnostics(cox.model_age, type = "dfbeta", ox.scale='observation.id')
 > dev.off()
 \end{lstlisting}
 
@@ -595,10 +646,24 @@ the proportional hazards assumption is violated in this variable.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{figures/survival/stanford_cox_age_martingale_residuals}
-\vspace{0.2cm}
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/survival/stanford_cox_age_martingale_residuals}
+  \caption{vs Prediction}
+  \label{fig:cox:martingale_residuals:prediction}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/survival/stanford_cox_age_martingale_residuals_age}
+  \caption{vs Age}
+  \label{fig:cox:martingale_residuals:age}
+  \end{subfigure}
 \caption{
-TODO Martingale residuals
+Plots of Martingale residuals for
+an univariate Cox model fit to the Stanford heart transplant dataset.
+On the left, the residuals are plotted versus the predicted values from the Cox model.
+As can be seen in the blue fit, there is a slight nonlinearity.
+On the right, the residuals are plotted against the age variable alone.
+For ages $\lesssim 40$, age appears to have a non-linear relationship with $\log\left(\lambda\right)$.
 }
 \label{fig:cox:martingale_residuals}
 \end{figure}
@@ -606,20 +671,25 @@ TODO Martingale residuals
 \begin{figure}[H]
 \centering
   \begin{subfigure}[c]{0.48\textwidth}\centering
-  \includegraphics[width=\textwidth]{figures/survival/stanford_cox_age_dfbeta}
-  \caption{dfbeta}
-  \label{fig:cox:outliers:dfbeta}
-  \end{subfigure}
-  ~
-  \begin{subfigure}[c]{0.48\textwidth}\centering
   \includegraphics[width=\textwidth]{figures/survival/stanford_cox_age_deviance_residuals}
   \caption{Deviance}
   \label{fig:cox:outliers:deviance}
   \end{subfigure}
+  ~
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/survival/stanford_cox_age_dfbeta}
+  \caption{dfbeta}
+  \label{fig:cox:outliers:dfbeta}
+  \end{subfigure}
 \caption{
-TODO Outliers
-TODO dfbeta and deviance residual plots for
+Additional residual plots for
 an univariate Cox model fit to the Stanford heart transplant dataset.
+On the left, the deviance residuals are plotted versus the predicted values from the Cox model.
+As can be seen in the blue fit, there is a slight nonlinearity.
+On the right, the $\hat{\Delta}_{ij}$, \ie ``dfbeta'', residuals for age
+are plotted against event number.
+No event is particularly influential as $\abs{\hat{\Delta}_{ij}} \leq \num{0.004}$
+for $\hat{\beta}_{\text{age}} = \num{0.02990}$.
 }
 \label{fig:cox:outliers}
 \end{figure}

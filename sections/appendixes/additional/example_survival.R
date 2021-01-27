@@ -18,7 +18,13 @@ ggsurvplot(km.model, xlab='Time', ylab='S(t)', size = 1, linetype = 'strata', pa
 dev.off()
 
 pdf('~/stanford_km_annotated.pdf')
-ggsurvplot(km.model, xlab='Time', ylab='S(t)', size = 1, linetype = 'strata', palette=c('#4e79a7', '#f28e2b'), conf.int = TRUE, legend = c(0.85, 0.85), legend.y = 1, legend.title = '', legend.labs = c('Under 40', 'Over 40'))
+ggsurvplot(km.model, xlab='Time', ylab='S(t)', size = 1, linetype = 'strata', palette=c('#4e79a7', '#f28e2b'), conf.int = TRUE, legend = c(0.85, 0.85), legend.y = 1, legend.title = '', legend.labs = c('Under 40', 'Over 40'),
+pval = TRUE, # Add survdiff p-value
+risk.table = TRUE, # Absolute number at risk
+risk.table.y.text.col = FALSE, risk.table.col = "strata",
+ncensor.plot = TRUE, # plot censored patients vs time
+surv.median.line = "h", # add horizontal median
+)
 dev.off()
 
 cox.model_age <- coxph(Surv(time, status) ~ age, data=df[!is.na(df$t5), ])
@@ -45,13 +51,17 @@ legend('bottomright', inset=.02, legend=c('Under 40', 'Over 40'), col=c('#4e79a7
 dev.off()
 
 pdf('~/stanford_cox_age_martingale_residuals.pdf')
-ggcoxfunctional(Surv(time, status) ~ age + log(age) + sqrt(age), data = df)
+ggcoxdiagnostics(cox.model_age, type = "martingale", ox.scale='linear.predictions')
 dev.off()
 
-pdf('~/stanford_cox_age_dfbeta.pdf')
-ggcoxdiagnostics(cox.model_age, type = "dfbeta", linear.predictions = FALSE)
+pdf('~/stanford_cox_age_martingale_residuals_age.pdf')
+ggcoxfunctional(Surv(time, status) ~ age, data = df)
 dev.off()
 
 pdf('~/stanford_cox_age_deviance_residuals.pdf')
-ggcoxdiagnostics(cox.model_age, type = "deviance", linear.predictions = FALSE)
+ggcoxdiagnostics(cox.model_age, type = "deviance", ox.scale='linear.predictions')
+dev.off()
+
+pdf('~/stanford_cox_age_dfbeta.pdf')
+ggcoxdiagnostics(cox.model_age, type = "dfbeta", ox.scale='observation.id')
 dev.off()
