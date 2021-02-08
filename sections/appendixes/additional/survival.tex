@@ -26,7 +26,7 @@ which make them best suited for certain applications.
 	\item[$f\left(t\right)$] The event density function $f\left(t\right)$ is the time derivative of the lifetime distribution function $F\left(t\right)$, $f\left(t\right) = \frac{dF}{dt} = -\frac{dS}{dt}$, if it exists.
 	\item[$\lambda\left(t\right)$] The hazard function $\lambda\left(t\right)$ is the event rate at $t$ conditional on survival to time $t$, \ie $T > t$, see \cref{eq:Survival:hazard_def}. Any $\lambda\left(t\right)$ can be a hazard function, provided it satisfies \cref{eq:Survival:hazard_cond}.
 	\item[$\Lambda\left(t\right)$] The cumulative hazard function $\Lambda\left(t\right)$ is the integral of $\lambda\left(t\right)$ with respect to time \cref{eq:Survival:cum_hazard:def}. Also see the relations in \cref{eq:Survival:cum_hazard:to_lambda,eq:Survival:cum_hazard:to_S}.
-	\item[HR] The hazard ratio (HR) compares the hazards of two subsets of subjects partitioned by $x$ at time $t$, $\text{HR} = \lambda\left(x = 1\right) / \lambda\left(x=0\right)$.
+	\item[HR] The hazard ratio (HR) compares the hazards of two subsets of subjects partitioned by $x$ at time $t$, $\text{HR} = \lambda\left(x = 1\right) / \lambda\left(x=0\right)$. Also known as the relative risk.
 \end{symbollist}
 
 \begin{subequations}\label{eq:Survival:hazard_def}
@@ -350,13 +350,37 @@ with $0.5$ being equivalent to random guessing and $1$ representing ideal perfor
 The ROC AUC and C-statistic are equivalent in
 logistic regression\footnote{The pairs here must have a $y=0$ and $y=1$ subject, with the $y=1$ subject receiving the higher $\hat{y}$.}.
 
-\subsubsection{Relative Risk}
-\label{additional:Survival:additional:RR}
-% TODO relationship / differences from HR
+\subsubsection{Odds, Log Odds, and the Odds Ratio in Relation to the Hazard Ratio}
+\label{additional:Survival:additional:odds}
 
-\subsubsection{Odds Ratio}
-\label{additional:Survival:additional:OR}
-% TODO relationship / differences from HR
+To begin, note that the odds of an event occurring are:
+
+\begin{equation}\label{eq:Survival:odds}
+\text{Odds} = \frac{P\left(\text{Occurring}\right)}{P\left(\text{Not Occurring}\right)} = \frac{p}{1-p}
+\end{equation}
+
+\noindent For example, when rolling a fair dice, $\text{odds}\left(3\right) = (1/6) / (5/6) = 0.2$, or 1:5.
+Odds may vary from $0$ to $\infty$, with $1$ representing fair odds.
+As such, they are not symmetric and are somewhat unwieldy.
+For this reason it is common to take the log of the odds,
+\ie log odds, which varies symmetrically between $-\infty$ and $\infty$, with 0 being fair.
+
+An odds ratio is simply the ratio of two odds.
+If we take a biased coin with $\text{odds}\left(\text{heads}\right) = 2$, or 2:1 in favor of heads,
+the odds ratio between the biased coin and a fair coin is $2/1 = 2$,
+\ie the odds of getting heads with the biased coin are 2 times that of the fair coin.
+If desired, we can similarly take the ratio of log odds.
+
+In logistic regression models, see \cref{regression:logistic},
+it is possible to compute an odds ratio for the input feature $x_{j}$,
+representing the change in odds due to a one unit increase in $x_{j}$.
+This is very similar in concept to the HR,
+which itself is a ratio of two probabilities from different sets of subjects separated by $x_{j}$.
+However, as odds and probability are different quantities,
+relative risks, including the HR, are not equivalent to odds ratios.
+In some cases the relative risk and odds ratio may have similar values,
+see Table 3 of \cite{pmid26623395},
+but it is important to remember they are ultimately different concepts.
 
 \subsubsection{Expected Future Lifetime}
 \label{additional:Survival::additional:efl}
@@ -408,7 +432,10 @@ Illustration of a bathtub curve hazard function, by \href{https://en.wikipedia.o
 
 A simple example survival analysis in \R utilizing the built-in
 \texttt{stanford2} Stanford heart transplant dataset is provided in this section.
-The full code can also be found in
+The examples here have been adapted from Mike Marin's
+\href{https://www.youtube.com/playlist?list=PLqzoL9-eJTNDdnKvep_YHIwk2AMqHhuJ0}{series of lectures},
+and \href{http://www.sthda.com/english/wiki/cox-model-assumptions}{notes} available from the STHDA.
+The full \R code can also be found in
 \href{https://github.com/mepland/data_science_notes/blob/main/sections/appendixes/additional/example_survival.R}{\texttt{example\_survival.R}}.
 The status variable represents the event, death of a patient, as $\text{status}=1$,
 and the censoring of a patient as $\text{status}=0$.
@@ -515,7 +542,37 @@ surv.median.line = "h", # add horizontal median
 
 \subsubsection{Cox Proportional-Hazards Model}
 \label{additional:Survival:Rcode:cox}
-% TODO add text descriptions of results, including coefficents / HRs, and \pvalues where approach
+Two Cox proportional-hazards models are demonstrated here,
+the first using age alone and the second adding the T5 score.
+To compare apples-to-apples, subjects with null T5 values are excluded from both models.
+
+In the age alone model, the coefficient for age is
+$\beta_{\text{age}} = \num{0.02990}$, giving a HR of
+$\exp\left(\beta_{\text{age}}\right) = \num{1.03035}$.
+The \SI{95}{\percent} confidence interval for the HR is {1.008} to \num{1.054}.
+The \pvalue for $\beta_{\text{age}}$ is \num{0.00846},
+thus we can reject the null hypothesis that $\beta_{\text{age}} = 0$.
+We are also provided with three {\pvalue}s for the model as a whole;
+\num{0.006} for the likelihood-ratio test,
+\num{0.008} for the Wald test,
+and \num{0.008} for the logrank test.
+These test the null hypothesis that all $\beta_{i} = 0$.
+Here all three tests reject the null hypothesis,
+as could be expected since the single $\beta_{\text{age}}$ was significant,
+but would be more interesting for higher dimensional models.
+The concordance statistic of \num{0.595} is poor, but is better than random guessing.
+
+In the extended mode the age HR is very similar, \num{1.03006},
+while the T5 HR is \num{1.18579}.
+We can interpret the second model's T5 HR as follows;
+at a given instant in time, an individual of age $a$ is
+\num{1.18579} times, \ie \SI{18.579}{\percent}, as likely to die as an individual of age $a+1$, when controlling for T5 score.
+The inverse HR, $\exp\left(-\beta_{\text{age}}\right)$, where the reference group has been switched, is also provided for convenience.
+
+We can compare the two nested models using a likelihood-ratio test.
+The resulting large \pvalue of \num{0.3563} supports the null hypothesis,
+thus we conclude there is not a statistically significant difference between the two models.
+We can remove T5 from the model without a loss of predictive power in this case.
 
 \begin{lstlisting}[language=R]
 > cox.model_age <- coxph(Surv(time, status) ~ age, data=df[!is.na(df$t5), ])
@@ -574,7 +631,23 @@ Analysis of Deviance Table
 
 \subsubsection{Checking Assumptions}
 \label{additional:Survival:Rcode:assumptions}
-% TODO add text descriptions of results, \pvalues where approach
+
+In this section we check the assumptions made by the Cox and Kaplan-Meier models.
+The Schoenfeld test of the proportional hazards assumption
+is implemented via the \texttt{cox.zph} function
+for both example Cox models; age alone and age plus T5 score.
+The large global {\pvalue}s, \num{0.38} and \num{0.25} respectively,
+fail to reject the null hypothesis and show that the
+proportional hazards assumption is valid here.
+Additionally, we are provided with {\pvalue}s for each individual variable.
+
+We can also check the proportional hazards assumption graphically
+for categorical variables, see \cref{fig:stanford_cloglog}.
+Note that the complementary log-log plot applies to the example Kaplan-Meier model,
+while the rest of the plots apply to the age alone Cox model.
+Please see the captions of
+\cref{fig:cox:schoenfeld_residuals,fig:stanford_cloglog,fig:cox:martingale_residuals,fig:cox:outliers}
+for further discussion of these diagnostic plots.
 
 \begin{lstlisting}[language=R]
 > cox.model_age.ph <- cox.zph(cox.model_age)
