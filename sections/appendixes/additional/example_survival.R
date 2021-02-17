@@ -6,7 +6,7 @@ df <- stanford2
 df$agecat <- cut(df$age, breaks=c(0,40, Inf), labels=c('Under 40', 'Over 40'), right=FALSE)
 df <- df[with(df, order(time)),]
 df[1:5,c('time', 'status', 'age', 'agecat', 't5')]
-summary(df[c('time', 'agecat', 't5')])
+summary(df[c('time', 'age', 'agecat', 't5')])
 
 km.model <- survfit(Surv(time, status) ~ agecat, data=df, type='kaplan-meier')
 summary(km.model)$table
@@ -29,6 +29,10 @@ dev.off()
 
 cox.model_age <- coxph(Surv(time, status) ~ age, data=df[!is.na(df$t5), ])
 summary(cox.model_age)
+
+pdf('~/stanford_cox_age_baseline_survival.pdf')
+ggsurvplot(survfit(cox.model_age, data=df[!is.na(df$t5), ]), xlab='Time', ylab='S(t)', size = 1, linetype = 'strata', palette=c('#4e79a7'), conf.int = TRUE, legend = c(0.85, 0.85), legend.y = 1, legend.title = '', legend.labs = c('Baseline Survival'))
+dev.off()
 
 cox.model_age_t5 <- coxph(Surv(time, status) ~ age + t5, data=df[!is.na(df$t5), ])
 summary(cox.model_age_t5)
@@ -65,3 +69,6 @@ dev.off()
 pdf('~/stanford_cox_age_dfbeta.pdf')
 ggcoxdiagnostics(cox.model_age, type = "dfbeta", ox.scale='observation.id')
 dev.off()
+
+# export data for use in python with lifelines
+write.csv(df[!is.na(df$t5), ],"~/stanford.csv", row.names = FALSE)
