@@ -83,7 +83,8 @@ Note that $x$ can not be a continuous variable, and must be binned to integer cl
 
 The exponential model is a parametric estimate of $S\left(t\right)$
 valid when the hazard is expected to be constant with respect to $t$.
-In nuclear physics\footnote{$\frac{dN}{dt} = -\lambda N$, $N\left(t\right) = N_{0} e^{-\lambda t}$, half-life $t_{1/2} = \ln\left(2\right) / \lambda = \tau \ln\left(2\right)$, where $\tau$ is the time constant.} $\lambda\left(t\right) = \lambda$
+In nuclear physics\footnote{$\frac{dN}{dt} = -\lambda N$, $N\left(t\right) = N_{0} e^{-\lambda t}$,
+half-life $t_{1/2} = \ln\left(2\right) / \lambda = \tau \ln\left(2\right)$, where $\tau$ is the time constant.} $\lambda\left(t\right) = \lambda$
 decays per unit time really is a constant.
 However, in most situations $\lambda = c$ is unrealistic over longer time scales,
 as illustrated in \cref{additional:Survival:additional:bathtub}.
@@ -110,7 +111,9 @@ are proportional\footnote{Really $\log\left(\lambda\right) \propto \beta$.} to $
 and constant over $t$.
 To find the best estimate of $\hat{\bm{\beta}}$,
 $\lambda$ is used to derive a likelihood function which is
-then optimized\footnote{The exact details of this optimization are handled by common software libraries and are omitted here. Similar approaches are also used to fit the later Weibull and Cox proportional-hazards models.}.
+then optimized\footnote{The exact details of this optimization
+are handled by common software libraries and are omitted here.
+Similar approaches are also used to fit the later Weibull and Cox proportional-hazards models.}.
 
 The hazard ratio for $x_{j}$ is:
 
@@ -155,7 +158,12 @@ which further expands on the Weibull model by allowing
 the time dependence of $\lambda$ to be an unknown function.
 As the name suggests, the proportional hazards assumption is retained
 allowing us to compute useful HR values
-without even knowing $\lambda\left(t\right)$, or $S\left(t\right)$.
+without even knowing $\lambda\left(t\right)$,
+or $S\left(t\right)$\footnote{We can
+plot Kaplan-Meier $S\left(t\right)$ curves of predictions from a Cox model,
+after fitting the baseline hazard emperically on a reference subset,
+but only at discrete values of $\mathbf{x}$.
+See \cref{fig:cox:cox_age_baseline_survival} for one example.}.
 
 In the Cox model we assume the hazard has the form of
 
@@ -167,7 +175,7 @@ In the Cox model we assume the hazard has the form of
 When computing hazard ratios $\lambda_{0}\left(t\right)$ then drops out:
 
 \begin{equation}\label{eq:Survival:cox_HR}
-\text{HR}_{\text{Exp}} = e^{\beta_{j}}
+\text{HR}_{\text{Cox}} = e^{\beta_{j}}
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -437,6 +445,11 @@ The examples here have been adapted from Mike Marin's
 and \href{http://www.sthda.com/english/wiki/cox-model-assumptions}{notes} available from the STHDA.
 The full \R code can also be found in
 \href{https://github.com/mepland/data_science_notes/blob/main/sections/appendixes/additional/example_survival.R}{\texttt{example\_survival.R}}.
+An equivalent analysis has also been performed in \python using the
+\href{https://lifelines.readthedocs.io/en/latest}{\texttt{lifelines}} package,
+see
+\href{https://github.com/mepland/data_science_notes/blob/main/sections/appendixes/additional/example_survival.ipynb}{\texttt{example\_survival.ipynb}}.
+
 The status variable represents the event, death of a patient, as $\text{status}=1$,
 and the censoring of a patient as $\text{status}=0$.
 Three independent variables $x$ are available,
@@ -488,15 +501,15 @@ and create the categorical age variable \texttt{agecat}.
 184  1.0      0  27 Under 40   NA
 16   1.0      1  54  Over 40 0.47
 183  2.0      0  39 Under 40   NA
-> summary(df[c('time', 'agecat', 't5')])
-      time              agecat          t5
- Min.   :   0.50   Under 40: 65   Min.   :0.000
- 1st Qu.:  64.75   Over 40 :119   1st Qu.:0.690
- Median : 351.00                  Median :1.040
- Mean   : 696.94                  Mean   :1.117
- 3rd Qu.:1160.75                  3rd Qu.:1.460
- Max.   :3695.00                  Max.   :3.050
-                                  NA's   :27
+> summary(df[c('time', 'age', 'agecat', 't5')])
+      time              age             agecat          t5
+ Min.   :   0.50   Min.   :12.00   Under 40: 65   Min.   :0.000
+ 1st Qu.:  64.75   1st Qu.:35.00   Over 40 :119   1st Qu.:0.690
+ Median : 351.00   Median :44.00                  Median :1.040
+ Mean   : 696.94   Mean   :41.09                  Mean   :1.117
+ 3rd Qu.:1160.75   3rd Qu.:49.00                  3rd Qu.:1.460
+ Max.   :3695.00   Max.   :64.00                  Max.   :3.050
+                                                  NA's   :27
 \end{lstlisting}
 
 \subsubsection{Kaplan-Meier Model}
@@ -574,6 +587,11 @@ The resulting large \pvalue of \num{0.3563} supports the null hypothesis,
 thus we conclude there is not a statistically significant difference between the two models.
 We can remove T5 from the model without a loss of predictive power in this case.
 
+The baseline survival function for the age only model
+is plotted in \cref{fig:cox:cox_age_baseline_survival}.
+A more complete plot including a range of ages can be found in the
+\href{https://github.com/mepland/data_science_notes/blob/main/sections/appendixes/additional/example_survival.ipynb}{\texttt{example\_survival.ipynb}} implementation.
+
 \begin{lstlisting}[language=R]
 > cox.model_age <- coxph(Surv(time, status) ~ age, data=df[!is.na(df$t5), ])
 > summary(cox.model_age)
@@ -595,6 +613,10 @@ Concordance= 0.595  (se = 0.034 )
 Likelihood ratio test= 7.62  on 1 df,   p=0.006
 Wald test            = 6.93  on 1 df,   p=0.008
 Score (logrank) test = 7.01  on 1 df,   p=0.008
+
+> pdf('~/stanford_cox_age_baseline_survival.pdf')
+> ggsurvplot(survfit(cox.model_age, data=df[!is.na(df$t5), ]), xlab='Time', ylab='S(t)', size = 1, linetype = 'strata', palette=c('#4e79a7'), conf.int = TRUE, legend = c(0.85, 0.85), legend.y = 1, legend.title = '', legend.labs = c('Baseline Survival'))
+> dev.off()
 
 > cox.model_age_t5 <- coxph(Surv(time, status) ~ age + t5, data=df[!is.na(df$t5), ])
 > summary(cox.model_age_t5)
@@ -628,6 +650,21 @@ Analysis of Deviance Table
 1 -447.29
 2 -446.86 0.851  1    0.3563
 \end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/survival/stanford_cox_age_baseline_survival}
+\vspace{0.2cm}
+\caption{
+Baseline survival function for
+an univariate Cox model fit to the Stanford heart transplant dataset.
+The documentation describing what reference value of age is utilized by \R here is unclear.
+By comparing to the equivalent plot produced by \texttt{lifelines} in
+\href{https://github.com/mepland/data_science_notes/blob/main/sections/appendixes/additional/example_survival.ipynb}{\texttt{example\_survival.ipynb}}
+the age used appears to also be the mean.
+}
+\label{fig:cox:cox_age_baseline_survival}
+\end{figure}
 
 \subsubsection{Checking Assumptions}
 \label{additional:Survival:Rcode:assumptions}
@@ -687,6 +724,9 @@ GLOBAL  2.77  2 0.25
 > pdf('~/stanford_cox_age_dfbeta.pdf')
 > ggcoxdiagnostics(cox.model_age, type = "dfbeta", ox.scale='observation.id')
 > dev.off()
+
+# export data for use in python with lifelines
+write.csv(df[!is.na(df$t5), ],"~/stanford.csv", row.names = FALSE)
 \end{lstlisting}
 
 \begin{figure}[H]
