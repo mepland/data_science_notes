@@ -11,74 +11,74 @@
 
 \begin{lstlisting}[language=Python]
 # IO
-df = pd.read_csv('file.csv', header=None)
-df['col'] = df['col'].astype(int)
-df.to_csv('out.csv')
+dfp = pd.read_csv('file.csv', header=None)
+dfp['col'] = dfp['col'].astype(int)
+dfp.to_csv('out.csv')
 
 # descriptive commands
-df.describe(); df.columns; df.shape;
+dfp.describe(); dfp.columns; dfp.shape;
 
 # aggregation commands
-df.sum(); df.cumsum();
-df.min(); df.max(); df.idxmin(); df.idxmax();
-df.mean(); df.std(); df.median(); df.mode();
+dfp.sum(); dfp.cumsum();
+dfp.min(); dfp.max(); dfp.idxmin(); dfp.idxmax();
+dfp.mean(); dfp.std(); dfp.median(); dfp.mode();
 
-# extract all rows from one column
-df_y = df.loc[:, ['y']]
+# extract all rows from one column as df, not series
+dfp_y = dfp.loc[:, ['y']]
 
 # select by value
-df_selection = df.loc[( ((df['x'] == x_value) & (df['y'] == y_value)) | (df['z'] > z_value))]
+dfp_selection = dfp.loc[( ((dfp['x'] == x_value) & (dfp['y'] == y_value)) | (dfp['z'] < z_value))]
 
 # select by value and assign new value
-df.loc[(df['x'] == x_value), 'y'] = y_value
+dfp.loc[(dfp['x'] == x_value), 'y'] = y_value
 
 # select with query
-df_selection = df.query('x > 0')
+dfp_selection = dfp.query('0 < x')
 
 # select with isin
-df_selection = df.isin({'x': [x_value1, x_value2], 'y': [y_value]})
+dfp_selection = dfp.isin({'x': list2, 'y': list2})
 
 # select row by index
-series = df.iloc[0]
+series = dfp.iloc[0]
 
 # apply an arbitrary function
 def func(x, y):
-  return x*np.sin(y)
-df['z'] = np.vectorize(func)(df['x'], df['y'])
+	return x*np.sin(y)
+dfp['z'] = np.vectorize(func)(dfp['x'], dfp['y'])
 
-# iterate through rows (slow!)
-for index, row in df.iterrows():
-  x_value = row['x']
+# iterate through rows - slow!
+for index, row in dfp.iterrows():
+	x_value = row['x']
 
-# construct from rows
+# construct df from rows
 rows_list = []
 for nrow in range(nrows):
-  rows_list.append({'x':x_value, 'y':y_value})
-df = pd.DataFrame(rows_list)
-df = df[['x', 'y']]
+	rows_list.append({'x':x_value, 'y':y_value})
+dfp = pd.DataFrame(rows_list)
+dfp = dfp[['x', 'y']]
 
 # rename columns
-df = df.rename({'old': 'new'}, axis='columns')
+dfp = dfp.rename({'old': 'new'}, axis='columns')
 
 # sort
-df = df.sort_values(by=['x', 'y'], ascending=[True, False]).reset_index(drop=True)
+dfp = dfp.sort_values(by=['x', 'y'], ascending=[True, False]).reset_index(drop=True)
 
 # group by, while dropping new count column and duplicates
-df = df.groupby(['x', 'y', 'z']).size().to_frame(name = 'count').reset_index().drop(['count'], axis=1).drop_duplicates()
+dfp = dfp.groupby(['x', 'y', 'z']).size().to_frame(name = 'count').reset_index().drop(['count'], axis=1).drop_duplicates()
 
 # return duplicate rows
 columns_to_check_for_duplicates = ['x', 'y']
-df_duplicates = df[df.duplicated(subset=columns_to_check_for_duplicates, keep=False)]
+dfp_duplicates = dfp[dfp.duplicated(subset=columns_to_check_for_duplicates, keep=False)]
 
-# shuffling
-df = df.sample(frac=1., replace=False, random_state=rnd_seed).reset_index(drop=True)
+# shuffle rows
+dfp = dfp.sample(frac=1., replace=False, random_state=rnd_seed).reset_index(drop=True)
 
 # drop columns
-df = df.drop(['col_to_drop1', 'col_to_drop2'], axis=1)
+dfp = dfp.drop(['col_to_drop1', 'col_to_drop2'], axis=1)
 
 # fill nans, for all columns and per column
-df = df.fillna(0.0)
-df = df.fillna(value={'x': x_nan_value, 'z': y_nan_value})
+dfp = dfp.fillna(0.0)
+dfp = dfp.fillna(value={'x': x_nan_val, 'z': y_nan_val})
 \end{lstlisting}
 
 \clearpage
@@ -91,7 +91,7 @@ df = df.fillna(value={'x': x_nan_value, 'z': y_nan_value})
 \noindent See the \href{https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html#database-style-dataframe-or-named-series-joining-merging}{documentation} and this \href{http://chrisalbon.com/python/data_wrangling/pandas_join_merge_dataframe/}{useful guide}.
 
 \begin{lstlisting}[language=Python]
-df = pd.merge(df_l, df_r, left_on='id_left', right_on='id_right', how='left')
+dfp = pd.merge(dfp_l, dfp_r, left_on='id_left', right_on='id_right', how='left')
 \end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -105,7 +105,7 @@ df = pd.merge(df_l, df_r, left_on='id_left', right_on='id_right', how='left')
 \noindent \href{http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.pivot.html}{\texttt{pivot} documentation}.
 
 \begin{lstlisting}[language=Python]
-df.pivot(index=None, columns=None, values=None)
+dfp.pivot(index=None, columns=None, values=None)
 \end{lstlisting}
 
 \begin{figure}[H]
@@ -123,7 +123,7 @@ Example \pandas \texttt{pivot} operation, from the package \href{http://pandas.p
 \noindent \href{https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.pivot_table.html}{\texttt{pivot\_table} documentation}.
 
 \begin{lstlisting}[language=Python]
-pd.pivot_table(df, values=None, index=None, columns=None, aggfunc='mean', fill_value=None, margins=False, dropna=True, margins_name='All')
+pd.pivot_table(dfp, values=None, index=None, columns=None, aggfunc='mean', fill_value=None, margins=False, dropna=True, margins_name='All')
 \end{lstlisting}
 
 \begin{figure}[H]

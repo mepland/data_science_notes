@@ -34,9 +34,9 @@ CREATE TABLE t (id INT PRIMARY KEY,
 
 -- manually insert new rows
 INSERT INTO t VALUES (0, 'Matt', 'NJ', '1990-1-2');
-INSERT INTO t (id, name, state) VALUES
+INSERT INTO t (id, name, state, dob) VALUES
                      (1, 'Jamie','NJ', '1990-3-4');
-INSERT INTO t VALUES (2,'Marry','IL', '1970-5-6'),
+INSERT INTO t VALUES (2,'Mary','IL', '1970-5-6'),
  (3,'Eddie','IL','2010-7-8'),(4,'Bob','ND','1980-9-10');
 
 -- insert rows from another table
@@ -70,7 +70,7 @@ SELECT state,COUNT(id) FROM t GROUP BY state
 
 -- Use HAVING with an aggregate func, not WHERE
 SELECT state,COUNT(id) FROM t GROUP BY state
- HAVING COUNT(id) > 5;
+ HAVING COUNT(id) > 1;
 
 -- WITH / subqueries
 WITH state_counts AS (
@@ -172,6 +172,9 @@ GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost'
 
 -- create a new database
 CREATE DATABASE mydb; USE mydb;
+
+-- create a new schema
+CREATE SCHEMA myschema; USE SCHEMA myschema;
 
 -- load a SQL dump
 SET autocommit=0; SOURCE dump.sql; COMMIT;

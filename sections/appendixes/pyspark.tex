@@ -1,0 +1,106 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{\pyspark}
+\label{pyspark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Basic Commands}
+\label{pyspark:basic}
+
+\begin{lstlisting}[language=Python]
+import pyspark.sql.functions as F
+from pyspark.sql.window import Window
+from pyspark.sql.types import IntegerType, DoubleType
+
+# IO
+df = spark.read.parquet('s3a://bucket/table')
+df = df.withColumn('col', F.col('col').cast(IntegerType()))
+df.write.save('s3a://bucket/table.parquet')
+
+# descriptive commands
+df.describe().show(); df.printSchema();
+df.show(10); df.limit(10).toPandas();
+
+# select columns
+df_y = df.select('x', 'y')
+
+# get distinct values
+df_y_distinct = df.select('y').distinct()
+
+# select by value
+df_selection = df.where( ((F.col('x') == x_value) & (F.col('y') == y_value)) | (F.col('z') < z_value) )
+df_selection = df.where( F.col('x').isNotNull() )
+
+# select by value and assign new value
+df = df.withColumn('y', F.when( F.col('x') == x_value, F.lit(y_value) ).otherwise(F.col('y')))
+
+# select where isin, and not (~) isin, some_list
+df_selection = df.where(F.col('x').isin(some_list))
+df_selection = df.where(~F.col('x').isin(some_list))
+
+# apply an arbitrary function - slow unless written in scala!
+def func(x, y):
+	return x*np.sin(y)
+func_udf = F.udf(func, DoubleType())
+df = df.withColumn('z', func_udf('x', 'y'))
+
+# rename columns
+df = df.withColumnRenamed('old', 'new')
+
+# order by
+df = df.orderBy(['x', 'y'], ascending=[True, False])
+
+# group by, while counting rows and aggregating max date
+df = df.groupBy('x', 'y', 'z').agg(F.count('*').alias('count'), F.max('date_col').alias('max_date'))
+
+# group by, get mode of state per patient - deterministically (alphabetical order)
+# can be expanded to additional columns, each with their own .join(df.groupBy()...) statements
+df.select('patient').distinct().join(
+df.where(F.col('state').isNotNull())
+	.groupBy(['patient', 'state']).count().alias('c')
+	.withColumn('row_num', F.row_number().over(Window().partitionBy('patient').orderBy(F.col('c').desc(), F.col('state'))))
+	.where(F.col('row_num') == 1)
+	.select('patient', 'state')
+, 'patient', 'left')
+
+# return duplicate rows
+df.join(df, df.groupBy('x', 'y').agg(F.count('*').alias('c')).where(1 < F.('c')), ['x', 'y'], 'left_semi')
+
+# drop columns
+df = df.drop('col_to_drop1', 'col_to_drop2')
+
+cols_to_drop = ['col1', 'col2']
+df = df.drop(*cols_to_drop)
+
+# fill nans, for all columns and per column - other syntaxes are also available
+df = df.fillna(0.0)
+df = df.fillna({'x': x_nan_value, 'z': y_nan_value})
+
+# run a SQL query, note you must register the needed dataframes as tables first
+df.registerTempTable('df')
+spark.sql('select * from df limit 10').show(10)
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Joining}
+\label{pyspark:join}
+
+\noindent See the \href{http://spark.apache.org/docs/2.1.0/api/python/pyspark.sql.html?highlight=join#pyspark.sql.DataFrame.join}{documentation} and this \href{http://www.learnbymarketing.com/1100/pyspark-joins-by-example/}{useful guide}. In addition to the standard types of joins \texttt{left\_semi}, or \texttt{leftsemi}, is very useful for filtering the left table to the matching rows in the join condition, without actually joining any columns from the right table.
+
+\begin{lstlisting}[language=Python]
+df = df_l.join(df_r, df_l['id_left'] == df_r['id_right'], 'left')
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Pivoting}
+\label{pyspark:pivoting}
+
+\noindent \href{https://spark.apache.org/docs/2.1.0/api/python/pyspark.sql.html?highlight=pivot#pyspark.sql.GroupedData.pivot}{\texttt{pivot} documentation}, and \href{https://sparkbyexamples.com/pyspark/pyspark-pivot-and-unpivot-dataframe/}{examples}.
+
+\begin{lstlisting}[language=Python]
+df.groupBy('product').pivot('state').sum('cost')
+\end{lstlisting}
