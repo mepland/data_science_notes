@@ -45,7 +45,7 @@ update t set name = 'Mar' where id = 2;
 comparison ops: >, >=, =, <> or !=, between, like, in
 logical ops: and, or, not */
 select id,name from t where 0 < id order by name limit 10;
-select id,name from t where id between 1 AND 3;
+select id,name from t where id between 1 and 3;
 select id,name from t where name like 'M%';--starts with M
 select id,name from t where state like 'N_';-- N + 1 char
 select id,name from t where (id in (0,3)) or (name='Bob');
@@ -70,18 +70,19 @@ group by state
 having 1 < n_rows
 order by n_rows desc;
 
--- with, CTEs
+-- CTEs
 with state_counts as (
 	select count(distinct id) as n_distinct_ids, state
 	from t group by state
 )
-select avg(count) from state_counts where state != 'NC';
+select avg(n_distinct_ids)
+from state_counts where state != 'NC';
 
 -- case
 select name
 	, case
-		when state is 'IL' then 'bears fan'
-		when state is 'ND' then 'bison fan'
+		when state = 'IL' then 'bears fan'
+		when state = 'ND' then 'bison fan'
 		else concat(state, ' (unknown fan)')
 	end as fandom
 from t;
@@ -164,7 +165,7 @@ inner join (
 select column1, column2
 from table1
 left join table2
-	on table1.column_nameA = table2.column_nameB
+	on table1.column_nameA = table2.column_nameB;
 
 -- coalesce appropriately when using a full outer join
 select coalesce(a.id, b.id) as id
@@ -204,6 +205,28 @@ Illustration of common types of joins, adapted from \href{http://stevestedman.co
 }
 \label{fig:sql:joins}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Pivoting}
+\label{ssql:pivoting}
+
+\noindent \href{https://docs.snowflake.com/en/sql-reference/constructs/pivot.html}{\texttt{pivot} documentation}.
+
+\begin{lstlisting}[language=SQL]
+with b as (
+	select left(name, 1) as first_letter, state
+		, datediff(day, dob, current_date)/365 as age
+	from t
+)
+select first_letter as "First Letter"
+	, "'NJ'" as "Avg Age NJ"
+	, "'IL'" as "Avg Age IL"
+	, "'ND'" as "Avg Age ND"
+from b
+pivot(avg(age) for state in ('NJ','IL','ND'))
+order by first_letter;
+\end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
