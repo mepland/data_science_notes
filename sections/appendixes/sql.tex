@@ -25,15 +25,15 @@ A SQL query returns information from the database as a result set, and may conta
 
 \begin{lstlisting}[language=SQL]
 -- create a new table, define columns & types
-create table t (id int primary key,
-	name varchar(20) not null, state char(2), dob date);
+create table t (id int primary key
+	, name varchar(20) not null, state char(2), dob date);
 
 -- manually insert new rows
 insert into t values (0, 'Matt', 'NJ', '1990-1-2');
 insert into t (id, name, state, dob) values
                      (1, 'Jamie','NJ', '1990-3-4');
-insert into t values (2,'Mary','IL', '1970-5-6'),
-	(3,'Eddie','IL','2010-7-8'),(4,'Bob','ND','1980-9-10');
+insert into t values (2,'Mary','IL', '1970-5-6')
+	, (3,'Eddie','IL','2010-7-8'),(4,'Bob','ND','1980-9-10');
 
 -- insert rows from another table
 insert into t select * from other_t where zip = 11111;
@@ -135,9 +135,9 @@ with b0 as (
 	where arrays_overlap(Dx_array, array_construct('W5602', 'W5551XD', 'W5803XA'))
 ),
 b1 as (
-	select id, state, value as Dx
-	from b,
-	lateral flatten(input => Dx_array) as value
+	select id, state, Dx.value as Dx
+	from b
+	, lateral flatten(input => Dx_array, outer => True) as Dx
 )
 select state, Dx, count(distinct id) as n_patients
 from b1
