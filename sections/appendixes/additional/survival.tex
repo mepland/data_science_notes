@@ -740,6 +740,9 @@ The residuals do not appear dependent on time,
 which is supported by the non-significant \pvalue,
 and shows that proportional hazards assumption
 has been satisfied for this model.
+Note that in a multivariate model we
+would have a Schoenfeld residual plot for
+each covariate.
 }
 \label{fig:cox:schoenfeld_residuals}
 \end{figure}
@@ -761,7 +764,7 @@ the proportional hazards assumption is violated in this variable.
 \centering
   \begin{subfigure}[c]{0.48\textwidth}\centering
   \includegraphics[width=\textwidth]{figures/survival/stanford_cox_age_martingale_residuals}
-  \caption{vs Prediction}
+  \caption{vs Log Partial Hazard, \newline\ie Linear Predictions}
   \label{fig:cox:martingale_residuals:prediction}
   \end{subfigure}
   ~
@@ -773,9 +776,12 @@ the proportional hazards assumption is violated in this variable.
 \caption{
 Plots of Martingale residuals for
 an univariate Cox model fit to the Stanford heart transplant dataset.
-On the left, the residuals are plotted versus the predicted values from the Cox model.
+On the left, the residuals are plotted versus the
+log of the partial hazard, \ie log hazard excluding the baseline hazard.
+In \R this is known as \texttt{linear.predictors}, while in \texttt{lifelines} it is
+\href{https://lifelines.readthedocs.io/en/latest/fitters/regression/CoxPHFitter.html\#lifelines.fitters.coxph_fitter.SemiParametricPHFitter.predict_log_partial_hazard}{log partial hazard}.
 As can be seen in the blue fit, there is a slight nonlinearity.
-On the right, the residuals are plotted against the age variable alone.
+On the right, residuals of the null model are plotted against the age variable alone.
 For ages $\lesssim 40$, age appears to have a non-linear relationship with $\log\left(\lambda\right)$.
 }
 \label{fig:cox:martingale_residuals}
@@ -797,7 +803,10 @@ For ages $\lesssim 40$, age appears to have a non-linear relationship with $\log
 \caption{
 Additional residual plots for
 an univariate Cox model fit to the Stanford heart transplant dataset.
-On the left, the deviance residuals are plotted versus the predicted values from the Cox model.
+On the left, the deviance residuals are plotted versus the
+log of the partial hazard, \ie log hazard excluding the baseline hazard.
+In \R this is known as \texttt{linear.predictors}, while in \texttt{lifelines} it is
+\href{https://lifelines.readthedocs.io/en/latest/fitters/regression/CoxPHFitter.html\#lifelines.fitters.coxph_fitter.SemiParametricPHFitter.predict_log_partial_hazard}{log partial hazard}.
 As can be seen in the blue fit, there is a slight nonlinearity.
 On the right, the $\hat{\Delta}_{ij}$, \ie ``dfbeta'', residuals for age
 are plotted against event number.
