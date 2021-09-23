@@ -29,3 +29,59 @@
 % \begin{equation}\label{eq:cos}
 % \end{equation}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Term Frequency-Inverse Document Frequency (TF-IDF)}
+\label{ml:unsupervised:tfidf}
+
+Term frequency-inverse document frequency (TF-IDF) is a statistic
+used in natural language processing (NLP) to quantify
+the importance, or uniqueness, of a term $t$ in a document $d$
+with respect to a wider set of documents $D$\footnote{Note that $d$ is not necessarily an element of $D$, we can compare novel $d$ to a reference corpus $D$.}.
+As the name suggests, TF-IDF is the product of two components,
+one representing the frequency of the term under consideration within the document of interest,
+and the other the inverse of the frequency of the term in all documents of the broader corpus.
+There are a handful of definitions available for each term, but we will only describe
+one of the more standard forms in this section:
+
+\begin{subequations}\label{eq:unsupervised:tfidf}
+\begin{align}
+\text{tf}\left(t,d\right) &= \frac{n_{t,d}}{\sum_{t' \in d} n_{t',d}}, \label{eq:unsupervised:tfidf:tf} \\
+\text{idf}\left(t,D\right) &= \log\left(\frac{\abs{D}}{1 + \abs{\left\{d' \in D \, | \, t \in d'\right\}}}\right), \label{eq:unsupervised:tfidf:idf} \\
+\text{tf-idf}\left(t,d\right) &= \text{tf}\left(t,d\right) \times \text{idf}\left(t,D\right). \label{eq:unsupervised:tfidf:tfidf}
+\end{align}
+\end{subequations}
+
+\noindent Here $n_{t,d}$ is number of times $t$ appears in $d$,
+$\abs{D}$ is the number of documents in $D$,
+and $\abs{\left\{d \in D \, | \, t \in d\right\}}$ is the number of number of documents in $D$ which contain $t$.
+We take the natural log in the $\text{idf}\left(t,D\right)$ component to better accommodate large corpora of documents,
+and include the constant $1+$ term to avoid divide-by-zero issues.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Prevalence Ratio}
+\label{ml:unsupervised:PrevalenceRatio}
+
+The prevalence ratio (PR) is a similar concept to TF-IDF,
+allowing us to identify important characteristics of a population of interest versus the wider population.
+For example, we can use a PR to assess the association of hypertension with heart failure by comparing
+the prevalence of hypertension in a cohort of heart failure patients
+to the prevalence of hypertension in the general population,
+or at least a representative sample\footnote{Defining an acceptable representative sample is often the hardest part of the analysis and may require stratification, \eg stratifying by age when investigating disease.} of it.
+
+The prevalence of a characteristic $c$ in a population $P$ is $\abs{\{p' \in P \, | \, c \in p'\}} \, / \, \abs{p' \in P}$,
+note the similarity to $\text{tf}\left(t,d\right)$ \cref{eq:unsupervised:tfidf:tf}.
+The prevalence ratio is then
+
+\begin{equation}\label{eq:unsupervised:PR}
+\text{PR}\left(t,d\right) = \frac{ \abs{\{p' \in P \, | \, c \in p'\}} \, / \, \abs{p' \in P} }{ \abs{\{p' \in P_{0} \, | \, c \in p'\}} \, / \, \abs{p' \in P_{0}} },
+\end{equation}
+
+\noindent where $P$ is the population of interest and $P_{0}$ is the wider population.
+
+Note that the PR is mathematically identical to the relative risk, or hazard ratio (HR) discussed in \cref{additional:Survival}.
+There is a similar discussion in the literature \cite{pmid27460748,10.3389/fvets.2017.00193}
+on prevalence ratios versus odds ratios as is described in \cref{additional:Survival:additional:odds}.
+
+% See also: https://sph.unc.edu/wp-content/uploads/sites/112/2015/07/nciph_ERIC8.pdf
