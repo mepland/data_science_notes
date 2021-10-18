@@ -4,6 +4,33 @@
 \chapter{Probability Distributions}
 \label{dist}
 
+% Place these distributions first as they are simple and keep the interesting ones together on the next page
+\begin{figure}
+  \centering
+  \savebox{\largestimage}{
+    \includegraphics[width=0.47\textwidth]{figures/stats/dist/exp_pdf.pdf}
+  }% Store largest image in a box
+
+  \begin{subfigure}[b]{0.48\textwidth}\centering
+    \raisebox{\dimexpr.5\ht\largestimage-.5\height}{% Adjust vertical height of smaller image
+      \includegraphics[width=\textwidth]{figures/stats/dist/uniform_pdf.pdf}}
+  \caption{Uniform Distribution PDF}
+  \label{fig:dist:uniform}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{\wd\largestimage}\centering
+    \usebox{\largestimage}
+  \caption{Exponential Distribution PDF}
+  \label{fig:dist:exp}
+  \end{subfigure}
+\caption{
+Uniform and exponential distribution PDFs,
+by \href{https://en.wikipedia.org/wiki/File:Uniform_Distribution_PDF_SVG.svg}{AnonMoos}
+and \href{https://en.wikipedia.org/wiki/File:Exponential_probability_density.svg}{AkanoToE}.
+\label{fig:dist:uniform_exp}
+}
+\end{figure}
+
 \begin{figure}
   \centering
   \savebox{\largestimage}{
@@ -58,7 +85,6 @@ approaches the standard normal distribution shown in red.
 \label{fig:dist:gaus_student_t}
 }
 \end{figure}
-
 
 \begin{figure}
 \centering
