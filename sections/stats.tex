@@ -109,6 +109,31 @@ $P\left(\stcomp{F} \mid h,t\right)$ for various values of $h$, $t$, and $p_{H}$ 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Uniform Distribution}
+\label{stats:uniform}
+
+The uniform distribution, \cref{eq:stats:uniform:P} and \cref{fig:dist:uniform},
+is the simplest probability distribution
+having a constant probability $1/(a+b)$ over the interval $a$ to $b$.
+
+\begin{equation}\label{eq:stats:uniform:P}
+P\left(x;\,a,\,b\right) = \begin{cases}
+\frac{1}{b-a} & a \leq x \leq b \,, \\
+0 & \text{otherwise} \,,
+\end{cases}
+\end{equation}
+
+It is illustrative to compute the mean and variance of the uniform distribution from $P(x)$ directly:
+
+\begin{subequations}\label{eq:stats:uniform:mean_variance}
+\begin{align}
+\expval{x} &= \int_{-\infty}^{\infty} x P\left(x\right) \, \dif x = \frac{1}{b-a} \int_{a}^{b} x \, \dif x = \frac{1}{2(b-a)}\left(b^{2} - a^{2}\right) = \frac{1}{2}\left(a + b\right)\,, \label{eq:stats:uniform:mean_variance:mean} \\
+\variance{x} &= \expval{x^{2}} - \expval{x}^{2} = \frac{1}{b-a} \int_{a}^{b} x^{2} \, \dif x - \expval{x}^{2} = \cdots = \frac{1}{12}\left(b-a\right)^{2}\,. \label{eq:stats:uniform:mean_variance:variance}
+\end{align}
+\end{subequations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Binomial Distribution}
 \label{stats:binomial}
 
@@ -207,8 +232,30 @@ Interestingly, the mean and variance of the Poisson distribution are identical a
 \section{Exponential Distribution}
 \label{stats:exp}
 If we sample the time intervals between Poisson distributed events
-we arrive at the exponential distribution.
-% TODO
+we arrive at the exponential distribution,
+
+\begin{equation}\label{eq:stats:exp:P}
+P\left(x;\,\lambda\right) = \begin{cases}
+\lambda e^{-\lambda x} & x \geq 0 \,, \\
+0 & x < 0 \,,
+\end{cases}
+\end{equation}
+
+\noindent with rate parameter $\lambda$.
+A plot of the distribution can be found in \cref{fig:dist:exp}.
+
+The mean and standard deviation of the exponential distribution are identical and equal to $1/\lambda$:
+
+\begin{equation}\label{eq:stats:exp:mean_variance}
+\expval{x} = \sigma = \frac{1}{\lambda}\,, \quad \sigma^{2} = \frac{1}{\lambda^{2}}\,.
+\end{equation}
+
+The exponential distribution is memoryless\footnote{The exponential (geometric) distribution is the only real number (integer) memoryless probability distribution.} \cref{eq:stats:exp:memoryless},
+\ie the time until a future event occurs does not depend on the time elapsed at the present.
+
+\begin{equation}\label{eq:stats:exp:memoryless}
+P\left(T > t + s \mid T > s\right) = P\left(T > t\right)\,, \quad \forall s,t \geq 0.
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
