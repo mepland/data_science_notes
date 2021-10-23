@@ -72,7 +72,7 @@ Example distributions can be found in \cref{fig:stats:corr_ex}.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\textwidth]{figures/stats/corr_ex.pdf}
+\includegraphics[width=0.95\textwidth]{figures/stats/corr_ex}
 \caption{
 Example distributions for
 uncorrelated ($\rho \approx 0$),
@@ -150,5 +150,61 @@ P\left(u,v\right) &= \frac{1}{2\pi\sigma_{u}\sigma_{v}}\frac{1}{\sqrt{1-\rho^{2}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Markov Chains}
 \label{additional:misc:markov_chains}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Sampling from Probability Distributions}
+\label{additional:misc:sampling_prob_dist}
+Most programming languages have built-in functions to generate
+pseudo-random numbers from common probability distributions,
+such as the Poisson \cref{eq:stats:poisson:P} or Gaussian \cref{eq:stats:gaus:P} distributions.
+However, in some cases we may wish to sample from an unsupported esoteric function.
+In these situations we can turn to inverse transform sampling and rejection sampling,
+to give just two examples from many possible computational methods,
+to construct the desired distribution from an existing random number generator.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Inverse Transform Sampling}
+\label{additional:misc:sampling_prob_dist:inverse}
+% https://www.youtube.com/watch?v=9ixzzPQWuAY
+If we know the explicit form of the target probability density function (PDF), $X = P\left(x\right)$,
+can integrate it to find the cumulative distribution function (CDF), $F_{X}\left(x\right) = \int_{-\infty}^{x} P\left(t\right) \, \dif t$,
+and furthermore can invert the CDF, $F^{-1}_{X}\left(u\right)$ for $0 \leq u \leq 1$,
+we can explicitly transform the uniform distribution $U\left(x\right)$ into $P\left(x\right)$ as:
+
+\begin{equation}\label{eq:stats:sampling_prob_dist:inverse}
+F^{-1}_{X}\left(U\right) = P\left(x\right) = X\,.
+\end{equation}
+
+To prove the method, assuming that $F^{-1}_{X}$ exists, we can do:
+
+\begin{subequations}\label{eq:stats:sampling_prob_dist:inverse_proof}
+\begin{align}
+P\left(F^{-1}_{X}\left(U\right) \leq x\right) &= P\left(U \leq F_{X}\left(x\right) \right) \label{eq:stats:sampling_prob_dist:inverse_proof:inverse} \\
+&= F_{X}\left(x\right)\,,\label{eq:stats:sampling_prob_dist:inverse_proof:def} \\
+P\left(U \leq y\right) &= y\,, \label{eq:stats:sampling_prob_dist:inverse_proof:U}
+\end{align}
+\end{subequations}
+
+\noindent where in \cref{eq:stats:sampling_prob_dist:inverse_proof:inverse} we have applied $F$ to both sides of the inner inequality,
+and in \cref{eq:stats:sampling_prob_dist:inverse_proof:def} we have used the definition of the uniform distribution \cref{eq:stats:sampling_prob_dist:inverse_proof:U}.
+As $P\left(F^{-1}_{X}\left(U\right) \leq x\right) = F_{X}\left(x\right) = P\left(X \leq x\right)$
+we can compare terms and see \cref{eq:stats:sampling_prob_dist:inverse}.
+
+The inverse sampling method can be seen graphically \cref{fig:inverse_sampling_method_normal} being used to generate the normal distribution.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{figures/stats/inverse_transform_sampling_normal_dist}
+\caption{
+Example application of the inverse sampling method to generate the normal distribution, adapted from \href{https://en.wikipedia.org/wiki/File:Inverse_transform_sampling.png}{Olivier Ricou}.
+}
+\label{fig:inverse_sampling_method_normal}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Rejection Sampling}
+\label{additional:misc:sampling_prob_dist:reject}
+% https://www.youtube.com/watch?v=OXDqjdVVePY
 % TODO
 
