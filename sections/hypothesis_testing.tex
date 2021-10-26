@@ -229,13 +229,94 @@ Z &= \frac{\pi_{1} - \pi_{2} - \pi_{\Delta}}{\pi_{p} \left(1-\pi_{p}\right)\left
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mann-Whitney U Test}
+\label{hypo:mann_whitney_U_test}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Kolmogorov-Smirnov Test}
 \label{hypo:KS_test}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Hypothesis Test Power}
+\section{Hypothesis Test Power Analysis}
 \label{hypo:power}
-% TODO
 
+In hypothesis testing, like binary classification, we can suffer from two types of errors;
+Type I or false positives, and Type II or false negatives.
+The probabilities of these errors are functions of the experimental design
+and are important to understand before undertaking a study.
+We label $\alpha$ as the probability of rejecting a true null hypothesis, \ie a type I error,
+and $\beta$ as the probability of failing to reject a false null hypothesis, \ie a type II error.
+See \cref{table:CM} for a graphical representation in the context of binary classification.
+
+$\alpha$ is the easier parameter to understand and improve,
+as it is just the \pvalue threshold we select before the study.
+It is typical to use $\alpha \leq \num{0.05}$.
+$\beta$ depends on many factors including
+$\alpha$,
+the magnitude of the underlying effect,
+the measurement variance,
+the model being utilized,
+and the sample size $n$.
+Instead of using $\beta$ directly we often talk about the statistical power of a hypothesis test, $1-\beta$,
+\ie the probability of correctly rejecting a false null hypothesis.
+$\num{0.8} < 1-\beta$ is a commonly used target for the power.
+As experimenters, we can
+try to improve our methods to reduce the measurement variance,
+select a more appropriate model\footnote{Parametric
+models tend to have higher powers than the equivalent non-parametric model.
+% https://youtu.be/diRX_NesFkA?t=558
+In particular, comparing
+the Mann-Whitney U and unpaired $t$-test gives $\frac{\left(1-\beta\right)_{\text{MWU}}}{\left(1-\beta\right)_{t}} = \frac{3}{\pi} = \num{0.955}$,
+%while comparing the Wilcoxon signed-rank and paired $t$-test gives $\frac{\left(1-\beta\right)_{\text{WSR}}}{\left(1-\beta\right)_{t}} = \frac{2}{\pi} = \num{0.6437}$, % TODo add if I cover the Wilcoxon signed-rank test in the future
+for large $n$.},
+or begrudgingly accept some combination of a larger $\alpha$ or larger minimal detectable difference.
+However, the primary lever for improving an experiment's power is by increasing $n$,
+at the cost of additional time and money to complete the study.
+
+Calculating $\beta$ can be challenging and is commonly done in software particular to the model being utilized.
+For a simple example, we can consider a $Z$-test of a null hypothesis $\mu_{0}$
+and compute the power of the test at a specific value of the alternative hypothesis $\mu_{a}$, with $\mu_{0} < \mu_{a}$.
+For the given $\alpha$ being used we can look up the corresponding critical $Z$-score, $Z_{\alpha}$.
+Then assuming a standard deviation of $s_{\text{est}}$ from prior work,
+and knowing $n$, we can estimate the sample mean
+which would put us at the critical $Z$-score, $\expval{x_{c}}$ \cref{eq:hypo:power_ex:x_c}.
+We then calculate the $Z$-score again, this time assuming the alternative hypothesis $\mu_{a}$ is true
+and we have observed $\expval{x_{c}}$ from our sample, \ie we are right at the edge of rejecting a false null hypothesis.
+This $Z$-score, $Z_{a}$ \cref{eq:hypo:power_ex:Z_a}, can finally be used to find the power $1-\beta = P\left(Z_{a} < Z\right)$.
+
+\begin{subequations}\label{eq:hypo:power_ex}
+\begin{align}
+Z_{\alpha} &= \frac{\expval{x_{c}} - \mu_{0}}{s_{\text{est}} / \sqrt{n}} \implies
+\expval{x_{c}} = \frac{Z_{\alpha} s_{\text{est}}}{\sqrt{n}} + \mu_{0} \label{eq:hypo:power_ex:x_c} \\
+Z_{a} &= \frac{\expval{x_{c}} - \mu_{a}}{s_{\text{est}} / \sqrt{n}}
+= Z_{\alpha} + \sqrt{n}\,\frac{\mu_{0} - \mu_{a}}{s_{\text{est}}} \label{eq:hypo:power_ex:Z_a}
+\end{align}
+\end{subequations}
+
+Note that as advertised $Z_{a}$ depends on
+the choice of $\alpha$ via $Z_{\alpha}$,
+the magnitude of the underlying effect $\mu_{0} - \mu_{a}$,
+the measurement variance $s_{\text{est}}$,
+the sample size $n$,
+and is particular to this hypothesis test.
+Plugging in numbers, if
+$\alpha = \num{0.05} \to Z_{\alpha} = \num{1.645}$,
+$\mu_{0} = \num{10}$,
+$s_{\text{est}} \approx \num{2}$,
+$n = \num{100}$,
+and we want to find the power of the test for an alternative hypothesis of $\mu_{a} = \num{10.5}$,
+we have $Z_{a} = \num{-0.8551} \to P\left(\num{-0.8551} < Z\right) = \num{0.8038}$
+and thus the power is an acceptable $1-\beta = \num{0.8038} = \SI{80.38}{\percent}$.
+We could use a similar line of reasoning to estimate
+the $n$ necessary to obtain a desired $\alpha$ and $\beta$ before running the experiment.
+
+% import numpy as np
+% import scipy.stats
+% norm = scipy.stats.norm
+% Z_a = norm.ppf(1-0.05) + np.sqrt(100)*(10-10.5)/2
+% print(f'Z_a = {Z_a:.4f}')
+% print(f'Power = 1-beta = {1-norm.cdf(Z_a):.4f}')
