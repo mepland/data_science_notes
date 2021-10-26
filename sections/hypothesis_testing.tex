@@ -277,7 +277,9 @@ or begrudgingly accept some combination of a larger $\alpha$ or larger minimal d
 However, the primary lever for improving an experiment's power is by increasing $n$,
 at the cost of additional time and money to complete the study.
 
-Calculating $\beta$ can be challenging and is commonly done in software particular to the model being utilized.
+Calculating $\beta$ can be challenging and is commonly done in software\footnote{The \texttt{statsmodels.stats.power}
+\href{https://www.statsmodels.org/dev/stats.html?highlight=statsmodels\%20stats\%20power\#power-and-sample-size-calculations}{module}
+provides many useful functions, see \href{https://machinelearningmastery.com/statistical-power-and-power-analysis-in-python/}{here} for one example.} particular to the model being utilized.
 For a simple example, we can consider a $Z$-test of a null hypothesis $\mu_{0}$
 and compute the power of the test at a specific value of the alternative hypothesis $\mu_{a}$, with $\mu_{0} < \mu_{a}$.
 For the given $\alpha$ being used we can look up the corresponding critical $Z$-score, $Z_{\alpha}$.
