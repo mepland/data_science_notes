@@ -19,7 +19,7 @@ where $\mu$ and $\sigma$ are from the parent population.
 \bar{x} = \mu &= \frac{1}{n} \sum_{j=1}^{m} x_{j}\,,\,\text{for uniform}~p_{j} \label{eq:stats:exp_relations:mean} \\
 \expval{X+Y} &= \expval{X} + \expval{X} \label{eq:stats:exp_relations:add} \\
 \expval{a X} &= a \expval{X} \label{eq:stats:exp_relations:mult} \\
-\expval{a} &= a \,\, \Rightarrow \, \expval{\expval{X}} = \expval{X} \label{eq:stats:exp_relations:self} \\
+\expval{a} &= a \,\, \implies \, \expval{\expval{X}} = \expval{X} \label{eq:stats:exp_relations:self} \\
 \expval{X Y}^{2} &\leq \expval{X^{2}} \expval{Y^{2}} \label{eq:stats:exp_relations:cbs_ineq}
 \end{align}
 \end{subequations}
@@ -128,11 +128,6 @@ P\left(u,v\right) &= \frac{1}{2\pi\sigma_{u}\sigma_{v}}\frac{1}{\sqrt{1-\rho^{2}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Analysis of Variance (ANOVA)}
-\label{additional:stats:ANOVA}
-% TODO
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Time Series Analysis}
 \label{additional:stats:time_series_ana}
 % TODO
@@ -186,20 +181,50 @@ and in \cref{eq:stats:sampling_prob_dist:inverse_proof:def} we have used the def
 As $P\left(F^{-1}_{X}\left(U\right) \leq x\right) = F_{X}\left(x\right) = P\left(X \leq x\right)$
 we can compare terms and see \cref{eq:stats:sampling_prob_dist:inverse}.
 
-The inverse sampling method can be seen graphically \cref{fig:inverse_sampling_method_normal} being used to generate the normal distribution.
+The inverse sampling method can be seen graphically \cref{fig:stats:sampling_prob_dist:inverse} being used to generate the normal distribution.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.7\textwidth]{figures/stats/inverse_transform_sampling_normal_dist}
-\caption{
-Example application of the inverse sampling method to generate the normal distribution, adapted from \href{https://en.wikipedia.org/wiki/File:Inverse_transform_sampling.png}{Olivier Ricou}.
-}
-\label{fig:inverse_sampling_method_normal}
-\end{figure}
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.7\textwidth]{figures/stats/inverse_transform_sampling_normal_dist}
+%\caption{
+%Example application of the inverse sampling method to generate the normal distribution, adapted from \href{https://en.wikipedia.org/wiki/File:Inverse_transform_sampling.png}{Olivier Ricou}.
+%}
+%\label{fig:stats:sampling_prob_dist:inverse}
+%\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Rejection Sampling}
 \label{additional:misc:sampling_prob_dist:reject}
 % https://www.youtube.com/watch?v=OXDqjdVVePY
-% TODO
 
+While inverse transform sampling is a computationally efficient method
+its assumptions will not be met by all interesting PDFs,
+in particular if we do not have an explicit, invertible CDF.
+In these cases we can turn to rejection sampling instead,
+which can handle more general PDFs at the cost of more computational overhead.
+% TODO In rejection sampling, the PDF to be 
+
+\begin{figure}[H]
+  \centering
+  \savebox{\largestimage}{
+    \includegraphics[width=0.47\textwidth,trim={3.0cm 0.5cm 3.0cm 0.1cm},clip]{figures/stats/inverse_transform_sampling_normal_dist}% trim={<left> <lower> <right> <upper>}
+  }% Store largest image in a box
+
+  \begin{subfigure}[b]{0.48\textwidth}\centering
+    \usebox{\largestimage}
+    \vspace{0.01cm}
+  \caption{Inverse Sampling}
+  \label{fig:stats:sampling_prob_dist:inverse}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{\wd\largestimage}\centering
+    \raisebox{\dimexpr.5\ht\largestimage-.5\height}{% Adjust vertical height of smaller image
+      \includegraphics[width=\textwidth]{figures/stats/rejection_sampling}}
+  \caption{Rejection Sampling}
+  \label{fig:stats:sampling_prob_dist:reject}
+  \end{subfigure}
+\caption{
+Illustrations of the inverse sampling and rejection sampling methods, adapted from \href{https://en.wikipedia.org/wiki/File:Inverse_transform_sampling.png}{Olivier Ricou} and \href{https://www.data-blogger.com/2016/01/24/the-mathematics-behind-rejection-sampling/}{Kevin Jacobs}.
+  \label{fig:stats:sampling_prob_distr}
+}
+\end{figure}
