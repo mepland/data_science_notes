@@ -70,7 +70,7 @@ S\left(\bm{\beta}\right) &=
 0
 -2\, \partial_{\bm{\beta}} \, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{y}
 +\partial_{\bm{\beta}} \, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \bm{\beta} \label{eq:linear:grad_S_expand} \\
-&= -2\, \mathbf{X}\transpose \mathbf{y} + 2\, \mathbf{X}\transpose \mathbf{X} \bm{\beta} = 0. \, \Rightarrow \label{eq:linear:grad_S} \\
+&= -2\, \mathbf{X}\transpose \mathbf{y} + 2\, \mathbf{X}\transpose \mathbf{X} \bm{\beta} = 0. \, \implies \label{eq:linear:grad_S} \\
 \mathbf{X}\transpose \mathbf{y} &= \mathbf{X}\transpose \mathbf{X} \bm{\beta}\,, \label{eq:linear:penultimate}
 \end{align}
 \end{subequations}
@@ -263,7 +263,7 @@ and quickly arrive at a modified version of the OLS solution \cref{eq:linear:rid
 \begin{align}
 \partial_{\bm{\beta}} \, S\left(\bm{\beta}\right)
 &= -2\, \mathbf{X}\transpose \mathbf{y} + 2\, \mathbf{X}\transpose \mathbf{X} \bm{\beta} \label{eq:linear:ridge_derivation:grad_S_repeat} \\
-&+ 2\,\lambda \bm{\beta} = 0 \,\, \Rightarrow \label{eq:linear:ridge_derivation:new} \\
+&+ 2\,\lambda \bm{\beta} = 0 \,\, \implies \label{eq:linear:ridge_derivation:new} \\
 \mathbf{X}\transpose \mathbf{y} &= \left(\mathbf{X}\transpose \mathbf{X} + \lambda\,\identity\right) \bm{\beta} \label{eq:linear:ridge_derivation:penultimate} \\
 \hat{\bm{\beta}}^{\text{ridge}} &= \left(\mathbf{X}\transpose\mathbf{X} + \lambda\,\identity\right)^{-1}\mathbf{X}\transpose \mathbf{y} \label{eq:linear:ridge_derivation:betahat}
 \end{align}
