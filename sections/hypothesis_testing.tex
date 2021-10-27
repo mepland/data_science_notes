@@ -283,9 +283,13 @@ or begrudgingly accept some combination of a larger $\alpha$ or larger minimal d
 However, the primary lever for improving an experiment's power is by increasing $n$,
 at the cost of additional time and money to complete the study.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texorpdfstring{$Z$}{Z}-Test Power Example}
+\label{hypo:power:Z_example}
+
 Calculating $\beta$ can be challenging and is commonly done in software\footnote{The \texttt{statsmodels.stats.power}
 \href{https://www.statsmodels.org/dev/stats.html?highlight=statsmodels\%20stats\%20power\#power-and-sample-size-calculations}{module}
-provides many useful functions, see \href{https://machinelearningmastery.com/statistical-power-and-power-analysis-in-python/}{here} for one example.} particular to the model being utilized.
+provides many useful functions, see \href{https://machinelearningmastery.com/statistical-power-and-power-analysis-in-python/}{here} for one example implementation.} particular to the model being utilized.
 For a simple example, we can consider a $Z$-test of a null hypothesis $\mu_{0}$
 and compute the power of the test at a specific value of the alternative hypothesis $\mu_{a}$, with $\mu_{0} < \mu_{a}$.
 For the given $\alpha$ being used we can look up the corresponding critical $Z$-score, $Z_{\alpha}$.
@@ -328,3 +332,57 @@ the $n$ necessary to obtain a desired $\alpha$ and $\beta$ before running the ex
 % Z_a = norm.ppf(1-0.05) + np.sqrt(100)*(10-10.5)/2
 % print(f'Z_a = {Z_a:.4f}')
 % print(f'Power = 1-beta = {1-norm.cdf(Z_a):.4f}')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Lehr's Rule of Thumb for \texorpdfstring{$t$}{t}-Tests}
+\label{hypo:power:rule_of_thumb}
+
+As a rough rule of thumb for one-sided (two-sided) $t$-tests,
+Lehr argues that to have a power of $1-\beta \sim \num{0.8}$ with $\alpha = \num{0.05}$,
+$n$ \cref{eq:hypo:power_rule_of_thumb} should be set to 8\footnote{This
+factor is $8 \approx \left(Z_{\alpha/2} + Z_{\beta}\right)^{2}$, for $1-\beta = \num{0.8}$, $\alpha = \num{0.05}$.} (16)
+times the ratio of the estimated population variance, $s^{2}$,
+and the desired detectable difference squared, $\Delta^{2} = \left(\mu_{1} - \mu_{2}\right)^{2}$.
+Note that we can also rearrange this rule of thumb to estimate $\Delta^{2}$ given a particular $n$.
+
+\begin{subequations}\label{eq:hypo:power_rule_of_thumb}
+\begin{align}
+n &\approx \hphantom{1}8 \frac{s^{2}}{\Delta^{2}}\quad \left(\text{One-Sided}\right), \label{eq:hypo:power_rule_of_thumb:one} \\
+n &\approx 16 \frac{s^{2}}{\Delta^{2}}\quad \left(\text{Two-Sided}\right). \label{eq:hypo:power_rule_of_thumb:two}
+\end{align}
+\end{subequations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bonferroni Correction}
+\label{hypo:bonferroni_correction}
+When conducting multiple hypothesis tests on the same set of data
+we run the risk of underreporting $\alpha$ for the whole analysis.
+In particle physics this is known as the look elsewhere effect\footnote{See the discussion in appendix C of the dissertation.}
+\cite{Demortier:2007zz,lyons2008,Gross2010,Ranucci:2012ed}.
+For example, if we set $\alpha = \num{0.05}$ for any individual test
+on a set of data with many features, but then run $\num{20}$
+tests on it, by chance we'd expect $\approx \num{1}$ tests
+to erroneously reject a true null hypothesis.
+To quantify this concept, we can construct
+the family-wise $\alpha$ across all of the $N$ tests done on a dataset\footnote{There is
+disagreement on the best way to treat $\alpha_{\text{FW}}$,
+\eg are we even talking about the right null hypothises \cite{Perneger1236},
+what if the different tests are use correlated variables -- then they are not wholly independent tests in the context of $\alpha_{\text{FW}}$.
+The $\alpha_{\text{FW}}$ of \cref{eq:hypo:alpha_fw} is just one simple definition.},
+$\alpha_{\text{FW}}$ \cref{eq:hypo:alpha_fw}.
+In our earlier example, we would have $\alpha_{\text{FW}} = \num{0.642}$,
+or a \SI{64.2}{\percent} chance of at least one test rejecting the null hypothesis in error.
+
+\begin{equation}\label{eq:hypo:alpha_fw}
+\alpha_{\text{FW}} = 1 - \left(1 - \alpha\right)^{N}
+\end{equation}
+
+To address this issue we can apply the Bonferroni correction,
+and simply divide our nominal $\alpha$ by $N$
+before conducting the tests\footnote{Or equivalently multiply the observed {\pvalue}s by $N$.}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Sequential Bonferroni Correction, \ie Holm--Bonferroni Correction}
+\label{hypo:bonferroni_correction:sequential}
+% TODO
