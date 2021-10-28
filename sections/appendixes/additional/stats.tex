@@ -159,7 +159,9 @@ to construct the desired distribution from an existing random number generator.
 % https://www.youtube.com/watch?v=9ixzzPQWuAY
 If we know the explicit form of the target probability density function (PDF), $X = P\left(x\right)$,
 can integrate it to find the cumulative distribution function (CDF), $F_{X}\left(x\right) = \int_{-\infty}^{x} P\left(t\right) \, \dif t$,
-and furthermore can invert the CDF, $F^{-1}_{X}\left(u\right)$ for $0 \leq u \leq 1$,
+and furthermore can invert the CDF\footnote{The inverse CDF
+is known as the percent point function, \texttt{ppf},
+in \href{https://docs.scipy.org/doc/scipy-0.14.0/reference/stats.html}{\scipy}.}, $F^{-1}_{X}\left(u\right)$ for $0 \leq u \leq 1$,
 we can explicitly transform the uniform distribution $U\left(x\right)$ into $P\left(x\right)$ as:
 
 \begin{equation}\label{eq:stats:sampling_prob_dist:inverse}
@@ -201,8 +203,28 @@ While inverse transform sampling is a computationally efficient method
 its assumptions will not be met by all interesting PDFs,
 in particular if we do not have an explicit, invertible CDF.
 In these cases we can turn to rejection sampling instead,
-which can handle more general PDFs at the cost of more computational overhead.
-% TODO In rejection sampling, the PDF to be 
+which can handle more general PDFs at the cost of a lower computational efficiency.
+
+In rejection sampling, we assume we know the PDF of the random variable to be sampled from,
+up to a normalization constant $A$ \cref{eq:stats:sampling_prob_dist:reject:X}.
+We then choose a different PDF, $g\left(x\right)$  which is easy for us to sample from.
+Any $g\left(x\right)$ covering the range of $x$ will do,
+but the method is more efficient the closer we can get $g\left(x\right)$ to match $f\left(x\right)$.
+$g\left(x\right)$ is then scaled by a known constant $M$
+such that it is always larger than $f\left(x\right)$ \cref{eq:stats:sampling_prob_dist:reject:f_condition}
+as illustrated in \cref{fig:stats:sampling_prob_dist:reject}.
+Finally, we sample random $x$ values from $g\left(x\right)$ and accept them with probability \cref{eq:stats:sampling_prob_dist:reject:P_accept}.
+The accepted $x$ values will have the same distribution as $X$.
+
+\begin{subequations}\label{eq:stats:sampling_prob_dist:reject}
+\begin{align}
+X = P\left(x\right) &= \frac{1}{A} f\left(x\right), \label{eq:stats:sampling_prob_dist:reject:X} \\
+\forall x, \quad f\left(x\right) & \leq M g\left(x\right), \label{eq:stats:sampling_prob_dist:reject:f_condition} \\
+P\left(\text{Accept}\,x\right) &= \frac{f\left(x\right)}{M g\left(x\right)}\,. \label{eq:stats:sampling_prob_dist:reject:P_accept}
+\end{align}
+\end{subequations}
+
+% TODO Proof
 
 \begin{figure}[H]
   \centering
