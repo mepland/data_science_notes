@@ -207,7 +207,7 @@ which can handle more general PDFs at the cost of a lower computational efficien
 
 In rejection sampling, we assume we know the PDF of the random variable to be sampled from,
 up to a normalization constant $A$ \cref{eq:stats:sampling_prob_dist:reject:X}.
-We then choose a different PDF, $g\left(x\right)$  which is easy for us to sample from.
+We then choose a different PDF, $g\left(x\right)$ which is easy for us to sample from.
 Any $g\left(x\right)$ covering the range of $x$ will do,
 but the method is more efficient the closer we can get $g\left(x\right)$ to match $f\left(x\right)$.
 $g\left(x\right)$ is then scaled by a known constant $M$
@@ -220,11 +220,9 @@ The accepted $x$ values will have the same distribution as $X$.
 \begin{align}
 X = P\left(x\right) &= \frac{1}{A} f\left(x\right), \label{eq:stats:sampling_prob_dist:reject:X} \\
 \forall x, \quad f\left(x\right) & \leq M g\left(x\right), \label{eq:stats:sampling_prob_dist:reject:f_condition} \\
-P\left(\text{Accept}\,x\right) &= \frac{f\left(x\right)}{M g\left(x\right)}\,. \label{eq:stats:sampling_prob_dist:reject:P_accept}
+P\left(\text{Accept} \mid x\right) &= \frac{f\left(x\right)}{M g\left(x\right)}\,. \label{eq:stats:sampling_prob_dist:reject:P_accept}
 \end{align}
 \end{subequations}
-
-% TODO Proof
 
 \begin{figure}[H]
   \centering
@@ -250,3 +248,16 @@ Illustrations of the inverse sampling and rejection sampling methods, adapted fr
   \label{fig:stats:sampling_prob_distr}
 }
 \end{figure}
+
+For a proof of why the rejection sampling method works see \cref{eq:stats:sampling_prob_dist:reject:proof} below
+which hinges on Bayes' Theorem from \cref{stats:Bayes} in \cref{eq:stats:sampling_prob_dist:reject:proof:x_given_Accept}
+along with other basic definitions from probability theory.
+
+\begin{subequations}\label{eq:stats:sampling_prob_dist:reject:proof}
+\begin{align}
+P\left(x \mid \text{Accept}\right) &= \frac{P\left(\text{Accept} \mid x\right) P\left(x\right)}{P\left(\text{Accept}\right)} = \frac{1}{P\left(\text{Accept}\right)} \frac{f\left(x\right)}{M \cancel{g\left(x\right)}} \cancel{g\left(x\right)}, \label{eq:stats:sampling_prob_dist:reject:proof:x_given_Accept} \\
+P\left(\text{Accept}\right) &= \int_{-\infty}^{\infty} P\left(\text{Accept} \mid x\right) g\left(x\right) \, \dif x \label{eq:stats:sampling_prob_dist:reject:proof:P_Accept1} \\
+&= \int_{-\infty}^{\infty} \frac{f\left(x\right)}{M g\left(x\right)} g\left(x\right) \, \dif x = \frac{1}{M} \int_{-\infty}^{\infty} f\left(x\right) \, \dif x = \frac{A}{M}, \label{eq:stats:sampling_prob_dist:reject:proof:P_Accept2} \\
+\implies P\left(x \mid \text{Accept}\right) &= \frac{f\left(x\right)/M}{A/M} = \frac{1}{A} f\left(x\right) = P\left(x\right) = X. \label{eq:stats:sampling_prob_dist:reject:proof:conclusion}
+\end{align}
+\end{subequations}
