@@ -358,7 +358,7 @@ n &\approx 16 \frac{s^{2}}{\Delta^{2}}\quad \left(\text{Two-Sided}\right). \labe
 \label{hypo:bonferroni_correction}
 When conducting multiple hypothesis tests on the same set of data
 we run the risk of underreporting $\alpha$ for the whole analysis.
-In particle physics this is known as the look elsewhere effect\footnote{See the discussion in appendix C of the dissertation.}
+In particle physics this is known as the look elsewhere effect\footnote{See the discussion in Appendix C of the dissertation.}
 \cite{Demortier:2007zz,lyons2008,Gross2010,Ranucci:2012ed}.
 For example, if we set $\alpha = \num{0.05}$ for any individual test
 on a set of data with many features, but then run $\num{20}$
@@ -385,4 +385,15 @@ before conducting the tests\footnote{Or equivalently multiply the observed {\pva
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Sequential Bonferroni Correction, \ie Holm--Bonferroni Correction}
 \label{hypo:bonferroni_correction:sequential}
-% TODO
+We can control $\alpha_{\text{FW}}$ more efficiently in terms of the cost imposed on $\alpha$, and hence decreased power,
+by using the sequential Bonferroni correction, \ie the Holm--Bonferroni correction.
+As the name suggests, in the sequential correction
+we iterate through the $i \in \left\{0, 1, \ldots, N-1\right\}$ tests
+in order of their {\pvalue}s, from smallest to largest,
+checking that $i$th test's \pvalue is $< \alpha / \left(N-i\right)$.
+When we come to the first $i+1$ test with a $\pvalue \geq \alpha / \left(N-\left(i+1\right)\right)$
+we stop iterating and say the previous $i$ tests reject the null hypothesis,
+while the remaining $N-i$ tests fail to reject the null hypothesis.
+In this way we can constrain $\alpha_{\text{FW}} \leq \alpha$,
+while checking most tests against a less stringent condition
+than $\alpha / N$ of the normal Bonferroni correction.
