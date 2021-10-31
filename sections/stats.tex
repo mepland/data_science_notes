@@ -111,6 +111,12 @@ $P\left(\stcomp{F} \mid h,t\right)$ for various values of $h$, $t$, and $p_{H}$ 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Coin Problems}
+\label{stats:coin_problems}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Uniform Distribution}
 \label{stats:uniform}
 
@@ -329,6 +335,82 @@ x^{\frac{\nu}{2} - 1} e^{-\frac{x}{2}}
 }{
 2^{\frac{\nu}{2}} \Gamma\left(\frac{\nu}{2}\right)}
 \end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bootstrapping}
+\label{stats:bootstrapping}
+The bootstrap method can be a great solution when presented with difficult problems
+around measuring uncertainties or even conducting hypothesis tests.
+With bootstrapping we can estimate the uncertainty on any well defined quantity,
+even when the uncertainty itself does not have an explicit expression,
+\eg finding the confidence intervals for the median
+or coefficient of determination $R^{2}$ of linear regression.
+
+We begin with an original sample of size $n$ drawn from the larger population,
+and generate $1 \ll m$ bootstrap samples by resampling $n$ points from the sample with replacement,
+as illustrated in \cref{fig:bootstrapping}.
+The statistic of interest is computed on each of the bootstrapped samples
+before being combined into an overall distribution.
+Assuming the original population is independent and identically distributed (i.i.d.)\footnote{Note
+that the i.i.d. assumption is less stringent than
+the usual assumption of normality via the central limit theorem (CLT),
+allowing bootstrapping to be used in cases were $n$ may be to small for other methods.},
+the resulting bootstrapped distribution will approximate the true sampling distribution
+and we can use it to estimate the uncertainty on the statistic.
+The \SI{95}{\percent} confidence interval of the statistic in question
+can be found by simply\footnote{There are
+more advanced methods for determining the confidence interval not covered here,
+particularly for asymmetric distributions.} identifying
+the boundaries of the central \SI{95}{\percent} of bootstrapped sample values.
+Likewise, the standard error of the statistic is the standard deviation of the bootstrapped distribution.
+
+If the bootstrapped distribution is not symmetrical,
+which may be the case when working with measures of variance like the standard deviation,
+the bootstrapped result may be biased.
+In these cases, one potential correction is to shift the bootstrapped distribution
+such that the original sample statistic and mean of the bootstrapped distribution agree.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{figures/stats/bootstrapping.jpeg}
+\caption{
+Illustration of the bootstrapping method
+by \href{https://towardsdatascience.com/bootstrapping-statistics-what-it-is-and-why-its-used-e2fa29577307}{Trist'n Joseph}.
+Note that the $m$ resamples are done with replacement.
+The final bootstrapped distribution is built by measuring the statistic in question on all of the bootstrapped samples,
+and can be used to estimate the statistic's uncertainty.
+}
+\label{fig:bootstrapping}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Hypothesis Testing}
+\label{stats:bootstrapping:hypo}
+As we can construct confidence intervals, bootstrapping can also be used for hypothesis testing.
+N{a\"i}vely we can test the null hypothesis by checking if the value in question,
+typically \num{0}, lands within the confidence interval or not.
+We can also estimate the \pvalue of a parameter by shifting the original sample distribution such that
+it satisfies the null hypothesis, \eg shift all the data points by $\delta$ such that the sample has $\expval{x} = \num{0}$.
+We then bootstrap the shifted sample to produce the bootstrapped distribution as normal.
+The \pvalue is then the proportion of the bootstrapped distribution
+with values differing from the null hypothesis by the observed difference or more,
+\eg $P\left(\delta \leq \abs{x}\right)$ in the prior example.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Poisson Bootstrapping}
+\label{stats:bootstrapping:poisson}
+For large sample sizes $n$, instead of drawing $m$ bootstrap samples with replacement,
+which can be computationally expensive,
+we can use the single sample,
+but give each data point a weight $w$ drawn
+from the Poisson distribution with $\lambda = 1$.
+The set of weights is then generated $m$ times.
+Formally, the methods are equivalent as for large $n$
+the binomial probability of including a given data point approaches the Poisson probability with $\lambda = 1$.
+Poisson Bootstrapping is commonly used in particle physics,
+in particular see the direct balance $\gamma+\text{Jet}$ calibration
+in the dissertation \cite{mepland_dissertation}, Appendix E.1.4.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
