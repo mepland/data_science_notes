@@ -133,7 +133,7 @@ The \pvalue returned by the test estimates the probability of obtaining the obse
 assuming the null hypothesis, \ie the expectations, is true.
 The $\chi^{2}$-test statistic, $X^{2}$, is created with the assumption that
 the data are normally distributed and independent,
-which often is the case due to the central limit theorem.
+which often is the case due to the central limit theorem (CLT).
 It is constructed by squaring the difference\footnote{Yates's
 correction for continuity $\left(x^{\text{obs}}_{j} - x^{\text{exp}}_{j}\right)^{2} \to \left(\abs{x^{\text{obs}}_{j} - x^{\text{exp}}_{j}}-0.5\right)^{2}$ may
 also be applied in some low statistics cases.} between
@@ -247,7 +247,7 @@ Z &= \frac{\pi_{1} - \pi_{2} - \pi_{\Delta}}{\pi_{p} \left(1-\pi_{p}\right)\left
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Hypothesis Test Power Analysis}
+\section{Hypothesis Test Error Types and Power Analysis}
 \label{hypo:power}
 
 In hypothesis testing, like binary classification, we can suffer from two types of errors;
@@ -358,7 +358,7 @@ n &\approx 16 \frac{s^{2}}{\Delta^{2}}\quad \left(\text{Two-Sided}\right). \labe
 \label{hypo:bonferroni_correction}
 When conducting multiple hypothesis tests on the same set of data
 we run the risk of underreporting $\alpha$ for the whole analysis.
-In particle physics this is known as the look elsewhere effect\footnote{See the discussion in Appendix C of the dissertation.}
+In particle physics this is known as the look elsewhere effect\footnote{See the discussion in Appendix C of the dissertation \cite{mepland_dissertation}.}
 \cite{Demortier:2007zz,lyons2008,Gross2010,Ranucci:2012ed}.
 For example, if we set $\alpha = \num{0.05}$ for any individual test
 on a set of data with many features, but then run $\num{20}$
