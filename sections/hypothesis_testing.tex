@@ -160,7 +160,85 @@ X^{2} = \sum_{i=1}^{n} \sum_{j=1}^{m} \frac{\left(x^{\text{obs}}_{i,j} - x^{\tex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Analysis of Variance (ANOVA)}
 \label{hypo:ANOVA}
-% TODO
+When we are tasked with testing for differences between multiple groups
+we should not use multiple pairwise tests, like two-sample unpaired $t$-tests,
+as the family-wise error rate \cref{eq:hypo:alpha_fw}
+will compound and become unreasonable, see \cref{hypo:bonferroni_correction} for more.
+Instead when dealing with three\footnote{When there are only two groups a one-factor ANOVA is equivalent to a two-sample unpaired $t$-test with $F=t^{2}$.} or more groups
+the appropriate Analysis of Variance (ANOVA) method should be used.
+Like pairwise tests, there are multiple versions of ANOVA available for different situations, including
+factorial ANOVA for multiple independent variables with interaction terms,
+repeated measures ANOVA where the same subjects tested in different situations form the different groups,
+and multivariate analysis of variance (MANOVA) for multiple dependent variables.
+All share similar principles and assumptions,
+but we will only focus on one-factor ANOVA here.
+
+In general, ANOVA methods work by ``partitioning the sum of squares'',
+\ie dividing the variance present in the data into
+``explained variance'', \ie ``between-group variability'',
+and
+``unexplained variance'', \ie ``within-group variability'',
+components.
+The ratio of these components then form a $F$-test statistic
+which can be compared against the $F$-distribution
+with the appropriate degrees of freedom to produce a \pvalue.
+The null hypothesis is typically that all of the groups come from populations which share the same mean.
+Increased between-group variability, or decreased within-group variability,
+will increase the $F$-test statistic and make rejecting the null hypothesis more probable.
+One downside to ANOVA testing is that if we reject the null hypothesis
+we will not know which group(s) differ from the others.
+In this case additional \posthoc analysis is required, such as Tukey's HSD test.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Assumptions}
+\label{hypo:ANOVA:assumptions}
+Mathematically ANOVA is a special case of linear regression
+and shares many of the same assumptions:
+
+\begin{enumerate}[noitemsep]
+\item The variances of the different groups are equal (homoscedasticity).
+\item The observations $y_{ij}$ within group $i$ are independent and identically distributed (i.i.d.), normal random variables.
+\item The residuals are normally distributed (normality\footnote{The normality assumption can be bent without severe consequences, but as always review the literature for specifics first.}).
+\item The dependent variable is continuous.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{One-Factor}
+\label{hypo:ANOVA:one}
+A one-factor ANOVA should be used when comparing $K$ groups,
+divided by a single independent variable $x$,
+across a single dependent variable $y$.
+We partition the sum of squares into
+mean square $MS_{\text{between-group}}$ and $MS_{\text{within-group}}$
+\cref{eq:hypo:ANOVA:one:MS_between,eq:hypo:ANOVA:one:MS_within}, where
+$n_{i}$ represents the number of observations in the $i$th group,
+$N = \sum_{i} n_{i}$ is the total number of observations,
+$y_{ij}$ is the $j$th observation for group $i$,
+$\expval{Y_{i}} = \sum_{j} y_{ij} / n_{i}$ is the mean for group $i$,
+and $\expval{Y} = \sum_{i}\sum_{j} y_{ij} / N$ is the overall mean across all groups.
+
+\begin{subequations}\label{eq:hypo:ANOVA:one}
+\begin{align}
+MS_{\text{between-group}} &= \frac{1}{K-1} \sum_{i=1}^{K} n_{i}\left(\expval{Y_{i}} - \expval{Y}\right)^{2}, \label{eq:hypo:ANOVA:one:MS_between} \\
+MS_{\text{within-group}} &= \frac{1}{N-K} \sum_{i=1}^{K} \sum_{j=1}^{n_{i}} \left( y_{ij} - \expval{Y_{i}} \right)^{2}, \label{eq:hypo:ANOVA:one:MS_within} \\
+F &= \frac{MS_{\text{between-group}}}{MS_{\text{within-group}}}, \label{eq:hypo:ANOVA:one:F} \\
+d_{1} &= K-1,\quad d_{2} = N-K. \label{eq:hypo:ANOVA:one:dof}
+\end{align}
+\end{subequations}
+
+Note that $MS_{\text{between-group}}$ is comparing the group means to the overall mean,
+while $MS_{\text{within-group}}$ is comparing all of the data points to their respective group means.
+The $F$-statistic is then the ratio of the mean squares \cref{eq:hypo:ANOVA:one:F},
+which can be used with the appropriate degrees of freedom \cref{eq:hypo:ANOVA:one:dof}
+and the $F$-distribution to produce a \pvalue.
+Depending on the \pvalue and selected $\alpha$
+we can accept or reject the null hypothesis,
+\ie all of the groups share one mean.
+The \texttt{scipy.stats.f\_oneway} \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.f_oneway.html#scipy.stats.f_oneway}{function}
+performs\footnote{See
+\href{https://www.analyticsvidhya.com/blog/2020/06/introduction-anova-statistics-data-science-covid-python/}{here} and
+\href{https://www.reneshbedre.com/blog/anova.html}{here}
+for example implementations.} the one-factor ANOVA test.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

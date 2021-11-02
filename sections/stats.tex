@@ -333,8 +333,32 @@ primary useful for conducting $\chi^{2}$-tests.
 P\left(x;\,\nu\right) = \frac{
 x^{\frac{\nu}{2} - 1} e^{-\frac{x}{2}}
 }{
-2^{\frac{\nu}{2}} \Gamma\left(\frac{\nu}{2}\right)}
+2^{\frac{\nu}{2}} \Gamma\left(\frac{\nu}{2}\right)}.
 \end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\texorpdfstring{$F$}{F}-Distribution}
+\label{stats:F_dist}
+
+The $F$-distribution with degrees of freedom $d_{1}$ and $d_{2}$,
+\cref{eq:stats:F_dist:X,eq:stats:F_dist:P} and \cref{fig:dist:F},
+is formed by dividing two $\chi^{2}$-distributed random variables
+$S_{1}$ and $S_{2}$ with their respective degrees of freedom:
+
+\begin{subequations}\label{eq:stats:F_dist}
+\begin{align}
+X_{F\text{-distribution}} &= \frac{S_{1}/d_{1}}{S_{2}/d_{2}}, \label{eq:stats:F_dist:X} \\
+P\left(x;\,d_{1},d_{2}\right) &= \frac{1}{x B\left(d_{1}/2, d_{2}/2\right)} \sqrt{\frac{\left(d_{1} x\right)^{d_{1}} d_{2}^{d_{2}}}{\left(d_{1} x + d_{2}\right)^{d_{1}+d_{2}}}}, \label{eq:stats:F_dist:P}
+\end{align}
+\end{subequations}
+
+\noindent where $B\left(x,y\right)$ is the beta function\footnote{$B\left(x,y\right) = \int_{0}^{1} t^{x-1} \left(1-t\right)^{y-1} \, \dif t = \Gamma\left(x\right)\Gamma\left(y\right) / \Gamma\left(x+y\right)$.}.
+
+The $F$-distribution has a complicated
+mean and variance\footnote{Mean: $d_{2}/\left(d_{2}-2\right)$ for $2 < d_{2}$.
+Variance: $2 d_{2}^{2}\left(d_{1}+d_{2}-2\right)/\left(d_{1}\left(d_{2}-2\right)^{2}\left(d_{2}-4\right)\right)$ for $4 < d_{2}$.},
+and is primary useful for conducting $F$-tests such as ANOVA.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -409,7 +433,7 @@ The set of weights is then generated $m$ times.
 Formally, the methods are equivalent as for large $n$
 the binomial probability of including a given data point approaches the Poisson probability with $\lambda = 1$.
 Poisson Bootstrapping is commonly used in particle physics,
-in particular see the direct balance $\gamma+\text{Jet}$ calibration
+in particular see the direct balance $\gamma\text{+Jet}$ calibration
 in the dissertation \cite{mepland_dissertation}, Appendix E.1.4.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
