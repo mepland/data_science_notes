@@ -169,7 +169,8 @@ the appropriate Analysis of Variance (ANOVA) method should be used.
 Like pairwise tests, there are multiple versions of ANOVA available for different situations, including
 factorial ANOVA for multiple independent variables with interaction terms,
 repeated measures ANOVA where the same subjects tested in different situations form the different groups,
-and multivariate analysis of variance (MANOVA) for multiple dependent variables.
+Multivariate Analysis of Variance (MANOVA) for multiple dependent variables,
+and further extensions such as Analysis of Covariance (ANCOVA) which incorporate correlations with additional covariate variables.
 All share similar principles and assumptions,
 but we will only focus on one-factor ANOVA here.
 
@@ -187,7 +188,8 @@ Increased between-group variability, or decreased within-group variability,
 will increase the $F$-test statistic and make rejecting the null hypothesis more probable.
 One downside to ANOVA testing is that if we reject the null hypothesis
 we will not know which group(s) differ from the others.
-In this case additional \posthoc analysis is required, such as Tukey's HSD test.
+In this case additional \posthoc analysis is required,
+such as Bonferroni Corrected $t$-tests or Tukey's honest significance test.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Assumptions}
@@ -239,6 +241,12 @@ performs\footnote{See
 \href{https://www.analyticsvidhya.com/blog/2020/06/introduction-anova-statistics-data-science-covid-python/}{here} and
 \href{https://www.reneshbedre.com/blog/anova.html}{here}
 for example implementations.} the one-factor ANOVA test.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\texorpdfstring{$F$}{F}-Test of Equality of Variances}
+\label{hypo:F_test_var}
+% TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
