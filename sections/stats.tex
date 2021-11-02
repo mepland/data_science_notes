@@ -440,12 +440,65 @@ in the dissertation \cite{mepland_dissertation}, Appendix E.1.4.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Maximum Likelihood Estimation (MLE)}
 \label{stats:MLE}
-% TODO
+Maximum likelihood estimation (MLE) is a method
+of choosing the optimal parameters of a probability distribution
+to match some set of observed data.
+As the name suggests, MLE works by maximizing the likelihood of observing the given data.
+Note that the terms likelihood and probability are closely related, but different, in this context.
+Here probability refers to the probability of observing $x$ given parameters $\bm{\beta}$, $P\left(x \mid \bm{\beta}\right)$,
+while likelihood refers to the likelihood of the distribution having parameters $\bm{\beta}$ given an observation $x$, $L\left(\bm{\beta} \mid x\right)$.
+$L$ and $P$ are both equal to relevant probability distribution,
+such as \cref{eq:stats:gaus:P} for the Gaussian distribution,
+but which variables are independent and dependent changes.
 
-% TODO under ``regularity assumptions'', MLE converges to the true optimal values as $n \to \infty$, is usually biased but bias is reduced as $n \to \infty$, efficient - variance approximates Cramer-Rao lower bound for larger samples
+As we wish to maximize the likelihood with respect to $\bm{\beta}$,
+we will be taking partial derivatives and finding where they equal zero, $\partial_{\bm{\beta}} L = 0$.
+In practice, likelihood functions are complicated\footnote{The value of $L$
+is often close to $0$, making lack of precision an issue when doing computations.
+$\log\left(L\right)$ is larger and also helps address this problem.} and
+it is easier to maximize the log-likelihood $\log\left(L\right)$,
+which has the same maximum as the original likelihood $L$,
+but removes exponents and turns multiplication in to addition.
+Generally there are $m$ points $\mathbf{x}_{i}$, each with $n$ dimensions, in a given dataset,
+thus we are solving \cref{eq:MLE} for $\bm{\beta} = \hat{\bm{\beta}}_{\text{MLE}}$:
+
+\begin{subequations}\label{eq:MLE}
+\begin{align}
+0 &= \partial_{\bm{\beta}} \, L\left(\bm{\beta} \mid \mathbf{x}\right) \label{eq:MLE:L} \\
+\implies 0 &= \partial_{\bm{\beta}} \log\left(L\left(\bm{\beta} \mid \mathbf{X}\right)\right) = \partial_{\bm{\beta}} \, \log\left(\prod_{i=1}^{m} \, P\left(\mathbf{x}_{i} \mid \bm{\beta}\right)\right) \label{eq:MLE:log_L} \\
+&= \sum_{i=1}^{m} \, \partial_{\bm{\beta}} \log\left(P\left(\mathbf{x}_{i} \mid \bm{\beta}\right)\right) \label{eq:MLE:log_L_sum}
+\end{align}
+\end{subequations}
+
+In practice, it is unlikely that a closed form solution for $\hat{\bm{\beta}}_{\text{MLE}}$ can be found
+and numerical optimizers, such as gradient descent, are used instead.
+Under certain conditions it can be shown that as $n \to \infty$ the MLE converges to $\hat{\bm{\beta}}$,
+\ie in the limit $n \to \infty$ no consistent estimator
+has a lower MSE\footnote{More formally, the MLE achieves the Cram\'er--Rao lower bound.}.
+Lastly, while the MLE is usually a biased estimator, see \cref{additional:stats:bias},
+the bias is also reduced as $n \to \infty$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Exponential Distribution Example}
+\label{stats:MLE:exp_ex}
+
+We can use MLE to find the optimal $\hat{\lambda}_{\text{MLE}}$ of
+the exponential distribution \cref{eq:stats:exp:P}
+given a dataset of $m$ points, $x_{i}$, in 1 dimension:
+
+\begin{subequations}\label{eq:MLE:exp_ex}
+\begin{align}
+0 &= \sum_{i=1}^{m} \partial_{\lambda} \log\left(P\left(x_{i} \mid \lambda\right)\right) = \sum_{i=1}^{m} \partial_{\lambda} \log\left(\lambda e^{-\lambda x_{i}}\right), \label{eq:MLE:exp_ex:log_L_sum} \\
+&= \sum_{i=1}^{m}\partial_{\lambda} \left( \log\left(\lambda\right) -\lambda x_{i}\right) = \sum_{i=1}^{m} \frac{1}{\lambda} - x_{i} = \frac{m}{\lambda} - \sum_{i=1}^{m} x_{i}, \label{eq:MLE:exp_ex:solve} \\
+\implies \hat{\lambda}_{\text{MLE}} &= \frac{m}{\sum_{i=1}^{m} x_{i}} = \frac{1}{\expval{x}}. \label{eq:MLE:exp_ex:lambda}
+\end{align}
+\end{subequations}
+
+For another example of MLE see logistic regression \cref{eq:logistic:L_Pr}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Maximum A Posteriori (MAP)}
 \label{stats:MAP}
 % TODO In maximum \aposteriori (MAP) estimation
+% TODO MLE is a special case of MAP with a uniform prior
