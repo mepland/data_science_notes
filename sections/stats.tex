@@ -170,7 +170,6 @@ The mean and variance of the binomial distribution are:
 \end{align}
 \end{subequations}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Bernoulli Distribution}
 \label{stats:binomial:bernoulli}
 
@@ -180,7 +179,6 @@ For the special case when $n=1$, we have the Bernoulli distribution:
 P\left(k;\,p\right) = p^{k} \left(1-p\right)^{1-k}, \quad \expval{k} = p\,, \quad \sigma^{2} = p\left(1-p\right).
 \end{equation}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Negative Binomial Distribution}
 \label{stats:binomial:negative}
 
@@ -231,7 +229,6 @@ Interestingly, the mean and variance of the Poisson distribution are identical a
 \expval{k} = \sigma^{2} = \lambda\,.
 \end{equation}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Example: Cars Driving By}
 \label{stats:poisson:cars}
 % TODO add
@@ -240,6 +237,7 @@ Interestingly, the mean and variance of the Poisson distribution are identical a
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exponential Distribution}
 \label{stats:exp}
+
 If we sample the time intervals between Poisson distributed events
 we arrive at the exponential distribution,
 
@@ -364,6 +362,7 @@ and is primary useful for conducting $F$-tests such as ANOVA.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Bootstrapping}
 \label{stats:bootstrapping}
+
 The bootstrap method can be a great solution when presented with difficult problems
 around measuring uncertainties or even conducting hypothesis tests.
 With bootstrapping we can estimate the uncertainty on any well defined quantity,
@@ -411,6 +410,7 @@ and can be used to estimate the statistic's uncertainty.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Hypothesis Testing}
 \label{stats:bootstrapping:hypo}
+
 As we can construct confidence intervals, bootstrapping can also be used for hypothesis testing.
 N{a\"i}vely we can test the null hypothesis by checking if the value in question,
 typically \num{0}, lands within the confidence interval or not.
@@ -424,6 +424,7 @@ with values differing from the null hypothesis by the observed difference or mor
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Poisson Bootstrapping}
 \label{stats:bootstrapping:poisson}
+
 For large sample sizes $n$, instead of drawing $m$ bootstrap samples with replacement,
 which can be computationally expensive,
 we can use the single sample,
@@ -440,6 +441,7 @@ in the dissertation \cite{mepland_dissertation}, Appendix E.1.4.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Maximum Likelihood Estimation (MLE)}
 \label{stats:MLE}
+
 Maximum likelihood estimation (MLE) is a method
 of choosing the optimal parameters of a probability distribution
 to match some set of observed data.

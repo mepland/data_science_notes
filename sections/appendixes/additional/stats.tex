@@ -145,6 +145,7 @@ P\left(u,v\right) &= \frac{1}{2\pi\sigma_{u}\sigma_{v}}\frac{1}{\sqrt{1-\rho^{2}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Sampling from Probability Distributions}
 \label{additional:misc:sampling_prob_dist}
+
 Most programming languages have built-in functions to generate
 pseudo-random numbers from common probability distributions,
 such as the Poisson \cref{eq:stats:poisson:P} or Gaussian \cref{eq:stats:gaus:P} distributions.
@@ -153,10 +154,10 @@ In these situations we can turn to inverse transform sampling and rejection samp
 to give just two examples from many possible computational methods,
 to construct the desired distribution from an existing random number generator.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Inverse Transform Sampling}
 \label{additional:misc:sampling_prob_dist:inverse}
 % https://www.youtube.com/watch?v=9ixzzPQWuAY
+
 If we know the explicit form of the target probability density function (PDF), $X = P\left(x\right)$,
 can integrate it to find the cumulative distribution function (CDF), $F_{X}\left(x\right) = \int_{-\infty}^{x} P\left(t\right) \, \dif t$,
 and furthermore can invert the CDF\footnote{The inverse CDF
@@ -194,7 +195,6 @@ The inverse sampling method can be seen graphically \cref{fig:stats:sampling_pro
 %\label{fig:stats:sampling_prob_dist:inverse}
 %\end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Rejection Sampling}
 \label{additional:misc:sampling_prob_dist:reject}
 % https://www.youtube.com/watch?v=OXDqjdVVePY
