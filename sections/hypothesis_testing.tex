@@ -14,6 +14,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Student's \texorpdfstring{$t$}{t}-Test}
 \label{hypo:t_test}
+
 Student's $t$-test can be used to
 statistically compare the means of two samples via the $t$-distribution
 given a $t$-statistic and degrees of freedom $\nu$.
@@ -45,6 +46,7 @@ $\alpha$ is the significance level, typically \num{0.05} or lower.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{One-Sample}
 \label{hypo:t_test:one}
+
 In a one-sample $t$-test we have one sample of size $n$ with mean $\expval{x}$ and standard deviation $s$,
 and test the null hypothesis that it belongs to a parent population with mean $\mu_{0}$.
 In this case the parent population does not need to be normally distributed, but the distribution of possible $\expval{x}$ is assumed to be normal.
@@ -58,6 +60,7 @@ t = \frac{\expval{x} - \mu_{0}}{s / \sqrt{n}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Two-Sample: Unpaired}
 \label{hypo:t_test:two:unpaired}
+
 In a two-sample unpaired $t$-test we have two independent samples, each of size $n$,
 but with their own sample means $\expval{x_{i}}$ and standard deviations $s_{i}$.
 Provided that we can assume that the two parent distributions of $x_{1}$ and $x_{2}$ have the same variance,
@@ -72,9 +75,9 @@ s_{p} &= \sqrt{\left(s^{2}_{x_{1}} + s^{2}_{x_{2}}\right)/2} \label{eq:hypo:t:tw
 \end{align}
 \end{subequations}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Different Sample Sizes}
 \label{hypo:t_test:two:unpaired:diff_n}
+
 If we relax the sample size condition and let $n_{1} \neq n_{2}$
 we can still compute a $t$-statistic,
 provided the parent distribution's variances are equal\footnote{A useful rule of thumb is $1/2 < s_{x_{1}} / s_{x_{2}} < 2$.}.
@@ -88,9 +91,9 @@ s_{p} &= \sqrt{\left(\left(n_{1} - 1\right)s^{2}_{x_{1}} + \left(n_{2} - 1\right
 \end{align}
 \end{subequations}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Different Sample Sizes and Variances (Welch's \texorpdfstring{$t$}{t}-test)}
 \label{hypo:t_test:two:unpaired:diff_n_diff_var}
+
 If we further relax the assumptions and also let the population variances differ
 we arrive at Welch's $t$-test which approximates\footnote{The
 true distribution of $t$ depends somewhat on the unknown population variances,
@@ -109,6 +112,7 @@ t &= \frac{\expval{x_{1}} - \expval{x_{2}}}{\sqrt{\frac{s^{2}_{1}}{n_{1}} + \fra
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Two-Sample: Paired}
 \label{hypo:t_test:two:paired}
+
 In a two-sample paired $t$-test we have two dependent samples,
 such as two sets of measurements from the same $n$ individuals taken at different times.
 In this case, we are testing the null hypothesis that the difference in means of the two dependent samples is $\mu_{0}$.
@@ -160,6 +164,7 @@ X^{2} = \sum_{i=1}^{n} \sum_{j=1}^{m} \frac{\left(x^{\text{obs}}_{i,j} - x^{\tex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Analysis of Variance (ANOVA)}
 \label{hypo:ANOVA}
+
 When we are tasked with testing for differences between multiple groups
 we should not use multiple pairwise tests, like two-sample unpaired $t$-tests,
 as the family-wise error rate \cref{eq:hypo:alpha_fw}
@@ -194,6 +199,7 @@ such as Bonferroni Corrected $t$-tests or Tukey's honest significance test.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Assumptions}
 \label{hypo:ANOVA:assumptions}
+
 Mathematically ANOVA is a special case of linear regression
 and shares many of the same assumptions:
 
@@ -207,6 +213,7 @@ and shares many of the same assumptions:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{One-Factor}
 \label{hypo:ANOVA:one}
+
 A one-factor ANOVA should be used when comparing $K$ groups,
 divided by a single independent variable $x$,
 across a single dependent variable $y$.
@@ -246,12 +253,26 @@ for example implementations.} the one-factor ANOVA test.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\texorpdfstring{$F$}{F}-Test of Equality of Variances}
 \label{hypo:F_test_var}
-% TODO
+
+We can test the null hypothesis that the variances of two normally distributed samples are equal with a $F$-test.
+Given two samples of sizes $n_{1}$ and $n_{2}$ with sample variances $s_{2}^{2} \leq s_{1}^{2}$
+we construct the $F$-statistic as:
+
+\begin{equation}\label{eq:hypo:F_test_var}
+F = \frac{s_{1}^{2}}{s_{2}^{2}}\,.
+\end{equation}
+
+The $F$-distribution with degrees of freedom $d_{1} = n_{1}-1$ and $d_{2} = n_{2}-1$
+then gives an appropriate \pvalue.
+Note that this $F$-test is particularly sensitive to the assumption that
+the underlying samples are truly normally distributed;
+not only approximately normal via the CLT.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Binomial Proportion Test}
 \label{hypo:binomial_test}
+
 When dealing with samples of $n$ binary events we can perform hypothesis testing
 on the number of observed positive events $k$
 using test statistics built on the binomial distribution.
@@ -259,6 +280,7 @@ using test statistics built on the binomial distribution.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Exact Binomial Test}
 \label{hypo:binomial_test:exact}
+
 For small $n$ it is possible to compute the \pvalue
 explicitly from the binomial distribution \cref{eq:stats:binomial}.
 We test the null hypothesis that the probability of success is $\pi_{0}$
@@ -284,6 +306,7 @@ $\pi \neq \pi_{0}$ & $\mathcal{I} = \left\{\forall \, i: P\left(x=i\right) \leq 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{One-Sample}
 \label{hypo:binomial_test:one}
+
 For large sample sizes the binomial distribution is approximated by the normal distribution
 and we can use a form of the $Z$-test to produce {\pvalue}s.
 We require the observations to be independent,
@@ -304,6 +327,7 @@ Note that the one-sample test is provided by the
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Two-Sample}
 \label{hypo:binomial_test:two}
+
 In the case of two samples, we can test the null hypothesis
 that the difference\footnote{Again, we set $\pi_{\Delta} = 0$ if we want to test for any difference.} in the sample's probabilities is $\pi_{\Delta}$.
 We require that the $\pi$ from the two samples are uncorrelated,
@@ -442,6 +466,7 @@ n &\approx 16 \frac{s^{2}}{\Delta^{2}}\quad \left(\text{Two-Sided}\right). \labe
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Bonferroni Correction}
 \label{hypo:bonferroni_correction}
+
 When conducting multiple hypothesis tests on the same set of data
 we run the risk of underreporting $\alpha$ for the whole analysis.
 In particle physics this is known as the look elsewhere effect\footnote{See the discussion in Appendix C of the dissertation \cite{mepland_dissertation}.}
@@ -471,6 +496,7 @@ before conducting the tests\footnote{Or equivalently multiply the observed {\pva
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Sequential Bonferroni Correction, \ie Holm--Bonferroni Correction}
 \label{hypo:bonferroni_correction:sequential}
+
 We can control $\alpha_{\text{FW}}$ more efficiently in terms of the cost imposed on $\alpha$, and hence decreased power,
 by using the sequential Bonferroni correction, \ie the Holm--Bonferroni correction.
 As the name suggests, in the sequential correction
