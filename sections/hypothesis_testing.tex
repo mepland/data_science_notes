@@ -8,7 +8,38 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\texorpdfstring{$Z$}{Z}-Test}
 \label{hypo:Z_test}
-% TODO
+
+When we sample from a distribution known to be Gaussian,
+or can assume the sample means are approximately normally distributed via the central limit theorem (CLT),
+and know the population standard deviation $\sigma$,
+we can perform hypothesis testing on the sample mean with a $Z$-test.
+For a sample of size $n$ with sample mean $\expval{x}$ and population standard deviation $\sigma$
+we compute the $Z$-score,
+
+\begin{equation}\label{eq:hypo:Z}
+Z = \frac{\expval{x} - \mu_{0}}{\sigma_{\expval{x}}} = \frac{\expval{x} - \mu_{0}}{\sigma/\sqrt{n}},
+\end{equation}
+
+\noindent and test the null hypothesis, $H_{0}$, that the mean is $\mu_{0}$
+by comparing $Z$ to the standard normal distribution.
+Depending on if we wish to perform a one-sided or two-sided
+test\footnote{Note we can also perform two-sample and paired $Z$-tests, see the analogous $t$-test sections with $\sigma$ replacing $s$.} we
+find the probability of observing $P\left(x < Z\right)$, $P\left(Z < x\right)$, or $P\left(Z < \abs{x}\right)$
+from the cumulative distribution function (CDF).
+This \pvalue then determines if we accept, $\pvalue < \alpha$, or reject, $\alpha \leq \pvalue$,
+$H_{0}$ at a given significance level $\alpha$, typically \num{0.05} or lower.
+We can
+\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.zscore.html}{compute $Z$} with
+\texttt{scipy.stats.zscore},
+and \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{find the \pvalue} with
+\texttt{scipy.stats.norm.cdf} or \texttt{scipy.stats.norm.sf},
+being careful to include the correct side(s).
+For an illustration see \cref{fig:two_sided_t_test}, with $Z$-scores replacing the $t$-score.
+
+If we do not know the population standard deviation $\sigma$, as is often the case,
+or if $n \lesssim 30$, we should use a $t$-test instead.
+However, if $50 \lesssim n$ we may be able to approximate $\sigma \approx s$
+and use a $Z$-test anyway.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,22 +53,21 @@ The $t$-test is appropriate when each sample is small\footnote{For
 larger sample sizes the $t$-distribution approaches the normal distribution which should be used instead.}, $n \lesssim 30$,
 and drawn from a larger normally distributed population with an unknown standard deviation.
 The \pvalue returned by the test estimates the probability of obtaining the sample means
-assuming the null hypothesis, typically that the samples share the same mean, is true.
+assuming $H_{0}$, typically that the samples share the same mean, is true.
 We can compute two-sided, \ie the means are not equal, or one-sided, \ie mean 1 is $>$ or $<$ mean 2,
 forms of the $t$-test in three basic variations.
-See \cref{fig:two_sided_t_test} for an illustration of a two-sided test's null hypothesis rejection regions.
+See \cref{fig:two_sided_t_test} for an illustration of a two-sided test's $H_{0}$ rejection regions.
 The \texttt{scipy.stats.ttest\_*}
 \href{https://docs.scipy.org/doc/scipy/reference/stats.html#statistical-tests}{family of functions}
 to easily compute $t$-statistic and \pvalue in practice.
 
-% TODO may want to switch to a similar figure in the Z-test section...
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{figures/stats/one_side_t_test_rejection_regions.png}
 \caption{
-Illustration of a two-tail $t$-test's null hypothesis, $H_{0}$ rejection regions,
+Illustration of a two-sided $t$-test's null hypothesis, $H_{0}$, rejection regions,
 by \href{https://www.machinelearningplus.com/statistics/t-test-students-understanding-the-math-and-how-it-works/}{Selva Prabhakaran}.
-In a one-tail $t$-test we would only consider the tail on a single side.
+In a one-sided $t$-test we would only consider the side on a single side.
 $\alpha$ is the significance level, typically \num{0.05} or lower.
 }
 \label{fig:two_sided_t_test}
@@ -48,7 +78,7 @@ $\alpha$ is the significance level, typically \num{0.05} or lower.
 \label{hypo:t_test:one}
 
 In a one-sample $t$-test we have one sample of size $n$ with mean $\expval{x}$ and standard deviation $s$,
-and test the null hypothesis that it belongs to a parent population with mean $\mu_{0}$.
+and test $H_{0}$ that it belongs to a parent population with mean $\mu_{0}$.
 In this case the parent population does not need to be normally distributed, but the distribution of possible $\expval{x}$ is assumed to be normal.
 
 The $t$-statistic \cref{eq:hypo:t:one} can be used with $\nu = n-1$ to find a $\pvalue$.
@@ -64,7 +94,7 @@ t = \frac{\expval{x} - \mu_{0}}{s / \sqrt{n}}
 In a two-sample unpaired $t$-test we have two independent samples, each of size $n$,
 but with their own sample means $\expval{x_{i}}$ and standard deviations $s_{i}$.
 Provided that we can assume that the two parent distributions of $x_{1}$ and $x_{2}$ have the same variance,
-we can test the null hypothesis that the two parent distribution means are equal.
+we can test $H_{0}$ that the two parent distribution means are equal.
 
 The $t$-statistic \cref{eq:hypo:t:two:unpaired} can be used with $\nu = 2n-2$ to find a $\pvalue$.
 
@@ -115,7 +145,7 @@ t &= \frac{\expval{x_{1}} - \expval{x_{2}}}{\sqrt{\frac{s^{2}_{1}}{n_{1}} + \fra
 
 In a two-sample paired $t$-test we have two dependent samples,
 such as two sets of measurements from the same $n$ individuals taken at different times.
-In this case, we are testing the null hypothesis that the difference in means of the two dependent samples is $\mu_{0}$.
+In this case, we are testing $H_{0}$ that the difference in means of the two dependent samples is $\mu_{0}$.
 Note, we can set $\mu_{0} = 0$ if we simply want to test for a statistically significant difference, and not an \apriori degree of difference.
 Defining the difference between paired observations as $x_{\Delta}$, we compute the mean difference $\expval{x_{\Delta}}$ and $s_{\Delta}$ standard deviation on the sample.
 
@@ -134,10 +164,10 @@ Pearson's $\chi^{2}$-test can be used to
 statistically compare a set of observations in
 $n$ variables, $x_{i}$, to prior expectations via the $\chi^{2}$-distribution.
 The \pvalue returned by the test estimates the probability of obtaining the observations
-assuming the null hypothesis, \ie the expectations, is true.
+assuming $H_{0}$, \ie the expectations, is true.
 The $\chi^{2}$-test statistic, $X^{2}$, is created with the assumption that
 the data are normally distributed and independent,
-which often is the case due to the central limit theorem (CLT).
+which often is the case due to the CLT.
 It is constructed by squaring the difference\footnote{Yates's
 correction for continuity $\left(x^{\text{obs}}_{j} - x^{\text{exp}}_{j}\right)^{2} \to \left(\abs{x^{\text{obs}}_{j} - x^{\text{exp}}_{j}}-0.5\right)^{2}$ may
 also be applied in some low statistics cases.} between
@@ -188,10 +218,10 @@ components.
 The ratio of these components then form a $F$-test statistic
 which can be compared against the $F$-distribution
 with the appropriate degrees of freedom to produce a \pvalue.
-The null hypothesis is typically that all of the groups come from populations which share the same mean.
+The null hypothesis $H_{0}$ is typically that all of the groups come from populations which share the same mean.
 Increased between-group variability, or decreased within-group variability,
-will increase the $F$-test statistic and make rejecting the null hypothesis more probable.
-One downside to ANOVA testing is that if we reject the null hypothesis
+will increase the $F$-test statistic and make rejecting $H_{0}$ more probable.
+One downside to ANOVA testing is that if we reject $H_{0}$
 we will not know which group(s) differ from the others.
 In this case additional \posthoc analysis is required,
 such as Bonferroni Corrected $t$-tests or Tukey's honest significance test.
@@ -241,7 +271,7 @@ The $F$-statistic is then the ratio of the mean squares \cref{eq:hypo:ANOVA:one:
 which can be used with the appropriate degrees of freedom \cref{eq:hypo:ANOVA:one:dof}
 and the $F$-distribution to produce a \pvalue.
 Depending on the \pvalue and selected $\alpha$
-we can accept or reject the null hypothesis,
+we can accept or reject $H_{0}$,
 \ie all of the groups share one mean.
 The \texttt{scipy.stats.f\_oneway} \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.f_oneway.html#scipy.stats.f_oneway}{function}
 performs\footnote{See
@@ -254,7 +284,7 @@ for example implementations.} the one-factor ANOVA test.
 \section{\texorpdfstring{$F$}{F}-Test of Equality of Variances}
 \label{hypo:F_test_var}
 
-We can test the null hypothesis that the variances of two normally distributed samples are equal with a $F$-test.
+We can test $H_{0}$ that the variances of two normally distributed samples are equal with a $F$-test.
 Given two samples of sizes $n_{1}$ and $n_{2}$ with sample variances $s_{2}^{2} \leq s_{1}^{2}$
 we construct the $F$-statistic as:
 
@@ -283,7 +313,7 @@ using test statistics built on the binomial distribution.
 
 For small $n$ it is possible to compute the \pvalue
 explicitly from the binomial distribution \cref{eq:stats:binomial}.
-We test the null hypothesis that the probability of success is $\pi_{0}$
+We test $H_{0}$ that the probability of success is $\pi_{0}$
 having actually observed $k$ successes, $k = n \pi$.
 
 The \pvalue is then the sum
@@ -328,7 +358,7 @@ Note that the one-sample test is provided by the
 \subsection{Two-Sample}
 \label{hypo:binomial_test:two}
 
-In the case of two samples, we can test the null hypothesis
+In the case of two samples, we can test $H_{0}$
 that the difference\footnote{Again, we set $\pi_{\Delta} = 0$ if we want to test for any difference.} in the sample's probabilities is $\pi_{\Delta}$.
 We require that the $\pi$ from the two samples are uncorrelated,
 have approximately normal sampling distributions,
@@ -474,7 +504,7 @@ In particle physics this is known as the look elsewhere effect\footnote{See the 
 For example, if we set $\alpha = \num{0.05}$ for any individual test
 on a set of data with many features, but then run $\num{20}$
 tests on it, by chance we'd expect $\approx \num{1}$ tests
-to erroneously reject a true null hypothesis.
+to erroneously reject a true $H_{0}$.
 To quantify this concept, we can construct
 the family-wise $\alpha$ across all of the $N$ tests done on a dataset\footnote{There is
 disagreement on the best way to treat $\alpha_{\text{FW}}$,
@@ -483,7 +513,7 @@ what if the different tests are use correlated variables -- then they are not wh
 The $\alpha_{\text{FW}}$ of \cref{eq:hypo:alpha_fw} is just one simple definition.},
 $\alpha_{\text{FW}}$ \cref{eq:hypo:alpha_fw}.
 In our earlier example, we would have $\alpha_{\text{FW}} = \num{0.642}$,
-or a \SI{64.2}{\percent} chance of at least one test rejecting the null hypothesis in error.
+or a \SI{64.2}{\percent} chance of at least one test rejecting $H_{0}$ in error.
 
 \begin{equation}\label{eq:hypo:alpha_fw}
 \alpha_{\text{FW}} = 1 - \left(1 - \alpha\right)^{N}
@@ -504,8 +534,8 @@ we iterate through the $i \in \left\{0, 1, \ldots, N-1\right\}$ tests
 in order of their {\pvalue}s, from smallest to largest,
 checking that $i$th test's \pvalue is $< \alpha / \left(N-i\right)$.
 When we come to the first $i+1$ test with a $\pvalue \geq \alpha / \left(N-\left(i+1\right)\right)$
-we stop iterating and say the previous $i$ tests reject the null hypothesis,
-while the remaining $N-i$ tests fail to reject the null hypothesis.
+we stop iterating and say the previous $i$ tests reject $H_{0}$,
+while the remaining $N-i$ tests fail to reject $H_{0}$.
 In this way we can constrain $\alpha_{\text{FW}} \leq \alpha$,
 while checking most tests against a less stringent condition
 than $\alpha / N$ of the normal Bonferroni correction.
