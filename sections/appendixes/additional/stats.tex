@@ -10,7 +10,7 @@
 The expectation value \cref{eq:stats:exp_relations} and variance \cref{eq:stats:var_relations} are introductory, yet essential, statistical measures.
 Their definitions and interesting properties are reproduced here for reference.
 Note that $s$ is the unbiased sample variance,
-and the sample mean $\bar{x}$ has $\mu_{\bar{x}} = \mu$, $\sigma_{\bar{x}} = \sigma / \sqrt{n}$,
+and the sample mean $\bar{x}$ has $\mu_{\bar{x}} = \mu$, and standard error $\sigma_{\bar{x}} = \sigma / \sqrt{n}$,
 where $\mu$ and $\sigma$ are from the parent population.
 
 \begin{subequations}\label{eq:stats:exp_relations}
@@ -28,6 +28,7 @@ where $\mu$ and $\sigma$ are from the parent population.
 \begin{align}
 \sigma_{X}^{2} = \variance{X} &= \expval{\left(x-\bar{x}\right)^{2}} = \expval{X^{2}} - \expval{X}^{2} \label{eq:stats:var_relations:def} \\
 s^{2} &= \frac{1}{n-1} \sum_{j=1}^{m} \left( x_{j} - \bar{x}\right)^{2} \label{eq:stats:var_relations:sample} \\
+s_{\bar{x}} &= \frac{s}{\sqrt{n}} \label{eq:stats:var_relations:standard_error_of_mean} \\
 \variance{X+a} &= \variance{X} \label{eq:stats:var_relations:add} \\
 \variance{a X} &= a^{2} \, \variance{X} \label{eq:stats:var_relations:mult} \\
 \variance{a X \pm b Y} &= a^{2} \, \variance{X} + b^{2} \, \variance{Y} \pm 2 \, ab \, \cov{X}{Y} \label{eq:stats:var_relations:linear} \\
@@ -35,6 +36,8 @@ s^{2} &= \frac{1}{n-1} \sum_{j=1}^{m} \left( x_{j} - \bar{x}\right)^{2} \label{e
 \variance{X} &= \expval{\variance{X \mid Y}} + \variance{\expval{X \mid Y}} \label{eq:stats:var_relations:conditional2}
 \end{align}
 \end{subequations}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Covariance and Correlation}
@@ -112,6 +115,20 @@ P\left(u,v\right) &= \frac{1}{2\pi\sigma_{u}\sigma_{v}}\frac{1}{\sqrt{1-\rho^{2}
 &\frac{1}{(1-\rho)^{2}}\left(\frac{\left(u-\bar{u}\right)^{2}}{\sigma_{u}^{2}}+\frac{\left(v-\bar{v}\right)^{2}}{\sigma_{v}^{2}}-\frac{2\rho \left(u-\bar{u}\right)\left(v-\bar{v}\right)}{\sigma_{u}\sigma_{v}}\right)\bigg]\bigg\}\,.
 \end{split}
 \end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Central Limit Theorem (CLT)}
+\label{additional:stats:CLT}
+
+The central limit theorem (CLT) states that
+if we take samples of size $n$ from an independent random variable multiple times,
+from any distribution\footnote{Where the mean is defined, \ie not the Cauchy or other pathological distributions.},
+the sample means will tend to the normal distribution.
+As a rule of thumb we typically require $\num{30} \leq n$ points per sample before we say the CLT applies.
+The CLT is an important result in statistics as it lets us
+treat many problems in a normally distributed framework,
+in particular finding confidence intervals for the sample mean,
+and hypothesis testing for sample means with the $t$-test or ANOVA.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Bias of a Predictor}
