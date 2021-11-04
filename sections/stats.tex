@@ -95,24 +95,71 @@ m\,p_{H}^{h} \left(1-p_{H}\right)^{t} + n\,2^{-h-t}}\,.
 \end{split}
 \end{equation}
 
-Some example values are provided in \cref{tab:coin_table}.
+Some example values are provided in \cref{tab:Bayes:unfair_coin}.
 
 \begin{table}[H]
 \centering
 \begingroup
 \renewcommand*{\arraystretch}{1}
-\input{tables/coin_example/coin_example.tex}
+\input{tables/coin_examples/bayes_unfair_coin/bayes_unfair_coin_example.tex}
 \endgroup
 \caption{
 $P\left(\stcomp{F} \mid h,t\right)$ for various values of $h$, $t$, and $p_{H}$ when $m = 50$, $n = 50$.
 }
-\label{tab:coin_table}
+\label{tab:Bayes:unfair_coin}
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Coin Problems}
 \label{stats:coin_problems}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Making an Unfair Coin Fair}
+\label{stats:coin_problems:unfair_to_fair}
+% https://fivethirtyeight.com/features/can-you-make-an-unfair-coin-fair/
+% https://fivethirtyeight.com/features/can-you-snatch-defeat-from-the-jaws-of-victory/
+
+If we are given an unfair coin with $P\left(H\right) = p \neq \num{0.5}$
+we can construct a fair coin\footnote{The solution is credited to John von Neumann, who really did work on everything!} by
+flipping the unfair coin $m$ times and selecting outcomes with an equal probability of occurring, while disregarding all other outcomes.
+For example, with $m=2$ flips we have the outcomes listed in \cref{tab:coin_problems:unfair_to_fair:m2_outcomes}:
+
+\begin{table}[H]
+\centering
+\begingroup
+\renewcommand*{\arraystretch}{1}
+\input{tables/coin_examples/unfair_to_fair/m2_outcomes.tex}
+\endgroup
+\caption{
+Making an unfair coin fair in $m=2$ flips.
+}
+\label{tab:coin_problems:unfair_to_fair:m2_outcomes}
+\end{table}
+
+Note that we are disregarding $p^{2} + \left(1-p\right)^{2}$ percent of flips
+and this method will become increasingly inefficient as $p$ moves away from $\num{0.5}$.
+If we need to simulate something with more outcomes, like a 6 sided die,
+we can increase $m$ until we have enough equal outcomes, or combinations of outcomes.
+
+We can also ask, what values of $p$ ensure a fair outcome in $m$ flips?
+To solve, create $P\left(\text{Outcome}\right)$ for all possible outcomes.
+Then, sum all possible combinations\footnote{Excluding the case of all outcomes where $\sum P\left(\text{Outcome}\right) = 1$.} of $P\left(\text{Outcome}\right)$
+and try to solve $\sum P\left(\text{Outcome}\right) = \num{0.5}$ with $0 < p < 1$.
+This partitions the outcomes into two assignments, in $m$ flips, without disregarding any outcomes.
+For example, with $m=2$ and the $P\left(\text{Outcome}\right)$ of \cref{tab:coin_problems:unfair_to_fair:m2_outcomes}, we separately solve
+$p^{2} = \num{0.5}$, $p\left(1-p\right) = \num{0.5}$, $\left(1-p\right)^{2} = \num{0.5}$,
+$p^{2} + p\left(1-p\right) = \num{0.5}$, $p\left(1-p\right) + \left(1-p\right)^{2} = \num{0.5}$, and $p^{2} + \left(1-p\right)^{2} = \num{0.5}$.
+The valid $p$ are then
+$p = 1/\sqrt{2}$ with $\left(H,H\right) \to H$,
+$p = \num{0.5}$ with $\left(H,H\right) \parallel \left(T,T\right) \to H$,
+and $p = 1 - 1/\sqrt{2}$ with $\left(T,T\right) \to H$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Making an Fair Coin Unfair}
+\label{stats:coin_problems:fair_to_unfair}
+
+In the opposite direction, we can also make a fair coin unfair by flipping it $m$ times and reassigning the outcomes.
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
