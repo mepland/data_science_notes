@@ -68,15 +68,15 @@ P\left(\text{Infected} \mid ++\right) &= \frac{P\left(++ \mid \text{Infected}\ri
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Example: Unfair Coin}
-\label{stats:Bayes:unfair_coin}
+\subsubsection{Example: Biased Coin}
+\label{stats:Bayes:biased_coin}
 
-Consider the case of a bag of $n$ fair coins and $m$ unfair coins.
-Let $P\left(H \mid \stcomp{F}\right) \equiv p_{H}$ be the \apriori probability of heads $H$ for an unfair coin $\stcomp{F}$.
+Consider the case of a bag of $n$ fair coins and $m$ biased coins.
+Let $P\left(H \mid \stcomp{F}\right) \equiv p_{H}$ be the \apriori probability of heads $H$ for an biased coin $\stcomp{F}$.
 Drawing one coin from the bag, you flip it multiple times recording $h$ heads and $t$ tails.
-What is the probability you have drawn an unfair coin, $P\left(\stcomp{F} \mid h,t\right)$?
+What is the probability you have drawn an biased coin, $P\left(\stcomp{F} \mid h,t\right)$?
 
-\begin{equation}\label{eq:stats:Bayes:unfair_coin_setup}
+\begin{equation}\label{eq:stats:Bayes:biased_coin_setup}
 \begin{gathered}
 P\left(F\right) = \frac{n}{n+m}\,,\quad P\left(\stcomp{F}\right) = \frac{m}{n+m}\,, \\
 P\left(H \mid F\right) = \frac{1}{2}\,,\quad P\left(h,t \mid F\right) = \left(\frac{1}{2}\right)^{h}\,\left(\frac{1}{2}\right)^{t} = \frac{1}{2^{h+t}}\,, \\
@@ -84,7 +84,7 @@ P\left(h,t \mid \stcomp{F}\right) = P\left(H \mid \stcomp{F}\right)^{h} P\left(\
 \end{gathered}
 \end{equation}
 
-\begin{equation}\label{eq:stats:Bayes:unfair_coin_solution}
+\begin{equation}\label{eq:stats:Bayes:biased_coin_solution}
 \begin{split}
 P\left(\stcomp{F} \mid h,t\right) &= \frac{
 P\left(h,t \mid \stcomp{F}\right) P\left(\stcomp{F}\right)}{
@@ -95,18 +95,18 @@ m\,p_{H}^{h} \left(1-p_{H}\right)^{t} + n\,2^{-h-t}}\,.
 \end{split}
 \end{equation}
 
-Some example values are provided in \cref{tab:Bayes:unfair_coin}.
+Some example values are provided in \cref{tab:Bayes:biased_coin}.
 
 \begin{table}[H]
 \centering
 \begingroup
 \renewcommand*{\arraystretch}{1}
-\input{tables/coin_examples/bayes_unfair_coin/bayes_unfair_coin_example.tex}
+\input{tables/coin_examples/bayes_biased_coin/bayes_biased_coin_example.tex}
 \endgroup
 \caption{
 $P\left(\stcomp{F} \mid h,t\right)$ for various values of $h$, $t$, and $p_{H}$ when $m = 50$, $n = 50$.
 }
-\label{tab:Bayes:unfair_coin}
+\label{tab:Bayes:biased_coin}
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,52 +115,64 @@ $P\left(\stcomp{F} \mid h,t\right)$ for various values of $h$, $t$, and $p_{H}$ 
 \label{stats:coin_problems}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Making an Unfair Coin Fair}
-\label{stats:coin_problems:unfair_to_fair}
+\subsection{Making an Biased Coin Fair}
+\label{stats:coin_problems:biased_to_fair}
 % https://fivethirtyeight.com/features/can-you-make-an-unfair-coin-fair/
 % https://fivethirtyeight.com/features/can-you-snatch-defeat-from-the-jaws-of-victory/
+% https://youtu.be/-SANBbv0-Hw
+% https://math.stackexchange.com/a/146614 for additional references
 
-If we are given an unfair coin with $P\left(H\right) = p \neq \num{0.5}$
+If we are given an biased coin with $P\left(H\right) = p \neq \num{0.5}$
 we can construct a fair coin\footnote{The solution is credited to John von Neumann, who really did work on everything!} by
-flipping the unfair coin $m$ times and selecting outcomes with an equal probability of occurring, while disregarding all other outcomes.
-For example, with $m=2$ flips we have the outcomes listed in \cref{tab:coin_problems:unfair_to_fair:m2_outcomes}:
+flipping the biased coin $m$ times and selecting outcomes with an equal probability of occurring, while disregarding all other outcomes.
+For example, with $m=2$ flips we have the outcomes listed in \cref{tab:coin_problems:biased_to_fair:m2_outcomes}:
 
 \begin{table}[H]
 \centering
 \begingroup
 \renewcommand*{\arraystretch}{1}
-\input{tables/coin_examples/unfair_to_fair/m2_outcomes.tex}
+\input{tables/coin_examples/biased_to_fair/m2_outcomes.tex}
 \endgroup
 \caption{
-Making an unfair coin fair in $m=2$ flips.
+Making an biased coin fair in $m=2$ flips.
 }
-\label{tab:coin_problems:unfair_to_fair:m2_outcomes}
+\label{tab:coin_problems:biased_to_fair:m2_outcomes}
 \end{table}
 
 Note that we are disregarding $p^{2} + \left(1-p\right)^{2}$ percent of flips
 and this method will become increasingly inefficient as $p$ moves away from $\num{0.5}$.
+We can improve the efficiency by increasing $m$ and reassigning the
+outcomes\footnote{For $m = \num{4}$, disregard $P\left(HHHH \parallel TTTT\right) = p^{4} + \left(1-p\right)^{4} < p^{2} + \left(1-p\right)^{2}$,\newline
+$HT \parallel HHHT \parallel HHTT \parallel TTHT \to H$,\newline
+$TH \parallel TTTH \parallel TTHH \parallel HHTH \to T = H^{-1}$.} such that
+we decrease the average number of flips required.
 If we need to simulate something with more outcomes, like a 6 sided die,
 we can increase $m$ until we have enough equal outcomes, or combinations of outcomes.
 
-We can also ask, what values of $p$ ensure a fair outcome in $m$ flips?
-To solve, create $P\left(\text{Outcome}\right)$ for all possible outcomes.
-Then, sum all possible combinations\footnote{Excluding the case of all outcomes where $\sum P\left(\text{Outcome}\right) = 1$.} of $P\left(\text{Outcome}\right)$
-and try to solve $\sum P\left(\text{Outcome}\right) = \num{0.5}$ with $0 < p < 1$.
-This partitions the outcomes into two assignments, in $m$ flips, without disregarding any outcomes.
-For example, with $m=2$ and the $P\left(\text{Outcome}\right)$ of \cref{tab:coin_problems:unfair_to_fair:m2_outcomes}, we separately solve
-$p^{2} = \num{0.5}$, $p\left(1-p\right) = \num{0.5}$, $\left(1-p\right)^{2} = \num{0.5}$,
-$p^{2} + p\left(1-p\right) = \num{0.5}$, $p\left(1-p\right) + \left(1-p\right)^{2} = \num{0.5}$, and $p^{2} + \left(1-p\right)^{2} = \num{0.5}$.
+We can also ask, for what values of $p$ is a fair outcome ensured in $m$ flips?
+To solve, create $P\left(\text{Outcome}\right)$ for all possible outcomes of $m$ flips.
+Then, sum all possible combinations\footnote{Excluding the combination with all outcomes where $\sum P\left(\text{Outcome}\right) = 1$.} of $P\left(\text{Outcome}\right)$
+and try to solve $\sum P\left(\text{Outcome}\right) = \num{0.5}$.
+This partitions the outcomes into two assignments without disregarding any outcomes, \ie no flips are wasted.
+For example, with $m=2$ and \cref{tab:coin_problems:biased_to_fair:m2_outcomes}, we solve
+$p^{2}$, $p\left(1-p\right)$, $\left(1-p\right)^{2}$,
+$p^{2} + p\left(1-p\right)$, $p\left(1-p\right) + \left(1-p\right)^{2}$, and $p^{2} + \left(1-p\right)^{2} = \num{0.5}$
+separately for $0<p<1$.
 The valid $p$ are then
-$p = 1/\sqrt{2}$ with $\left(H,H\right) \to H$,
-$p = \num{0.5}$ with $\left(H,H\right) \parallel \left(T,T\right) \to H$,
-and $p = 1 - 1/\sqrt{2}$ with $\left(T,T\right) \to H$.
+$p = 1/\sqrt{2}$ with $HH \to H$,
+$p = \num{0.5}$ with $HH \parallel TT \to H$,
+and $p = 1 - 1/\sqrt{2}$ with $TT \to H$;
+everything else $\to T$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Making an Fair Coin Unfair}
-\label{stats:coin_problems:fair_to_unfair}
+\subsection{Making an Fair Coin Biased}
+\label{stats:coin_problems:fair_to_biased}
 
-In the opposite direction, we can also make a fair coin unfair by flipping it $m$ times and reassigning the outcomes.
-% TODO
+In the opposite direction, we can also make a fair coin biased
+with $P\left(H\right) = p = 1/N$ by flipping it
+$m = \text{ceil}\left(\log_{2}N\right)$ times
+and reassigning the outcomes such that $H^{m} \to H$,
+$N-1$ other outcomes $\to T$, and we disregard any remaining $m-N$ outcomes.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
