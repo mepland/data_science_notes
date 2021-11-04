@@ -7,7 +7,7 @@ n = 50
 m = 50
 print('m = {m:d}, n = {n:d}'.format(m=m, n=n))
 
-with open('coin_example.tex', 'w') as f_table:
+with open('bayes_unfair_coin_example.tex', 'w') as f_table:
   column_names = ['h', 't', 'p_H', 'p_unfair']
   ncol = len(column_names)
 
