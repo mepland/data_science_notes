@@ -18,9 +18,10 @@
 \newcommand{\transpose}{\ensuremath{^{\text{T}}}\xspace}
 \newcommand{\stcomp}[1]{\overline{#1}}
 \newcommand{\identity}{\ensuremath{I}\xspace} % note \mathbb{1} did not work
-% \newcommand{\dif}{\mathop{}\!\mathrm{d}} % I think dt looks just fine
-% \newcommand{\dif}{d} % I think dt looks just fine
-\newcommand*{\dif}{\ensuremath{d}} % from ATLAS def
+% Use \dd{x} from physics
+% \newcommand{\dif}{\mathop{}\!\mathrm{d}}
+% \newcommand{\dif}{d}
+% \newcommand*{\dif}{\ensuremath{d}} % from ATLAS def
 \newcommand{\realR}{\ensuremath{\mathbb{R}}\xspace}
 
 \DeclareMathOperator*{\sign}{sgn}
@@ -31,6 +32,7 @@
 \newcommand*{\expvalE}[1]{\ensuremath{E\left(#1\right)}\xspace}
 \newcommand*{\variance}[1]{\ensuremath{\text{Var}\left(#1\right)}\xspace}
 \newcommand*{\cov}[2]{\ensuremath{\text{Cov}\left(#1,#2\right)}\xspace}
+\newcommand*{\corr}[2]{\ensuremath{\text{Corr}\left(#1,#2\right)}\xspace}
 \newcommand*{\bias}[1]{\ensuremath{\text{Bias}\left(#1\right)}\xspace}
 
 \newcommand*{\pvalue}{\ensuremath{p\text{-value}}\xspace}

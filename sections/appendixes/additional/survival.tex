@@ -23,7 +23,7 @@ which make them best suited for certain applications.
 	\item[Censoring] Right\footnote{Left censored subjects enter the study after the event of interest has already occurred at an unknown $t < 0$.} censored subjects have no events during the observation period, either due to early withdrawal or the conclusion of the study. The true lifetime of these subjects is unavailable for analysis, \ie they have been censored.
 	\item[$S\left(t\right)$] The survival function $S\left(t\right)$ is the probability that a subject survives longer than $t$, \ie $S\left(t\right) = P\left(T > t\right)$.
 	\item[$F\left(t\right)$] The lifetime distribution function $F\left(t\right)$ is the complement of the survival function, \ie $F\left(t\right) = 1 - S\left(t\right) = P\left(T \leq t\right)$.
-	\item[$f\left(t\right)$] The event density function $f\left(t\right)$ is the time derivative of the lifetime distribution function $F\left(t\right)$, $f\left(t\right) = \frac{dF}{dt} = -\frac{dS}{dt}$, if it exists.
+	\item[$f\left(t\right)$] The event density function $f\left(t\right)$ is the time derivative of the lifetime distribution function $F\left(t\right)$, $f\left(t\right) = \dv{F}{t} = -\dv{S}{t}$, if it exists.
 	\item[$\lambda\left(t\right)$] The hazard function $\lambda\left(t\right)$ is the event rate at $t$ conditional on survival to time $t$, \ie $T > t$, see \cref{eq:Survival:hazard_def}. Any $\lambda\left(t\right)$ can be a hazard function, provided it satisfies \cref{eq:Survival:hazard_cond}.
 	\item[$\Lambda\left(t\right)$] The cumulative hazard function $\Lambda\left(t\right)$ is the integral of $\lambda\left(t\right)$ with respect to time \cref{eq:Survival:cum_hazard:def}. Also see the relations in \cref{eq:Survival:cum_hazard:to_lambda,eq:Survival:cum_hazard:to_S}.
 	\item[HR] The hazard ratio (HR) compares the hazards of two subsets of subjects partitioned by $x$ at time $t$, $\text{HR} = \lambda\left(x = 1\right) / \lambda\left(x=0\right)$. Also known as the relative risk.
@@ -31,25 +31,25 @@ which make them best suited for certain applications.
 
 \begin{subequations}\label{eq:Survival:hazard_def}
 \begin{align}
-\lambda\left(t\right) dt &= P\left(T \leq t + dt \mid T > t\right),\,\text{as} \,\, dt \to 0 \label{eq:Survival:hazard_def:a} \\
-\lambda\left(t\right) &= \lim_{dt \to 0} \frac{P\left(T \leq t + dt \cap T > t\right)}{P\left(T > t\right)\,dt} \label{eq:Survival:hazard_def:b} \\
-&= \frac{1}{S\left(t\right)} \lim_{dt \to 0} \frac{P\left(t < T \leq t + dt\right)}{dt} \label{eq:Survival:hazard_def:c} \\
-&= \frac{1}{S\left(t\right)} \lim_{dt \to 0} \frac{F\left(t + dt\right) - F\left(t\right)}{dt} \label{eq:Survival:hazard_def:d} \\
-&= \frac{f\left(t\right)}{S\left(t\right)} = -\frac{1}{S} \frac{dS}{dt} \label{eq:Survival:hazard_def:e}
+\lambda\left(t\right) \dd{t} &= P\left(T \leq t + \dd{t} \mid T > t\right),\,\text{as} \,\, \dd{t} \to 0 \label{eq:Survival:hazard_def:a} \\
+\lambda\left(t\right) &= \lim_{\dd{t} \to 0} \frac{P\left(T \leq t + \dd{t} \cap T > t\right)}{P\left(T > t\right)\,\dd{t}} \label{eq:Survival:hazard_def:b} \\
+&= \frac{1}{S\left(t\right)} \lim_{\dd{t} \to 0} \frac{P\left(t < T \leq t + \dd{t}\right)}{\dd{t}} \label{eq:Survival:hazard_def:c} \\
+&= \frac{1}{S\left(t\right)} \lim_{\dd{t} \to 0} \frac{F\left(t + \dd{t}\right) - F\left(t\right)}{\dd{t}} \label{eq:Survival:hazard_def:d} \\
+&= \frac{f\left(t\right)}{S\left(t\right)} = -\frac{1}{S} \dv{S}{t} \label{eq:Survival:hazard_def:e}
 \end{align}
 \end{subequations}
 
 \begin{subequations}\label{eq:Survival:hazard_cond}
 \begin{gather}
 \forall t \geq 0, \, \lambda\left(t\right) \geq 0 \label{eq:Survival:hazard_cond:a} \\
-\int_{0}^{\infty} \lambda\left(t\right) \, \dif t = \infty \label{eq:Survival:hazard_cond:b}
+\int_{0}^{\infty} \lambda\left(t\right) \, \dd{t} = \infty \label{eq:Survival:hazard_cond:b}
 \end{gather}
 \end{subequations}
 
 \begin{subequations}\label{eq:Survival:cum_hazard}
 \begin{gather}
-\Lambda\left(t\right) = \int_{0}^{t} \lambda\left(u\right) \, \dif u = - \ln\left(S\left(t\right)\right) \label{eq:Survival:cum_hazard:def} \\
-\lambda\left(t\right) = \frac{d\Lambda}{dt} = -\frac{1}{S} \frac{dS}{dt} \label{eq:Survival:cum_hazard:to_lambda} \\
+\Lambda\left(t\right) = \int_{0}^{t} \lambda\left(u\right) \, \dd{u} = - \ln\left(S\left(t\right)\right) \label{eq:Survival:cum_hazard:def} \\
+\lambda\left(t\right) = \dv{\Lambda}{t} = -\frac{1}{S} \dv{S}{t} \label{eq:Survival:cum_hazard:to_lambda} \\
 S\left(t\right) = \exp\left(-\Lambda\left(t\right)\right) \label{eq:Survival:cum_hazard:to_S}
 \end{gather}
 \end{subequations}
@@ -83,7 +83,7 @@ Note that $x$ can not be a continuous variable, and must be binned to integer cl
 
 The exponential model is a parametric estimate of $S\left(t\right)$
 valid when the hazard is expected to be constant with respect to $t$.
-In nuclear physics\footnote{$\frac{dN}{dt} = -\lambda N$, $N\left(t\right) = N_{0} e^{-\lambda t}$,
+In nuclear physics\footnote{$\dv{N}{t} = -\lambda N$, $N\left(t\right) = N_{0} e^{-\lambda t}$,
 half-life $t_{1/2} = \ln\left(2\right) / \lambda = \tau \ln\left(2\right)$, where $\tau$ is the time constant.} $\lambda\left(t\right) = \lambda$
 decays per unit time really is a constant.
 However, in most situations $\lambda = c$ is unrealistic over longer time scales,
@@ -405,11 +405,11 @@ using the prior work of \cref{eq:Survival:hazard_def} and integration by parts:
 P\left(T \leq t_{0} + t \mid T > t_{0}\right)
 = \frac{F\left(t_{0} + t\right) - F\left(t_{0}\right)}{S\left(t_{0}\right)} \label{eq:Survival:efl_der:P} \\
 \text{PDF}
-= \frac{d}{dt} P\left(T \leq t_{0} + t \mid T > t_{0}\right)
+= \dv{}{t} P\left(T \leq t_{0} + t \mid T > t_{0}\right)
 = \frac{f\left(t_{0} + t\right)}{S\left(t_{0}\right)} \label{eq:Survival:efl_der:pdf} \\
 \expval{T-t_{0}}
-= \int_{0}^{\infty} t \, \text{PDF} \, \dif t
-= \frac{1}{S\left(t_{0}\right)} \int_{0}^{\infty} S\left(t\right) \, \dif t \label{eq:Survival:efl_der:efl}
+= \int_{0}^{\infty} t \, \text{PDF} \, \dd{t}
+= \frac{1}{S\left(t_{0}\right)} \int_{0}^{\infty} S\left(t\right) \, \dd{t} \label{eq:Survival:efl_der:efl}
 \end{gather}
 \end{subequations}
 
