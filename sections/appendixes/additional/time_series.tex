@@ -5,48 +5,123 @@
 
 Time series analysis is the study of time-dependent data such as price over time.
 Similar to regression models we aim to fit a model
-to the data in order to make future predictions,
-with a variety of potential models to choose from,
+to the data in order to make future predictions.
+However, instead of interpolating within a range of previously observed data points,
+time series aims to extrapolate from our current data into the future,
+as we are not interested in making predictions about past dates.
+There are a variety of potential models to choose from,
 each with their own assumptions and use cases.
 The problem can be attacked from two general directions,
 frequency-domain methods and time-domain methods,
 but we shall focus primarily on the time-domain here.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Lag Notation}
+\subsubsection{Lag Notation}
 \label{additional:time_series:L}
-% TODO
+
+When working with time series data we often index time steps as $t$, $t-1$, $t-2$,\,\ldots\,
+where $t$ is the current time.
+The value of the variable in question, price, quantity, \etc,
+at time $t$ is then $y_{t}$, with $y_{t-1}$, $y_{t-2}$,\,\ldots\, at subsequent times.
+Instead of writing subscripts, sometimes it is more convenient
+to switch to a polynomial based notation using
+the lag operator $L$, also known as the backshift operator $B$ in some texts:
+
+\begin{equation}\label{eq:time_series:L}
+L y_{t} = y_{t-1},\quad L^{2} y_{t} = y_{t-2},\,\ldots \quad L^{k} y_{t} = y_{t-k}.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Correlation in Time Series}
+\label{additional:time_series:correlation}
+
+In time series analysis $y_{t}$ can depend, to varying degree,
+on the previous values $L^{k} y_{t},\, \forall k$.
+There is a direct component to this dependence,
+$y_{t} \sim f\left(y_{t-1}\right)$,
+but also an indirect or recursive component,
+$y_{t} \sim f\left(y_{t-1}\right) \sim f\left(g\left(y_{t-2}\right)\right)$.
+
+\subsubsection{Auto-Correlation Function (ACF)}
+\label{additional:time_series:acf}
+
+Neglecting the multiple components of the correlation of $y_{t}$ with prior times,
+we can commute the overall auto-correlation function (ACF) of $y_{t}$
+with itself at some amount of lag $k$ as
+
+\begin{equation}\label{eq:time_series:acf}
+\text{ACF}\left(y,k\right) = \corr{y_{t}}{y_{t-k}},
+\end{equation}
+
+\noindent using the regular Pearson correlation coefficient \cref{eq:stats:corr}.
+The auto-correlation shows the total correlation and is simple to compute,
+but mixes the direct and indirect effects of prior values together.
+
+\subsubsection{Partial Auto-Correlation Function (PACF)}
+\label{additional:time_series:pacf}
+
+In contrast, partial auto-correlation function
+aims to isolate the direct influence of $y_{t-k}$ on $y_{t}$ for some lag $k$.
+We can get at this component by fitting $y_{t}$ as a linear function of $L^{n} y_{t}$
+
+\begin{equation}\label{eq:time_series:pacf}
+y_{t} = \sum_{i=1}^{k} \phi_{k,i} y_{t-i} + \epsilon_{k},
+\end{equation}
+
+\noindent and identifying $\text{PACF}\left(y,k\right) = \phi_{k,k}$
+as the partial auto-correlation function for $k$.
+Note that for each $k$, we need to do a new fit of \cref{eq:time_series:pacf},
+and after fitting should check that $\phi_{k,k}$ is statistically significant,
+\ie we reject $H_{0}$ that $\phi_{k,k}=0$, by looking at the coefficient's confidence interval from the fit.
+We can generate plots of ACF and PACF vs $k$ to explore a time series
+with the \texttt{plot\_acf} and \texttt{plot\_pacf}
+\href{https://www.statsmodels.org/stable/graphics.html}{functions} in \texttt{statsmodels.graphics.tsaplots}.
+
+% TODo add example plots, talk about how to interpret, ie what model's they suggest we try
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Stationarity}
 \label{additional:time_series:stationarity}
-% TODO
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Augmented Dickey--Fuller Test (ADF)}
-\label{additional:time_series:ADF}
-% TODO
+Stationarity is an important assumption for many parametric time series models,
+which combines three properties:
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Auto-Correlation}
-\label{additional:time_series:auto_correlation}
-% TODO
+\begin{enumerate}[noitemsep]
+\item The mean $\expval{y}$ of the time series is constant, \ie the average is not moving.\label{item:time_series:stationarity:constant_mean}
+\item The variance $\variance{y}$ of the time series is constant.\label{item:time_series:stationarity:constant_var}
+\item The time series does not exhibit seasonality, \ie no periodic fluctuations in $y\left(t\right)$.
+\label{item:time_series:stationarity:seasonality}
+\end{enumerate}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Partial Auto-Correlation}
-\label{additional:time_series:partial_auto_correlation}
-% TODO
+If the mean or variance is growing with time
+we can look at the first difference, $d_{t} = y_{t} -y_{t-1}$,
+and see if the time series of $d_{t}$ is stationary.
+If $d$ is stationary and we can build a model for it, we will
+need to transform back to $y_{t} = d_{t} + y_{t-1}$ when making predictions.
+
+Simply looking at the graph of a time series can give us
+a good intuition on if it is stationary or not.
+However, we can formally test for stationarity
+with the augmented Dickey--Fuller test (ADF) \cref{additional:time_series:ADF}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Autoregressive (AR) Models}
 \label{additional:time_series:AR}
 % TODO
 
+\begin{equation}\label{eq:time_series:AR}
+y_{t} = \mu + \sum_{i=1}^{p} \beta_{i} y_{t-i} + \epsilon_{t}
+\end{equation}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Moving Average (MA) Models}
 \label{additional:time_series:MA}
 % TODO
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{ARMA Model}
+\label{additional:time_series:ARMA}
+% TODO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Integrated (I) Models}
 \label{additional:time_series:I}
@@ -56,3 +131,42 @@ but we shall focus primarily on the time-domain here.
 \subsection{ARIMA Model}
 \label{additional:time_series:ARIMA}
 % TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Seasonal ARIMA Model (SARIMA)}
+\label{additional:time_series:SARIMA}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Unit Roots}
+\label{additional:time_series:unit_root}
+% TODO
+% https://youtu.be/ugOvehrTRRw
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Augmented Dickey--Fuller (ADF) Test for Stationarity}
+\label{additional:time_series:ADF}
+
+The augmented\footnote{The ADF is an extension of the normal Dickey--Fuller test where $p = 1$.} Dickey--Fuller (ADF) test
+is a hypothesis tests for the stationarity of a time series.
+We begin by assuming the time series for $y$ is a AR$\left(p\right)$ model \cref{eq:time_series:AR}
+and construct the difference:
+
+\begin{subequations}\label{eq:time_series:ADF}
+\begin{align}
+\Delta y_{t} &= y_{t} - y_{t-1} = \mu + \delta y_{t-1} + \sum_{i=2}^{p} \beta_{i} y_{t-i} + \epsilon_{t}, \label{eq:time_series:ADF:Delta_y} \\
+\delta &= \beta_{1} - 1. \label{eq:time_series:ADF:delta}
+\end{align}
+\end{subequations}
+
+Now we test $H_{0}$ that $0 \leq \delta$ and the time series is
+non-stationary\footnote{As $\delta = 0 \implies \beta_{1} = 1$, \ie the time series has a unit root and is non-stationary.}
+vs the alternative hypothesis $H_{a}$ that $\delta < 0$, \ie time series is stationary.
+We fit the data and then perform the hypothesis testing with test statistic
+$t_{\hat{\delta}} = \hat{\delta} / \text{Standard Error}\left(\hat{\delta}\right)$
+by comparing to the Dickey--Fuller distribution\footnote{We can not use the standard $t$-distribution as $y_{t-1}$ is still assumed to be non-stationary under $H_{0}$.}.
+If we can reject $H_{0}$ we therefore have shown that $y_{t}$ is stationary.
+Note we can further extend the ADF test by replacing the constant $\mu$
+with a quadratic time trend $\mu + a_{1} t + a_{2} t^{2}$.
+The ADF test is available via the \texttt{statsmodels.tsa.stattools.adfuller}
+\href{https://www.statsmodels.org/dev/generated/statsmodels.tsa.stattools.adfuller.html}{function}.
