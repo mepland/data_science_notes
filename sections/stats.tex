@@ -194,8 +194,8 @@ It is illustrative to compute the mean and variance of the uniform distribution 
 
 \begin{subequations}\label{eq:stats:uniform:mean_variance}
 \begin{align}
-\expval{x} &= \int_{-\infty}^{\infty} x P\left(x\right) \, \dif x = \frac{1}{b-a} \int_{a}^{b} x \, \dif x = \frac{1}{2(b-a)}\left(b^{2} - a^{2}\right) = \frac{1}{2}\left(a + b\right)\,, \label{eq:stats:uniform:mean_variance:mean} \\
-\variance{x} &= \expval{x^{2}} - \expval{x}^{2} = \frac{1}{b-a} \int_{a}^{b} x^{2} \, \dif x - \expval{x}^{2} = \cdots = \frac{1}{12}\left(b-a\right)^{2}\,. \label{eq:stats:uniform:mean_variance:variance}
+\expval{x} &= \int_{-\infty}^{\infty} x P\left(x\right) \, \dd{x} = \frac{1}{b-a} \int_{a}^{b} x \, \dd{x} = \frac{1}{2(b-a)}\left(b^{2} - a^{2}\right) = \frac{1}{2}\left(a + b\right)\,, \label{eq:stats:uniform:mean_variance:mean} \\
+\variance{x} &= \expval{x^{2}} - \expval{x}^{2} = \frac{1}{b-a} \int_{a}^{b} x^{2} \, \dd{x} - \expval{x}^{2} = \cdots = \frac{1}{12}\left(b-a\right)^{2}\,. \label{eq:stats:uniform:mean_variance:variance}
 \end{align}
 \end{subequations}
 
@@ -371,7 +371,7 @@ P\left(t;\,\nu\right) = \frac{
 } \left(1+\frac{t^{2}}{\nu}\right)^{-\frac{\nu+1}{2}}\,,
 \end{equation}
 
-\noindent where $\Gamma\left(z\right)$ is the gamma function\footnote{$\Gamma\left(z\right) = \int_{0}^{\infty} x^{z-1} e^{-x} \, \dif x$,
+\noindent where $\Gamma\left(z\right)$ is the gamma function\footnote{$\Gamma\left(z\right) = \int_{0}^{\infty} x^{z-1} e^{-x} \, \dd{x}$,
 which simplifies to $\Gamma\left(n\right)=\left(n-1\right)!$ for integer $n$.}.
 The distribution, \cref{fig:dist:student_t}, has a mean of \num{0} for $\nu > 1$,
 and variance of $\infty$ for $\nu =2$ and $\nu / \left(\nu-2\right)$ for $\nu > 2$.
@@ -411,7 +411,7 @@ P\left(x;\,d_{1},d_{2}\right) &= \frac{1}{x B\left(d_{1}/2, d_{2}/2\right)} \sqr
 \end{align}
 \end{subequations}
 
-\noindent where $B\left(x,y\right)$ is the beta function\footnote{$B\left(x,y\right) = \int_{0}^{1} t^{x-1} \left(1-t\right)^{y-1} \, \dif t = \Gamma\left(x\right)\Gamma\left(y\right) / \Gamma\left(x+y\right)$.}.
+\noindent where $B\left(x,y\right)$ is the beta function\footnote{$B\left(x,y\right) = \int_{0}^{1} t^{x-1} \left(1-t\right)^{y-1} \, \dd{t} = \Gamma\left(x\right)\Gamma\left(y\right) / \Gamma\left(x+y\right)$.}.
 
 The $F$-distribution has a complicated
 mean and variance\footnote{Mean: $d_{2}/\left(d_{2}-2\right)$ for $2 < d_{2}$.

@@ -15,7 +15,7 @@ where $\mu$ and $\sigma$ are from the parent population.
 
 \begin{subequations}\label{eq:stats:exp_relations}
 \begin{align}
-\expvalE{X} = \expval{X} &= \sum_{j=1}^{m} x_{j} \, p_{j} = \int_{-\infty}^{\infty} x f\left(x\right) \, \dif x \label{eq:stats:exp_relations:def} \\
+\expvalE{X} = \expval{X} &= \sum_{j=1}^{m} x_{j} \, p_{j} = \int_{-\infty}^{\infty} x f\left(x\right) \, \dd{x} \label{eq:stats:exp_relations:def} \\
 \bar{x} = \mu &= \frac{1}{n} \sum_{j=1}^{m} x_{j}\,,\,\text{for uniform}~p_{j} \label{eq:stats:exp_relations:mean} \\
 \expval{X+Y} &= \expval{X} + \expval{X} \label{eq:stats:exp_relations:add} \\
 \expval{a X} &= a \expval{X} \label{eq:stats:exp_relations:mult} \\
@@ -67,7 +67,7 @@ It is helpful to remember the following covariance relations:
 The Pearson correlation coefficient,
 
 \begin{equation}\label{eq:stats:corr}
-\rho_{u,v} = \frac{\sigma_{u,v}^{2}}{\sigma_{u}\sigma_{v}} = \frac{\cov{u}{v}}{\sigma_{u}\sigma_{v}}\,,
+\rho_{u,v} = \corr{u}{v} = \frac{\sigma_{u,v}^{2}}{\sigma_{u}\sigma_{v}} = \frac{\cov{u}{v}}{\sigma_{u}\sigma_{v}}\,,
 \end{equation}
 
 \noindent is a convenient dimensionless version, normalized to $-1 \leq \rho \leq 1$.
@@ -171,7 +171,7 @@ to construct the desired distribution from an existing random number generator.
 % https://www.youtube.com/watch?v=9ixzzPQWuAY
 
 If we know the explicit form of the target probability density function (PDF), $X = P\left(x\right)$,
-can integrate it to find the cumulative distribution function (CDF), $F_{X}\left(x\right) = \int_{-\infty}^{x} P\left(t\right) \, \dif t$,
+can integrate it to find the cumulative distribution function (CDF), $F_{X}\left(x\right) = \int_{-\infty}^{x} P\left(t\right) \, \dd{t}$,
 and furthermore can invert the CDF\footnote{The inverse CDF
 is known as the percent point function, \texttt{ppf},
 in \href{https://docs.scipy.org/doc/scipy-0.14.0/reference/stats.html}{\scipy}.}, $F^{-1}_{X}\left(u\right)$ for $0 \leq u \leq 1$,
@@ -268,8 +268,8 @@ along with other basic definitions from probability theory.
 \begin{subequations}\label{eq:stats:sampling_prob_dist:reject:proof}
 \begin{align}
 P\left(x \mid \text{Accept}\right) &= \frac{P\left(\text{Accept} \mid x\right) P\left(x\right)}{P\left(\text{Accept}\right)} = \frac{1}{P\left(\text{Accept}\right)} \frac{f\left(x\right)}{M \cancel{g\left(x\right)}} \cancel{g\left(x\right)}, \label{eq:stats:sampling_prob_dist:reject:proof:x_given_Accept} \\
-P\left(\text{Accept}\right) &= \int_{-\infty}^{\infty} P\left(\text{Accept} \mid x\right) g\left(x\right) \, \dif x \label{eq:stats:sampling_prob_dist:reject:proof:P_Accept1} \\
-&= \int_{-\infty}^{\infty} \frac{f\left(x\right)}{M g\left(x\right)} g\left(x\right) \, \dif x = \frac{1}{M} \int_{-\infty}^{\infty} f\left(x\right) \, \dif x = \frac{A}{M}, \label{eq:stats:sampling_prob_dist:reject:proof:P_Accept2} \\
+P\left(\text{Accept}\right) &= \int_{-\infty}^{\infty} P\left(\text{Accept} \mid x\right) g\left(x\right) \, \dd{x} \label{eq:stats:sampling_prob_dist:reject:proof:P_Accept1} \\
+&= \int_{-\infty}^{\infty} \frac{f\left(x\right)}{M g\left(x\right)} g\left(x\right) \, \dd{x} = \frac{1}{M} \int_{-\infty}^{\infty} f\left(x\right) \, \dd{x} = \frac{A}{M}, \label{eq:stats:sampling_prob_dist:reject:proof:P_Accept2} \\
 \implies P\left(x \mid \text{Accept}\right) &= \frac{f\left(x\right)/M}{A/M} = \frac{1}{A} f\left(x\right) = P\left(x\right) = X. \label{eq:stats:sampling_prob_dist:reject:proof:conclusion}
 \end{align}
 \end{subequations}

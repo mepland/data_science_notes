@@ -52,3 +52,26 @@ Ideally the curve should reach a clear asymptote before the maximum $m$ is used.
 A^{B}~\text{mod}~C &= \left(\left(A~\text{mod}~C\right)^{B}\right)~\text{mod}~C. \label{eq:misc:additional:modulo:exp}
 \end{align}
 \end{subequations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Mathematical Relations}
+\label{additional:misc:math}
+
+\begin{subequations}\label{eq:additional:misc:math}
+\begin{align}
+e^{x} &= \sum_{k=0}^{\infty} \frac{x^{k}}{k!} \label{eq:additional:misc:math:ex} \\
+e^{x} &= \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^{n} \label{eq:additional:misc:math:ex_limit} \\
+\frac{1}{1-r} &= \sum_{k=0}^{\infty} r^{k}, \quad \abs{r} < 1 \label{eq:additional:misc:math:geometric} \\
+e^{-i x} &= \cos\left(x\right) + i \sin\left(x\right) \label{eq:additional:misc:math:eulers_formula} \\
+2 \cos\left(x\right) &= e^{i x} + e^{-i x} \label{eq:additional:misc:math:cos_exp} \\
+2i \sin\left(x\right) &= e^{i x} - e^{-i x} \label{eq:additional:misc:math:sin_exp} \\
+\abs{\mathbf{u} + \mathbf{v}} &\leq \abs{\mathbf{u}} + \abs{\mathbf{v}} \label{eq:additional:misc:math:triangle_inequality} \\
+\abs{\braket{u}{v}}^{2} &\leq \braket{u} \braket{v} \label{eq:additional:misc:math:cauchy_schwarz_inequality} \\
+N\left(\text{Permutations with Repetition}\right) &= n^{k}  \label{eq:additional:misc:math:permutations_with_repetition} \\
+N\left(\text{Permutations without Repetition}\right) &= \frac{n!}{\left(n-k\right)!}  \label{eq:additional:misc:math:permutations_without_repetition} \\
+N\left(\text{Combinations}\right) = {n \choose k} &= \frac{n!}{k!\left(n-k\right)!} \label{eq:additional:misc:math:binomial_coefficient} \\
+\overline{A \cap B} = \overline{A} \cup \overline{B},\quad \overline{A \cup B} = \overline{A} \cap \overline{B} \label{eq:additional:misc:math:de_morgan} \\
+\dv{}{x}\, a^{x} &= a^{x} \ln\left(x\right), \quad 0 < a \label{eq:additional:misc:math:diff_exp_gen} \\
+\dv{}{x}\, \log_{a}\left(x\right) &= \frac{1}{x \ln a} \label{eq:additional:misc:math:diff_log_gen}
+\end{align}
+\end{subequations}
