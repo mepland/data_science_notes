@@ -9,6 +9,9 @@ to the data in order to make future predictions.
 However, instead of interpolating within a range of previously observed data points,
 time series aims to extrapolate from our current data into the future,
 as we are not interested in making predictions about past dates.
+However, as we extrapolate further and further away from observed data
+the uncertainty of our predictions will naturally grow,
+making time series a harder problem to address than normal regression.
 There are a variety of potential models to choose from,
 each with their own assumptions and use cases.
 The problem can be attacked from two general directions,
@@ -121,11 +124,19 @@ or more formally with the Ljung--Box test of \cref{additional:time_series:ljung_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Autoregressive (AR) Models}
 \label{additional:time_series:AR}
-% TODO
+Building on the PACF, we can construct an autoregressive (AR) model
+from multiple lag components of the time series:
 
 \begin{equation}\label{eq:time_series:AR}
-y_{t} = \mu + \sum_{i=1}^{p} \beta_{i}\, y_{t-i} + \epsilon_{t}
+\hat{y}_{t} = \beta_{0} + \sum_{i=1}^{p} \beta_{i}\, y_{t-i} + \epsilon_{t}.
 \end{equation}
+
+Note that we should look at the PACF plot before fitting \cref{eq:time_series:AR}
+to determine which lags to include,
+\ie set $p$ and decide which lags to skip\footnote{It may not be possible
+to specify individual lags to include in some software packages,
+but excluding non-significant coefficients and reducing model complexity
+is still a good idea if possible.} by setting $\beta_{i} = 0$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Moving Average (MA) Models}
@@ -152,6 +163,64 @@ y_{t} = \mu + \sum_{i=1}^{p} \beta_{i}\, y_{t-i} + \epsilon_{t}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Evaluating Time Series Models}
+\label{additional:time_series:eval}
+
+Like other machine learning problems, we must split our data into train and test sets
+when fitting and evaluating time series models.
+As we are extrapolating we use the first
+$\approx \SI{70}{\percent}$ of the data by time for the training set,
+and the reminding $\approx \SI{30}{\percent}$ for the test set,
+instead of randomly splitting the data as is done for interpolative models.
+To improve on this approach even further, we can use
+``rolling forecast origin'' techniques to evaluate the model.
+In short, we use the first $k$ data points to train the model,
+evaluate it on the next $k + l$ data points, increment $k$ and reiterate.
+Performance metrics can then be averaged across the iterations.
+In this way the model's near term predictions at each iteration are as accurate as possible,
+as if time had continued and we received more data,
+giving a better estimate of the predictive performance in practice.
+There are a few different methods for how to exactly roll the origin,
+see \cref{fig:rolling_forecast_origin} for details.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{figures/stats/rolling_forecast_origin}
+\caption{
+Illustration of multiple test train split methods for time series models \cite{bergmeir_dissertation}.
+Note that $t$ is increasing along the $x$-axis.
+In the fixed origin method, we do not do any retraining and the prediction quality
+can be expected to drop as we go further into the future.
+In the rolling origin update method, we do not retrain the model parameters $\mathbf{\beta}$
+with each iteration, but do update the $y_{i}$ lags.
+In the rolling origin recalibration method we fully retrain the model on each iteration.
+Lastly, in the rolling window method we remove data from the beginning of the training period
+as we iterate to keep the training set a constant size.
+This can help with some statistical interpretations of the model,
+but also helps when working with slowly changing non-stationary data.
+}
+\label{fig:rolling_forecast_origin}
+\end{figure}
+
+Regardless of the test train split method, we can get a sense of the model's performance
+qualitatively by looking at residual plots of $y_{t} - \hat{y}_{t}$.
+The residuals will show any remaining systematic trends that the model did not learn,
+as ideally they would be white noise.
+Quantitatively, we can compute the
+root mean squared error\footnote{Also known as the root mean squared deviation (RMSD).} (RMSE)
+and mean absolute percent error (MAPE)
+between the predictions and observed values:
+
+\begin{subequations}\label{eq:time_series:RMSE_MAPE}
+\begin{align}
+\text{RMSE}\left(\hat{y}\right) &= \sqrt{\expval{\left(y - \hat{y}\right)^{2}}} = \sqrt{\frac{1}{n}\sum_{t=1}^{n} \left(y_{t} - \hat{y}_{t}\right)^{2}}, \label{eq:time_series:RMSE} \\
+\text{MAPE}\left(\hat{y}\right) &= \frac{\SI{100}{\percent}}{n} \sum_{t=1}^{n} \abs{\frac{y_{t} - \hat{y}_{t}}{y_{t}}}\,. \label{eq:time_series:MAPE}
+\end{align}
+\end{subequations}
+
+% TODO AIC BIC
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Unit Roots}
 \label{additional:time_series:unit_root}
 % TODO
@@ -168,7 +237,7 @@ and construct the difference:
 
 \begin{subequations}\label{eq:time_series:ADF}
 \begin{align}
-\Delta y_{t} &= y_{t} - y_{t-1} = \mu + \delta y_{t-1} + \sum_{i=2}^{p} \beta_{i}\, y_{t-i} + \epsilon_{t}, \label{eq:time_series:ADF:Delta_y} \\
+\Delta y_{t} &= y_{t} - y_{t-1} = \beta_{0} + \delta y_{t-1} + \sum_{i=2}^{p} \beta_{i}\, y_{t-i} + \epsilon_{t}, \label{eq:time_series:ADF:Delta_y} \\
 \delta &= \beta_{1} - 1. \label{eq:time_series:ADF:delta}
 \end{align}
 \end{subequations}
@@ -180,8 +249,8 @@ We fit the data and then perform the hypothesis testing with test statistic
 $t_{\hat{\delta}} = \hat{\delta} / \text{Standard Error}\left(\hat{\delta}\right)$
 by comparing to the Dickey--Fuller distribution\footnote{We can not use the standard $t$-distribution as $y_{t-1}$ is still assumed to be non-stationary under $H_{0}$.}.
 If we can reject $H_{0}$ we therefore have shown that $y_{t}$ is stationary.
-Note we can further extend the ADF test by replacing the constant $\mu$
-with a deterministic, quadratic, time trend $\mu + a_{1} t + a_{2} t^{2}$.
+Note we can further extend the ADF test by replacing the constant $\beta_{0}$
+with a deterministic, quadratic, time trend $\beta_{0} + a_{1} t + a_{2} t^{2}$.
 The ADF test is available via the \texttt{statsmodels.tsa.stattools.adfuller}
 \href{https://www.statsmodels.org/dev/generated/statsmodels.tsa.stattools.adfuller.html}{function}.
 
