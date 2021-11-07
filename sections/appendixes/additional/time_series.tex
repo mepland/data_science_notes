@@ -97,11 +97,26 @@ we can look at the first difference, $d_{t} = y_{t} -y_{t-1}$,
 and see if the time series of $d_{t}$ is stationary.
 If $d$ is stationary and we can build a model for it, we will
 need to transform back to $y_{t} = d_{t} + y_{t-1}$ when making predictions.
+Similarly, we can try to remove seasonality
+by subtracting a deterministic time-dependent function.
 
 Simply looking at the graph of a time series can give us
 a good intuition on if it is stationary or not.
 However, we can formally test for stationarity
-with the augmented Dickey--Fuller test (ADF) \cref{additional:time_series:ADF}.
+with the augmented Dickey--Fuller test (ADF) of \cref{additional:time_series:ADF}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{White Noise}
+\label{additional:time_series:white_noise}
+
+In the context of time series analysis, white noise is random fluctuations which
+have mean zero, $\expval{y} = 0$,
+constant variance with respect to time, $\partial_{t} \variance{y} = 0$,
+and no correlation between lags, $\corr{y_{t}}{y_{t-k}} = 0,\quad \forall k$.
+Ideally after fitting a time series, we will capture all of the signal
+in the model and the resulting error term $\epsilon$ will only contain white noise.
+We can test for white noise by looking at the moving average and ACF plot,
+or more formally with the Ljung--Box test of \cref{additional:time_series:ljung_box}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Autoregressive (AR) Models}
@@ -111,7 +126,6 @@ with the augmented Dickey--Fuller test (ADF) \cref{additional:time_series:ADF}.
 \begin{equation}\label{eq:time_series:AR}
 y_{t} = \mu + \sum_{i=1}^{p} \beta_{i}\, y_{t-i} + \epsilon_{t}
 \end{equation}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Moving Average (MA) Models}
@@ -154,7 +168,7 @@ and construct the difference:
 
 \begin{subequations}\label{eq:time_series:ADF}
 \begin{align}
-\Delta y_{t} &= y_{t} - y_{t-1} = \mu + \delta y_{t-1} + \sum_{i=2}^{p} \beta_{i} y_{t-i} + \epsilon_{t}, \label{eq:time_series:ADF:Delta_y} \\
+\Delta y_{t} &= y_{t} - y_{t-1} = \mu + \delta y_{t-1} + \sum_{i=2}^{p} \beta_{i}\, y_{t-i} + \epsilon_{t}, \label{eq:time_series:ADF:Delta_y} \\
 \delta &= \beta_{1} - 1. \label{eq:time_series:ADF:delta}
 \end{align}
 \end{subequations}
@@ -170,3 +184,24 @@ Note we can further extend the ADF test by replacing the constant $\mu$
 with a deterministic, quadratic, time trend $\mu + a_{1} t + a_{2} t^{2}$.
 The ADF test is available via the \texttt{statsmodels.tsa.stattools.adfuller}
 \href{https://www.statsmodels.org/dev/generated/statsmodels.tsa.stattools.adfuller.html}{function}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Ljung--Box Test for White Noise}
+\label{additional:time_series:ljung_box}
+
+The Ljung--Box test tests if a time series $y$ solely consists of white noise
+by looking at multiple lags of the ACF.
+The test statistic is
+
+\begin{equation}\label{eq:time_series:ljung_box:Q}
+Q = n \left(n+2\right) \sum_{i=1}^{h} \frac{\corr{y_{t}}{y_{t-i}}^{2}}{n-i}
+\end{equation}
+
+\noindent where $n$ is the sample size and $h$ is the number of lags to be tested.
+Using the $\chi^{2}$-distribution with $\nu = h$ degrees of freedom we find the critical $Q_{c}$
+and reject $H_{0}$, the data is white noise, if $Q_{c} < Q$.
+If we fail to reject $H_{0}$, \ie $Q \leq Q_{c}$, we have shown $y$ is white noise.
+Note that if we are performing the Ljung--Box test on the remainders of a fitted model, such as ARIMA$\left(p,d,q\right)$,
+we must adjust the degrees of freedom accordingly, $\nu = h - p - d - q$.
+The Ljung--Box test can be performed with the \texttt{statsmodels.stats.diagnostic.acorr\_ljungbox}
+\href{https://www.statsmodels.org/dev/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html}{function}.
