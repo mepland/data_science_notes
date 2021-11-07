@@ -37,8 +37,6 @@ s_{\bar{x}} &= \frac{s}{\sqrt{n}} \label{eq:stats:var_relations:standard_error_o
 \end{align}
 \end{subequations}
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Covariance and Correlation}
 \label{additional:stats:corr_covar}
@@ -61,7 +59,8 @@ It is helpful to remember the following covariance relations:
 \begin{align}
 \cov{X}{X} &= \variance{X}, \label{eq:stats:covar_relations:var} \\
 \cov{X + a}{Y + b} &= \cov{X}{Y}, \label{eq:stats:covar_relations:add} \\
-\cov{a\,X}{b\,Y} &= ab\,\cov{X}{Y}. \label{eq:stats:covar_relations:mult}
+\cov{a\,X}{b\,Y} &= ab\,\cov{X}{Y}, \label{eq:stats:covar_relations:mult} \\
+\cov{X}{Y}^{2} &\leq \variance{X}\variance{Y}. \label{eq:stats:covar_relations:inequality}
 \end{align}
 \end{subequations}
 The Pearson correlation coefficient,
