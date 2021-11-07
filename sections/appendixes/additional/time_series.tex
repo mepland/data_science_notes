@@ -42,13 +42,13 @@ but also an indirect or recursive component,
 $y_{t} \sim f\left(y_{t-1}\right) \sim f\left(g\left(y_{t-2}\right)\right)$.
 
 \subsubsection{Auto-Correlation Function (ACF)}
-\label{additional:time_series:acf}
+\label{additional:time_series:ACF}
 
 Neglecting the multiple components of the correlation of $y_{t}$ with prior times,
 we can commute the overall auto-correlation function (ACF) of $y_{t}$
 with itself at some amount of lag $k$ as
 
-\begin{equation}\label{eq:time_series:acf}
+\begin{equation}\label{eq:time_series:ACF}
 \text{ACF}\left(y,k\right) = \corr{y_{t}}{y_{t-k}},
 \end{equation}
 
@@ -57,19 +57,19 @@ The auto-correlation shows the total correlation and is simple to compute,
 but mixes the direct and indirect effects of prior values together.
 
 \subsubsection{Partial Auto-Correlation Function (PACF)}
-\label{additional:time_series:pacf}
+\label{additional:time_series:PACF}
 
 In contrast, partial auto-correlation function
 aims to isolate the direct influence of $y_{t-k}$ on $y_{t}$ for some lag $k$.
 We can get at this component by fitting $y_{t}$ as a linear function of $L^{n} y_{t}$
 
-\begin{equation}\label{eq:time_series:pacf}
-y_{t} = \sum_{i=1}^{k} \phi_{k,i} y_{t-i} + \epsilon_{k},
+\begin{equation}\label{eq:time_series:PACF}
+y_{t} = \sum_{i=1}^{k} \phi_{k,i}\, y_{t-i} + \epsilon_{k},
 \end{equation}
 
 \noindent and identifying $\text{PACF}\left(y,k\right) = \phi_{k,k}$
 as the partial auto-correlation function for $k$.
-Note that for each $k$, we need to do a new fit of \cref{eq:time_series:pacf},
+Note that for each $k$, we need to do a new fit of \cref{eq:time_series:PACF},
 and after fitting should check that $\phi_{k,k}$ is statistically significant,
 \ie we reject $H_{0}$ that $\phi_{k,k}=0$, by looking at the coefficient's confidence interval from the fit.
 We can generate plots of ACF and PACF vs $k$ to explore a time series
@@ -109,7 +109,7 @@ with the augmented Dickey--Fuller test (ADF) \cref{additional:time_series:ADF}.
 % TODO
 
 \begin{equation}\label{eq:time_series:AR}
-y_{t} = \mu + \sum_{i=1}^{p} \beta_{i} y_{t-i} + \epsilon_{t}
+y_{t} = \mu + \sum_{i=1}^{p} \beta_{i}\, y_{t-i} + \epsilon_{t}
 \end{equation}
 
 
@@ -167,6 +167,6 @@ $t_{\hat{\delta}} = \hat{\delta} / \text{Standard Error}\left(\hat{\delta}\right
 by comparing to the Dickey--Fuller distribution\footnote{We can not use the standard $t$-distribution as $y_{t-1}$ is still assumed to be non-stationary under $H_{0}$.}.
 If we can reject $H_{0}$ we therefore have shown that $y_{t}$ is stationary.
 Note we can further extend the ADF test by replacing the constant $\mu$
-with a quadratic time trend $\mu + a_{1} t + a_{2} t^{2}$.
+with a deterministic, quadratic, time trend $\mu + a_{1} t + a_{2} t^{2}$.
 The ADF test is available via the \texttt{statsmodels.tsa.stattools.adfuller}
 \href{https://www.statsmodels.org/dev/generated/statsmodels.tsa.stattools.adfuller.html}{function}.
