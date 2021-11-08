@@ -2,6 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Time Series Analysis}
 \label{additional:time_series}
+% https://www.youtube.com/playlist?list=PLvcbYUQ5t0UHOLnBzl46_Q6QKtFgfMGc3
 
 Time series analysis is the study of time-dependent data such as price over time.
 Similar to regression models we aim to fit a model
@@ -64,7 +65,7 @@ but mixes the direct and indirect effects of prior values together.
 
 In contrast, partial auto-correlation function
 aims to isolate the direct influence of $y_{t-k}$ on $y_{t}$ for some lag $k$.
-We can get at this component by fitting $y_{t}$ as a linear function of $L^{n} y_{t}$
+We can get at this component by fitting $y_{t}$ as a linear function of $L^{n} y_{t}$,
 
 \begin{equation}\label{eq:time_series:PACF}
 y_{t} = \sum_{i=1}^{k} \phi_{k,i}\, y_{t-i} + \epsilon_{k},
@@ -115,7 +116,7 @@ with the augmented Dickey--Fuller test (ADF) of \cref{additional:time_series:ADF
 In the context of time series analysis, white noise is random fluctuations which
 have mean zero, $\expval{y} = 0$,
 constant variance with respect to time, $\partial_{t} \variance{y} = 0$,
-and no correlation between lags, $\corr{y_{t}}{y_{t-k}} = 0,\quad \forall k$.
+and no correlation between lags, $\corr{y_{t}}{y_{t-k}} = 0,\,\, \forall k$.
 Ideally after fitting a time series, we will capture all of the signal
 in the model and the resulting error term $\epsilon$ will only contain white noise.
 We can test for white noise by looking at the moving average and ACF plot,
@@ -124,11 +125,11 @@ or more formally with the Ljung--Box test of \cref{additional:time_series:ljung_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Autoregressive (AR) Models}
 \label{additional:time_series:AR}
-Building on the PACF, we can construct an autoregressive (AR) model
+Building on the PACF, we can construct an autoregressive (AR) model $\text{AR}\left(p\right)$
 from multiple lag components of the time series:
 
 \begin{equation}\label{eq:time_series:AR}
-\hat{y}_{t} = \beta_{0} + \sum_{i=1}^{p} \beta_{i}\, y_{t-i} + \epsilon_{t}.
+\hat{y}_{t} = \phi_{0} + \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \epsilon_{t}.
 \end{equation}
 
 Note that we should look at the PACF plot before fitting \cref{eq:time_series:AR}
@@ -136,31 +137,104 @@ to determine which lags to include,
 \ie set $p$ and decide which lags to skip\footnote{It may not be possible
 to specify individual lags to include in some software packages,
 but excluding non-significant coefficients and reducing model complexity
-is still a good idea if possible.} by setting $\beta_{i} = 0$.
+is still a good idea if possible.} by setting $\phi_{i} = 0$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Moving Average (MA) Models}
 \label{additional:time_series:MA}
-% TODO
+
+Instead of looking at the autocorrelation $y_{y-i}$,
+we can also build a time series model around
+correcting for prior errors in the prediction,
+\ie fitting to the moving average (MA).
+The $\text{MA}\left(q\right)$ model
+is then:
+
+\begin{subequations}\label{eq:time_series:MA}
+\begin{align}
+\hat{y}_{t} &= \theta_{0} + \sum_{i=1}^{q} \theta_{i}\, \epsilon_{t-i} + \epsilon_{t}, \label{eq:time_series:MA_y} \\
+\epsilon_{t} &= y_{t} - \hat{y}_{t}. \label{eq:time_series:MA_epsilon}
+\end{align}
+\end{subequations}
+
+Note that a $\text{MA}\left(q\right)$ model will fluctuate around the initial average $\theta_{0}$,
+and can only predict $q$ steps into the future before constantly returning $\theta_{0}$.
+We can select $q$ by looking at the ACF plot
+and identifying the last non-zero lag.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Invertibility of Time Series}
+\label{additional:time_series:invert}
+% https://youtu.be/QU_VNu3rJKY
+% https://youtu.be/q0vz7dGlZL0
+
+One interesting property of AR and MA time series models is their invertibility:
+
+\begin{subequations}\label{eq:time_series:invert}
+\begin{align}
+\text{MA}\left(1\right) &= \text{AR}\left(\infty\right), \label{eq:time_series:invert:MA_1} \\
+\text{AR}\left(1\right) &= \text{MA}\left(\infty\right). \label{eq:time_series:invert:AR_1}
+\end{align}
+\end{subequations}
+
+For a proof of \cref{eq:time_series:invert:MA_1}, see \cref{eq:time_series:invert_proof}.
+Letting $\theta = \phi < 0$ for convenience and
+assuming\footnote{Here we are assuming the time series is stationary, \ie no unit roots $\abs{\phi} < 1$.} $\abs{\phi} < 1$
+we can construct the time series $C_{t}$,
+
+\begin{subequations}\label{eq:time_series:invert_proof}
+\begin{align}
+C_{t} \equiv \text{MA}\left(1\right) - \theta_{0} &= -\phi\, \epsilon_{t-1} + \epsilon_{t} = \left(1 - \phi L \right) \epsilon_{t}, \label{eq:time_series:invert_proof:a} \\
+\implies \epsilon_{t} &= \frac{C_{t}}{1 - \phi L}, \label{eq:time_series:invert_proof:b} \\
+&= \left(\sum_{i=0}^{\infty} \phi^{i} L^{i} \right) C_{t} = \sum_{i=0}^{\infty} \phi^{i} C_{t-i}, \label{eq:time_series:invert_proof:c} \\
+\implies C_{t} &= \sum_{i=1}^{\infty} -\phi^{i} C_{t-i} + \epsilon_{t} = \text{AR}\left(\infty\right) - \phi_{0}, \label{eq:time_series:invert_proof:d}
+\end{align}
+\end{subequations}
+
+\noindent where in \cref{eq:time_series:invert_proof:c} we have used
+the sum of a geometric series \cref{eq:additional:misc:math:geometric}.
+The proof of \cref{eq:time_series:invert:AR_1} is similar and also relies on the geometric series.
+Essentially we are making the recursive nature of these time series explicit and using it to transform from one to the other.
+The $\text{AR}\left(\infty\right)$ expansion of $\text{MA}\left(1\right)$
+is particularly useful as it is possible in practice to truncate the series at $\order{\phi^{p}}$
+where $\phi^{p+1} \approx 0$ and represent $\text{MA}\left(1\right)$ as a pure function of the series itself, \ie no recursion.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ARMA Model}
 \label{additional:time_series:ARMA}
 % TODO
+
+$\text{ARMA}\left(p,q\right)$
+
+% TODO include lag polynomial definition
+% TODO include python function
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Integrated (I) Models}
 \label{additional:time_series:I}
 % TODO
+
+$\text{I}\left(d\right)$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ARIMA Model}
 \label{additional:time_series:ARIMA}
 % TODO
 
+$\text{ARIMA}\left(p,d,q\right)$
+
+% TODO include python function
+% TODO include example plots and a link to the example notebook
+% TODO talk about how fit is actually computed
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Seasonal ARIMA Model (SARIMA)}
 \label{additional:time_series:SARIMA}
 % TODO
+
+% TODO include python function
+
+% TODo sections for the Box--Jenkins method, ARCH, GARCH, VAR, Anomaly Detection? At least mention them...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Evaluating Time Series Models}
@@ -191,7 +265,7 @@ Illustration of multiple test train split methods for time series models \cite{b
 Note that $t$ is increasing along the $x$-axis.
 In the fixed origin method, we do not do any retraining and the prediction quality
 can be expected to drop as we go further into the future.
-In the rolling origin update method, we do not retrain the model parameters $\mathbf{\beta}$
+In the rolling origin update method, we do not retrain the model parameters $\bm{\beta}$
 with each iteration, but do update the $y_{i}$ lags.
 In the rolling origin recalibration method we fully retrain the model on each iteration.
 Lastly, in the rolling window method we remove data from the beginning of the training period
@@ -206,7 +280,9 @@ Regardless of the test train split method, we can get a sense of the model's per
 qualitatively by looking at residual plots of $y_{t} - \hat{y}_{t}$.
 The residuals will show any remaining systematic trends that the model did not learn,
 as ideally they would be white noise.
-Quantitatively, we can compute the
+Quantitatively, we can test
+if the residuals are white noise with the Ljung--Box test of \cref{additional:time_series:ljung_box},
+as well as can compute the
 root mean squared error\footnote{Also known as the root mean squared deviation (RMSD).} (RMSE)
 and mean absolute percent error (MAPE)
 between the predictions and observed values:
@@ -218,7 +294,7 @@ between the predictions and observed values:
 \end{align}
 \end{subequations}
 
-% TODO AIC BIC
+% TODO AIC, BIC
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Unit Roots}
@@ -232,25 +308,25 @@ between the predictions and observed values:
 
 The augmented\footnote{The ADF is an extension of the normal Dickey--Fuller test where $p = 1$.} Dickey--Fuller (ADF) test
 is a hypothesis tests for the stationarity of a time series.
-We begin by assuming the time series for $y$ is a AR$\left(p\right)$ model \cref{eq:time_series:AR}
+We begin by assuming the time series for $y$ is a $\text{AR}\left(p\right)$ model \cref{eq:time_series:AR}
 and construct the difference:
 
 \begin{subequations}\label{eq:time_series:ADF}
 \begin{align}
-\Delta y_{t} &= y_{t} - y_{t-1} = \beta_{0} + \delta y_{t-1} + \sum_{i=2}^{p} \beta_{i}\, y_{t-i} + \epsilon_{t}, \label{eq:time_series:ADF:Delta_y} \\
-\delta &= \beta_{1} - 1. \label{eq:time_series:ADF:delta}
+\Delta y_{t} &= y_{t} - y_{t-1} = \phi_{0} + \delta y_{t-1} + \sum_{i=2}^{p} \phi_{i}\, y_{t-i} + \epsilon_{t}, \label{eq:time_series:ADF:Delta_y} \\
+\delta &= \phi_{1} - 1. \label{eq:time_series:ADF:delta}
 \end{align}
 \end{subequations}
 
 Now we test $H_{0}$ that $0 \leq \delta$ and the time series is
-non-stationary\footnote{As $\delta = 0 \implies \beta_{1} = 1$, \ie the time series has a unit root and is non-stationary.}
+non-stationary\footnote{As $\delta = 0 \implies \phi_{1} = 1$, \ie the time series has a unit root and is non-stationary.}
 vs the alternative hypothesis $H_{a}$ that $\delta < 0$, \ie time series is stationary.
 We fit the data and then perform the hypothesis testing with test statistic
 $t_{\hat{\delta}} = \hat{\delta} / \text{Standard Error}\left(\hat{\delta}\right)$
 by comparing to the Dickey--Fuller distribution\footnote{We can not use the standard $t$-distribution as $y_{t-1}$ is still assumed to be non-stationary under $H_{0}$.}.
 If we can reject $H_{0}$ we therefore have shown that $y_{t}$ is stationary.
-Note we can further extend the ADF test by replacing the constant $\beta_{0}$
-with a deterministic, quadratic, time trend $\beta_{0} + a_{1} t + a_{2} t^{2}$.
+Note we can further extend the ADF test by replacing the constant $\phi_{0}$
+with a deterministic, quadratic, time trend $\phi_{0} + a_{1} t + a_{2} t^{2}$.
 The ADF test is available via the \texttt{statsmodels.tsa.stattools.adfuller}
 \href{https://www.statsmodels.org/dev/generated/statsmodels.tsa.stattools.adfuller.html}{function}.
 
@@ -270,7 +346,7 @@ Q = n \left(n+2\right) \sum_{i=1}^{h} \frac{\corr{y_{t}}{y_{t-i}}^{2}}{n-i}
 Using the $\chi^{2}$-distribution with $\nu = h$ degrees of freedom we find the critical $Q_{c}$
 and reject $H_{0}$, the data is white noise, if $Q_{c} < Q$.
 If we fail to reject $H_{0}$, \ie $Q \leq Q_{c}$, we have shown $y$ is white noise.
-Note that if we are performing the Ljung--Box test on the remainders of a fitted model, such as ARIMA$\left(p,d,q\right)$,
+Note that if we are performing the Ljung--Box test on the remainders of a fitted model, such as $\text{ARIMA}\left(p,d,q\right)$,
 we must adjust the degrees of freedom accordingly, $\nu = h - p - d - q$.
 The Ljung--Box test can be performed with the \texttt{statsmodels.stats.diagnostic.acorr\_ljungbox}
 \href{https://www.statsmodels.org/dev/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html}{function}.
