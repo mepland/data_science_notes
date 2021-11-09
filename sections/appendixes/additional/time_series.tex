@@ -10,7 +10,7 @@ to the data in order to make future predictions.
 However, instead of interpolating within a range of previously observed data points,
 time series aims to extrapolate from our current data into the future,
 as we are not interested in making predictions about past dates.
-However, as we extrapolate further and further away from observed data
+As we extrapolate further and further away from observed data
 the uncertainty of our predictions will naturally grow,
 making time series a harder problem to address than normal regression.
 There are a variety of potential models to choose from,
@@ -18,6 +18,9 @@ each with their own assumptions and use cases.
 The problem can be attacked from two general directions,
 frequency-domain methods and time-domain methods,
 but we shall focus primarily on the time-domain here.
+The \texttt{statsmodels} \href{https://www.statsmodels.org}{python module}
+is very useful for implementing these modeling methods,
+which will be referenced as appropriate.
 
 \subsubsection{Lag Notation}
 \label{additional:time_series:L}
@@ -78,9 +81,9 @@ and after fitting should check that $\phi_{k,k}$ is statistically significant,
 \ie we reject $H_{0}$ that $\phi_{k,k}=0$, by looking at the coefficient's confidence interval from the fit.
 We can generate plots of ACF and PACF vs $k$ to explore a time series
 with the \texttt{plot\_acf} and \texttt{plot\_pacf}
-\href{https://www.statsmodels.org/stable/graphics.html}{functions} in \texttt{statsmodels.graphics.tsaplots}.
+\href{https://www.statsmodels.org/stable/graphics.html\#time-series-plots}{functions}.
 
-% TODo add example plots, talk about how to interpret, ie what model's they suggest we try
+% TODo add example plots, talk about how to interpret, ie what models they suggest we try. May mostly be in the Box--Jenkins section
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Stationarity}
@@ -97,12 +100,12 @@ which combines three properties:
 \end{enumerate}
 
 If the mean or variance is growing with time
-we can look at the first difference, $d_{t} = y_{t} -y_{t-1}$,
-and see if the time series of $d_{t}$ is stationary.
-If $d$ is stationary and we can build a model for it, we will
-need to transform back to $y_{t} = d_{t} + y_{t-1}$ when making predictions.
+we can look at the first difference, $\widetilde{y}_{t} = y_{t} - y_{t-1}$,
+and see if the time series of $\widetilde{y}_{t}$ is stationary,
+see \cref{additional:time_series:I} for more.
 Similarly, we can try to remove seasonality
-by subtracting a deterministic time-dependent function.
+by subtracting a deterministic time-dependent function
+or by using the SARIMA model of \cref{additional:time_series:SARIMA}.
 
 Simply looking at the graph of a time series can give us
 a good intuition on if it is stationary or not.
@@ -153,7 +156,7 @@ is then:
 \begin{subequations}\label{eq:time_series:MA}
 \begin{align}
 \hat{y}_{t} &= \theta_{0} + \sum_{i=1}^{q} \theta_{i}\, \epsilon_{t-i} + \epsilon_{t}, \label{eq:time_series:MA_y} \\
-\epsilon_{t} &= y_{t} - \hat{y}_{t}. \label{eq:time_series:MA_epsilon}
+\epsilon_{t-1} &= y_{t-1} - \hat{y}_{t-1}. \label{eq:time_series:MA_epsilon}
 \end{align}
 \end{subequations}
 
@@ -186,7 +189,7 @@ we can construct the time series $C_{t}$,
 \begin{align}
 C_{t} \equiv \text{MA}\left(1\right) - \theta_{0} &= -\phi\, \epsilon_{t-1} + \epsilon_{t} = \left(1 - \phi L \right) \epsilon_{t}, \label{eq:time_series:invert_proof:a} \\
 \implies \epsilon_{t} &= \frac{C_{t}}{1 - \phi L}, \label{eq:time_series:invert_proof:b} \\
-&= \left(\sum_{i=0}^{\infty} \phi^{i} L^{i} \right) C_{t} = \sum_{i=0}^{\infty} \phi^{i} C_{t-i}, \label{eq:time_series:invert_proof:c} \\
+&= \left(\,\sum_{i=0}^{\infty} \phi^{i} L^{i} \right) C_{t} = \sum_{i=0}^{\infty} \phi^{i} C_{t-i}, \label{eq:time_series:invert_proof:c} \\
 \implies C_{t} &= \sum_{i=1}^{\infty} -\phi^{i} C_{t-i} + \epsilon_{t} = \text{AR}\left(\infty\right) - \phi_{0}, \label{eq:time_series:invert_proof:d}
 \end{align}
 \end{subequations}
@@ -196,45 +199,123 @@ the sum of a geometric series \cref{eq:additional:misc:math:geometric}.
 The proof of \cref{eq:time_series:invert:AR_1} is similar and also relies on the geometric series.
 Essentially we are making the recursive nature of these time series explicit and using it to transform from one to the other.
 The $\text{AR}\left(\infty\right)$ expansion of $\text{MA}\left(1\right)$
-is particularly useful as it is possible in practice to truncate the series at $\order{\phi^{p}}$
-where $\phi^{p+1} \approx 0$ and represent $\text{MA}\left(1\right)$ as a pure function of the series itself, \ie no recursion.
+is particularly useful as it is possible in practice to truncate the series at $\order{\phi^{\,p}}$
+where $\phi^{\,p} \approx 0$ and represent $\text{MA}\left(1\right)$ as
+a pure function of the time series itself, \ie without recursion.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ARMA Model}
 \label{additional:time_series:ARMA}
-% TODO
 
-$\text{ARMA}\left(p,q\right)$
+While we can represent AR $\Leftrightarrow$ MA with infinite series,
+it is more practical to include both in one model with a finite number of terms.
+The $\text{ARMA}\left(p,q\right)$ model is a simple combination of
+both approaches:
 
-% TODO include lag polynomial definition
-% TODO include python function
+\begin{equation}\label{eq:time_series:ARMA}
+\hat{y}_{t} = \mu_{0} + \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \sum_{i=1}^{q} \theta_{i}\, \epsilon_{t-i} + \epsilon_{t}.
+\end{equation}
+
+Using lag notation we can write \cref{eq:time_series:ARMA} more
+compactly\footnote{We drop
+the constant intercept terms for convenience, as do many other sources.
+However a constant term can still be included if desired,
+or we can construct $\widetilde{y}_{t} = y_{t} - \mu_{0}$ with $\expval{\widetilde{y}_{t}} = 0$.}\footnote{If we set
+$\phi_{0}=-1$, $\theta_{0} = 1$ and start the sums at $i=0$
+we can simplify \cref{eq:time_series:ARMA_lag} even further.} as
+
+\begin{subequations}\label{eq:time_series:ARMA_lag}
+\begin{align}
+\phi\left(L,p\right) y_{t} &= \theta\left(L,q\right) \epsilon_{t}, \label{eq:time_series:ARMA_lag:def} \\
+\phi\left(L,p\right) &= 1 - \sum_{i=1}^{p} \phi_{i}\, L^{i}, \label{eq:time_series:ARMA_lag:phi} \\
+\theta\left(L,q\right) &= 1 + \sum_{i=1}^{q} \theta_{i}\, L^{i}, \label{eq:time_series:ARMA_lag:theta}
+\end{align}
+\end{subequations}
+
+\noindent where \cref{eq:time_series:ARMA_lag:phi,eq:time_series:ARMA_lag:theta} are polynomials of the lag operator $L$.
+To avoid parameter redundancy, \ie multiple $\phi$, $\theta$ coefficients for $\order{L^{n}}$,
+we require the polynomials $\phi\left(L,p\right)$ and $\theta\left(L,q\right)$ to not share any common factors.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Integrated (I) Models}
 \label{additional:time_series:I}
-% TODO
 
-$\text{I}\left(d\right)$
+The previous models have worked well for stationary time series with constant means,
+however we may wish to model a quantity with a mean that linearly changes over time.
+One method of incorporating this behavior in a time series model is by
+recursively taking the difference $d$ times between lags of the original time series $y_{t}$
+to construct a new time series $\widetilde{y}_{t}$ \cref{eq:time_series:I:forward}.
+With the appropriate choice of $d$, typically $d \leq 2$,
+$\widetilde{y}_{t}$ should have a constant mean,
+allowing other models to be subsequently used.
+This process is known as the integrated model $\text{I}\left(d\right)$,
+though the name is misleading as what we are really doing is differentiating $y$ to find a constant slope, curvature, \etc.
+Note, when making predictions we will need to
+transform back to the original $y_{t}$ \cref{eq:time_series:I:backward1,eq:time_series:I:backward2},
+at the cost of $d$ initial data points where no predictions can be made.
+
+\begin{subequations}\label{eq:time_series:I}
+\begin{align}
+\widetilde{y}_{t} &= \left(1-L\right)^{d} y_{t}, \label{eq:time_series:I:forward} \\
+y_{t} &= \widetilde{y}_{t} + y_{t-1},\,\, \text{where}\,\, d=1, \label{eq:time_series:I:backward1} \\
+y_{t} &= \widetilde{y}_{t} + 2 y_{t-1} - y_{t-2},\,\, \text{where}\,\, d=2. \label{eq:time_series:I:backward2}
+\end{align}
+\end{subequations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ARIMA Model}
 \label{additional:time_series:ARIMA}
-% TODO
 
-$\text{ARIMA}\left(p,d,q\right)$
+Putting everything together, we can construct the $\text{ARIMA}\left(p,d,q\right)$ model
+by including \cref{eq:time_series:I:forward} in \cref{eq:time_series:ARMA_lag}:
 
-% TODO include python function
-% TODO include example plots and a link to the example notebook
-% TODO talk about how fit is actually computed
+\begin{equation}\label{eq:time_series:ARIMA}
+\phi\left(L,p\right) \left(1-L\right)^{d} y_{t} = \theta\left(L,q\right) \epsilon_{t}.
+\end{equation}
+
+\subsubsection{ARIMA Model Example}
+\label{additional:time_series:ARIMA:ex}
+% TODo include example plots and a link to the example notebook
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Seasonal ARIMA Model (SARIMA)}
 \label{additional:time_series:SARIMA}
+
+Extending the ideas of the integrated model from \cref{additional:time_series:I},
+we can attempt to control for seasonality by
+taking lags across $m$ time steps at once, \ie using $L^{m}$ in place of $L$.
+For example, if $m=12$ corresponds to 1 year,
+we will be doing the normal extrapolation of ARIMA on $y_{t-1-1\,\text{Year}}$ instead of $y_{t-1}$,
+thereby canceling out any yearly periodic trends.
+The resulting $\text{SARIMA}\left(p,d,q\right)\left(P,D,Q\right)_{m}$ model
+has the normal $\text{ARIMA}\left(p,d,q\right)$ model components,
+plus an additional set\footnote{Details around
+coefficient conditions and parameter redundancy are omitted for brevity.} of uppercase parameters
+controlling a $L^{m}$ based ARIMA model:
+
+\begin{equation}\label{eq:time_series:SARMA}
+\phi\left(L,p\right) \Phi\left(L^{m},P\right) \left(1-L\right)^{d} \left(1-L^{m}\right)^{D} y_{t} = \theta\left(L,q\right) \theta\left(L^{m},q\right) \epsilon_{t}.
+\end{equation}
+
+The $\text{SARIMA}\left(p,d,q\right)\left(P,D,Q\right)_{m}$ family of models
+is available via the \texttt{ARIMA}
+\href{https://www.statsmodels.org/stable/generated/statsmodels.tsa.arima.model.ARIMA.html}{class},
+with a wide variety of attributes and methods
+enabling us to implement all of the above time series models.
+Computationally, \texttt{ARIMA} preforms fits via maximum likelihood estimation (MLE),
+but AR models can also be fit with ordinary least squares (OLS).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Box--Jenkins Method}
+\label{additional:time_series:box_jenkins}
+
+The Box--Jenkins method, popularized in their book \cite{boxjen76},
+is a recipe for selecting what type of ARIMA-based model
+to fit a given time series.
+
 % TODO
 
-% TODO include python function
-
-% TODo sections for the Box--Jenkins method, ARCH, GARCH, VAR, Anomaly Detection? At least mention them...
+% TODo add sections for ARCH, GARCH, VAR, ARMAX, Anomaly Detection? At least mention them...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Evaluating Time Series Models}
@@ -299,7 +380,7 @@ between the predictions and observed values:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Unit Roots}
 \label{additional:time_series:unit_root}
-% TODO
+% TODo
 % https://youtu.be/ugOvehrTRRw
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -327,8 +408,8 @@ by comparing to the Dickey--Fuller distribution\footnote{We can not use the stan
 If we can reject $H_{0}$ we therefore have shown that $y_{t}$ is stationary.
 Note we can further extend the ADF test by replacing the constant $\phi_{0}$
 with a deterministic, quadratic, time trend $\phi_{0} + a_{1} t + a_{2} t^{2}$.
-The ADF test is available via the \texttt{statsmodels.tsa.stattools.adfuller}
-\href{https://www.statsmodels.org/dev/generated/statsmodels.tsa.stattools.adfuller.html}{function}.
+The ADF test is available via the \texttt{adfuller}
+\href{https://www.statsmodels.org/stable/generated/statsmodels.tsa.stattools.adfuller.html}{function}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Ljung--Box Test for White Noise}
@@ -348,5 +429,5 @@ and reject $H_{0}$, the data is white noise, if $Q_{c} < Q$.
 If we fail to reject $H_{0}$, \ie $Q \leq Q_{c}$, we have shown $y$ is white noise.
 Note that if we are performing the Ljung--Box test on the remainders of a fitted model, such as $\text{ARIMA}\left(p,d,q\right)$,
 we must adjust the degrees of freedom accordingly, $\nu = h - p - d - q$.
-The Ljung--Box test can be performed with the \texttt{statsmodels.stats.diagnostic.acorr\_ljungbox}
-\href{https://www.statsmodels.org/dev/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html}{function}.
+The Ljung--Box test can be performed with the \texttt{acorr\_ljungbox}
+\href{https://www.statsmodels.org/stable/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html}{function}.
