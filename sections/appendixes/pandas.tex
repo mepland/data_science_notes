@@ -76,6 +76,9 @@ dfp = dfp.sample(frac=1., replace=False, random_state=rnd_seed).reset_index(drop
 # drop columns
 dfp = dfp.drop(['col_to_drop1', 'col_to_drop2'], axis=1)
 
+# union dataframes
+dfp = pd.concat([dfp_1, dfp_2], ignore_index=True)
+
 # fill nans, for all columns and per column
 dfp = dfp.fillna(0.0)
 dfp = dfp.fillna(value={'x': x_nan_val, 'z': y_nan_val})
@@ -88,7 +91,9 @@ dfp = dfp.fillna(value={'x': x_nan_val, 'z': y_nan_val})
 \section{Joining}
 \label{pandas:join}
 
-\noindent See the \href{https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html#database-style-dataframe-or-named-series-joining-merging}{documentation} and this \href{http://chrisalbon.com/python/data_wrangling/pandas_join_merge_dataframe/}{useful guide}.
+\noindent See the \href{https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html#database-style-dataframe-or-named-series-joining-merging}{documentation}
+and this
+\href{https://chrisalbon.com/code/python/data_wrangling/pandas_join_merge_dataframe/}{useful guide}.
 
 \begin{lstlisting}[language=Python]
 dfp = pd.merge(dfp_l, dfp_r, left_on='id_left', right_on='id_right', how='left')
