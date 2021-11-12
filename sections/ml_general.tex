@@ -43,12 +43,12 @@ the false negative rate (FNR), \ie miss rate, and false positive rate (FPR), \ie
 Here the denominators are the number of true class members.
 
 \begin{enumerate}[noitemsep]
-\item True positive rate (TPR), \ie sensitivity, recall, hit rate:
+  \item True positive rate (TPR), \ie sensitivity, recall, hit rate:
 \begin{equation} \label{eq:TPR}
 \text{TPR} = \frac{\text{TP}}{\text{P}} = \frac{\text{TP}}{\text{TP}+\text{FN}} = 1 - \text{FNR} = P\left(\hat{+} \mid + \right)
 \end{equation}
 
-\item True negative rate (TNR), \ie specificity, selectivity:
+  \item True negative rate (TNR), \ie specificity, selectivity:
 \begin{equation} \label{eq:TNR}
 \text{TNR} = \frac{\text{TN}}{\text{N}} = \frac{\text{TN}}{\text{TN}+\text{FP}} = 1 - \text{FPR} = P\left(\hat{-} \mid - \right)
 \end{equation}
@@ -64,12 +64,12 @@ Their complements are the false discovery rate (FDR) and false omission rate (FO
 It is helpful to look at these metrics graphically, as in \cref{fig:graphical_CM_quantities}.
 
 \begin{enumerate}[noitemsep]
-\item Positive predictive value (PPV), \ie precision:
+  \item Positive predictive value (PPV), \ie precision:
 \begin{equation} \label{eq:PPV}
 \text{PPV} = \frac{\text{TP}}{\hat{\text{P}}} = \frac{\text{TP}}{\text{TP}+\text{FP}} = 1 - \text{FDR} = P\left(+ \mid \hat{+} \right)
 \end{equation}
 
-\item Negative predictive value (NPV):
+  \item Negative predictive value (NPV):
 \begin{equation} \label{eq:NPV}
 \text{NPV} = \frac{\text{TN}}{\hat{\text{N}}} = \frac{\text{TN}}{\text{TN}+\text{FN}} = 1 - \text{FOR} = P\left(- \mid \hat{-} \right)
 \end{equation}
@@ -107,17 +107,17 @@ $F_{1}$ balances precision and recall equally, and is their harmonic mean,
 while $F_{\beta}$ uses $\beta$ to assign different weights to each\footnote{$F_{2}$ weights recall over precision, $F_{0.5}$ weights precision over recall.}.
 
 \begin{enumerate}[noitemsep]
-\item Accuracy (ACC):
+  \item Accuracy (ACC):
 \begin{equation} \label{eq:ACC}
 \text{ACC} = \frac{\text{TP}+\text{TN}}{\text{P}+\text{N}} = \frac{\text{TP}+\text{TN}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
 \end{equation}
 
-\item $F_{1}$ ($F_{1}=1$ is best, $F_{1}=0$ is worst):
+  \item $F_{1}$ ($F_{1}=1$ is best, $F_{1}=0$ is worst):
 \begin{equation} \label{eq:F1}
 F_{1} = \left(\frac{\text{precision}^{-1}+\text{recall}^{-1}}{2}\right)^{-1} = 2\,\,\frac{\text{precision} \times \text{recall}}{\text{precision} + \text{recall}}
 \end{equation}
 
-\item $F_{\beta}$ (Larger $\beta$ weights recall over precision):
+  \item $F_{\beta}$ (Larger $\beta$ weights recall over precision):
 \begin{equation} \label{eq:Fbeta}
 F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}}{\beta^{2}\,\text{precision} + \text{recall}} =
 \frac{\left(1+\beta^{2}\right) \text{TP}}{\left(1+\beta^{2}\right) \text{TP} + \beta^{2}\,\text{FN} + \text{FP}}
@@ -131,8 +131,8 @@ F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}
 \label{ml:general:bias_variance_tradeoff}
 
 \begin{enumerate}[noitemsep]
-\item Bias: Errors due to a model not learning about relationships between features in the training data, \ie underfitting. Caused by invalid relationships present in the model.
-\item Variance: Errors due to an overly complex model failing to generalize beyond the training data, \ie overfitting. Caused by sensitivity to small fluctuations in the training data.
+  \item Bias: Errors due to a model not learning about relationships between features in the training data, \ie underfitting. Caused by invalid relationships present in the model.
+  \item Variance: Errors due to an overly complex model failing to generalize beyond the training data, \ie overfitting. Caused by sensitivity to small fluctuations in the training data.
 \end{enumerate}
 
 \begin{figure}[H]
