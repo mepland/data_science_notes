@@ -16,17 +16,17 @@ which make them best suited for certain applications.
 \label{additional:Survival:Nomenclature}
 
 \begin{symbollist}
-	\item[Event] The event of interest in a study, \eg death, component failure\ldots
-	\item[$t$] Time from the start of observation to an event, the conclusion of the study, or the withdrawal of a subject.
-	\item[$T$] Time that an event occurred.
-	\item[$x$] Independent variable(s) under consideration.
-	\item[Censoring] Right\footnote{Left censored subjects enter the study after the event of interest has already occurred at an unknown $t < 0$.} censored subjects have no events during the observation period, either due to early withdrawal or the conclusion of the study. The true lifetime of these subjects is unavailable for analysis, \ie they have been censored.
-	\item[$S\left(t\right)$] The survival function $S\left(t\right)$ is the probability that a subject survives longer than $t$, \ie $S\left(t\right) = P\left(T > t\right)$.
-	\item[$F\left(t\right)$] The lifetime distribution function $F\left(t\right)$ is the complement of the survival function, \ie $F\left(t\right) = 1 - S\left(t\right) = P\left(T \leq t\right)$.
-	\item[$f\left(t\right)$] The event density function $f\left(t\right)$ is the time derivative of the lifetime distribution function $F\left(t\right)$, $f\left(t\right) = \dv{F}{t} = -\dv{S}{t}$, if it exists.
-	\item[$\lambda\left(t\right)$] The hazard function $\lambda\left(t\right)$ is the event rate at $t$ conditional on survival to time $t$, \ie $T > t$, see \cref{eq:Survival:hazard_def}. Any $\lambda\left(t\right)$ can be a hazard function, provided it satisfies \cref{eq:Survival:hazard_cond}.
-	\item[$\Lambda\left(t\right)$] The cumulative hazard function $\Lambda\left(t\right)$ is the integral of $\lambda\left(t\right)$ with respect to time \cref{eq:Survival:cum_hazard:def}. Also see the relations in \cref{eq:Survival:cum_hazard:to_lambda,eq:Survival:cum_hazard:to_S}.
-	\item[HR] The hazard ratio (HR) compares the hazards of two subsets of subjects partitioned by $x$ at time $t$, $\text{HR} = \lambda\left(x = 1\right) / \lambda\left(x=0\right)$. Also known as the relative risk.
+  \item[Event] The event of interest in a study, \eg death, component failure\ldots
+  \item[$t$] Time from the start of observation to an event, the conclusion of the study, or the withdrawal of a subject.
+  \item[$T$] Time that an event occurred.
+  \item[$x$] Independent variable(s) under consideration.
+  \item[Censoring] Right\footnote{Left censored subjects enter the study after the event of interest has already occurred at an unknown $t < 0$.} censored subjects have no events during the observation period, either due to early withdrawal or the conclusion of the study. The true lifetime of these subjects is unavailable for analysis, \ie they have been censored.
+  \item[$S\left(t\right)$] The survival function $S\left(t\right)$ is the probability that a subject survives longer than $t$, \ie $S\left(t\right) = P\left(T > t\right)$.
+  \item[$F\left(t\right)$] The lifetime distribution function $F\left(t\right)$ is the complement of the survival function, \ie $F\left(t\right) = 1 - S\left(t\right) = P\left(T \leq t\right)$.
+  \item[$f\left(t\right)$] The event density function $f\left(t\right)$ is the time derivative of the lifetime distribution function $F\left(t\right)$, $f\left(t\right) = \dv{F}{t} = -\dv{S}{t}$, if it exists.
+  \item[$\lambda\left(t\right)$] The hazard function $\lambda\left(t\right)$ is the event rate at $t$ conditional on survival to time $t$, \ie $T > t$, see \cref{eq:Survival:hazard_def}. Any $\lambda\left(t\right)$ can be a hazard function, provided it satisfies \cref{eq:Survival:hazard_cond}.
+  \item[$\Lambda\left(t\right)$] The cumulative hazard function $\Lambda\left(t\right)$ is the integral of $\lambda\left(t\right)$ with respect to time \cref{eq:Survival:cum_hazard:def}. Also see the relations in \cref{eq:Survival:cum_hazard:to_lambda,eq:Survival:cum_hazard:to_S}.
+  \item[HR] The hazard ratio (HR) compares the hazards of two subsets of subjects partitioned by $x$ at time $t$, $\text{HR} = \lambda\left(x = 1\right) / \lambda\left(x=0\right)$. Also known as the relative risk.
 \end{symbollist}
 
 \begin{subequations}\label{eq:Survival:hazard_def}
@@ -190,15 +190,15 @@ When computing hazard ratios $\lambda_{0}\left(t\right)$ then drops out:
 \begin{tabular}[c]{p{0.3\textwidth}}
 Pro
 \begin{itemize}
-	\item Simple to compute and understand
-	\item Can estimate $S$
+  \item Simple to compute and understand
+  \item Can estimate $S$
 \end{itemize}
 \\
 Con
 \begin{itemize}
-	\item No functional form
-	\item Can \textbf{not} estimate HR
-	\item Only can handle a few categorical $x$
+  \item No functional form
+  \item Can \textbf{not} estimate HR
+  \item Only can handle a few categorical $x$
 \end{itemize}
 \end{tabular}
 
@@ -207,13 +207,13 @@ Con
 \begin{tabular}[c]{p{0.3\textwidth}}
 Pro
 \begin{itemize}
-	\item Can estimate $S$ and HR
+  \item Can estimate $S$ and HR
 \end{itemize}
 \\
 Con
 \begin{itemize}
-	\item $\lambda\left(t\right) = c$ can be unrealistic
-	\item Weibull: $\lambda = f\left(t\right)$ of a known form
+  \item $\lambda\left(t\right) = c$ can be unrealistic
+  \item Weibull: $\lambda = f\left(t\right)$ of a known form
 \end{itemize}
 \end{tabular}
 
@@ -222,13 +222,13 @@ Con
 \begin{tabular}[c]{p{0.3\textwidth}}
 Pro
 \begin{itemize}
-	\item $\lambda$ can be an unknown function of $t$
-	\item Can estimate HR
+  \item $\lambda$ can be an unknown function of $t$
+  \item Can estimate HR
 \end{itemize}
 \\
 Con
 \begin{itemize}
-	\item Can \textbf{not} estimate $S$
+  \item Can \textbf{not} estimate $S$
 \end{itemize}
 \end{tabular}
 
@@ -241,11 +241,11 @@ Con
 \label{additional:Survival:assumptions}
 
 \begin{enumerate}[noitemsep]
-\item Any censoring is non-informative, \ie censoring is uncorrelated with the probabilities of different event outcomes.\label{item:Survival:assumptions:censoring}
-\item Survival times $t$ are uncorrelated across subjects.\label{item:Survival:assumptions:t_uncorr}
-\item $\mathbf{x}$ is constant over time, per subject.\label{item:Survival:assumptions:X_constant}
-\item Hazards are proportional, \ie hazard ratios are constant over time.\label{item:Survival:assumptions:prop_hazard}
-\item $\log\left(\lambda\right)$ is linear with respect to the continuous $x_{j}$ independent variables.\label{item:Survival:assumptions:X_linearity}
+  \item Any censoring is non-informative, \ie censoring is uncorrelated with the probabilities of different event outcomes.\label{item:Survival:assumptions:censoring}
+  \item Survival times $t$ are uncorrelated across subjects.\label{item:Survival:assumptions:t_uncorr}
+  \item $\mathbf{x}$ is constant over time, per subject.\label{item:Survival:assumptions:X_constant}
+  \item Hazards are proportional, \ie hazard ratios are constant over time.\label{item:Survival:assumptions:prop_hazard}
+  \item $\log\left(\lambda\right)$ is linear with respect to the continuous $x_{j}$ independent variables.\label{item:Survival:assumptions:X_linearity}
 \end{enumerate}
 
 \cref{item:Survival:assumptions:censoring,item:Survival:assumptions:t_uncorr,item:Survival:assumptions:X_constant}
@@ -257,15 +257,15 @@ apply to the exponential, Weibull and Cox models.
 \label{additional:Survival:assumptions:tests_and_corrections}
 
 \begin{itemize}[noitemsep]
-\item[\cref{item:Survival:assumptions:censoring}.] Exploratory data analysis to detect differences in $\mathbf{x}$ distributions between censored and non-censored subjects. If violated, better input data is needed, redesign study.
+  \item[\cref{item:Survival:assumptions:censoring}.] Exploratory data analysis to detect differences in $\mathbf{x}$ distributions between censored and non-censored subjects. If violated, better input data is needed, redesign study.
 
-\item[\cref{item:Survival:assumptions:t_uncorr}.] Exploratory data analysis, study design question. If violated, redesign study.
+  \item[\cref{item:Survival:assumptions:t_uncorr}.] Exploratory data analysis, study design question. If violated, redesign study.
 
-\item[\cref{item:Survival:assumptions:X_constant}.] Exploratory data analysis, study design question. If unavoidable, can try a more complex time dependent covariate model.
+  \item[\cref{item:Survival:assumptions:X_constant}.] Exploratory data analysis, study design question. If unavoidable, can try a more complex time dependent covariate model.
 
-\item[\cref{item:Survival:assumptions:prop_hazard}.] Check with a Schoenfeld test or complementary log-log plot. If violated, stratify problematic $x_{j}$ variables into separate models, or use more complex models with time dependent $\beta$ coefficients.
+  \item[\cref{item:Survival:assumptions:prop_hazard}.] Check with a Schoenfeld test or complementary log-log plot. If violated, stratify problematic $x_{j}$ variables into separate models, or use more complex models with time dependent $\beta$ coefficients.
 
-\item[\cref{item:Survival:assumptions:X_linearity}.] Check the appropriate residual plots. If violated, try to linearize the offending continuous $x_{j}$ with a transformation or bin to a categorical variable.
+  \item[\cref{item:Survival:assumptions:X_linearity}.] Check the appropriate residual plots. If violated, try to linearize the offending continuous $x_{j}$ with a transformation or bin to a categorical variable.
 \end{itemize}
 
 \subsubsection{Schoenfeld Test}
