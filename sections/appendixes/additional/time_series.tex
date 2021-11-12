@@ -83,8 +83,6 @@ We can generate plots of ACF and PACF vs $k$ to explore a time series
 with the \texttt{plot\_acf} and \texttt{plot\_pacf}
 \href{https://www.statsmodels.org/stable/graphics.html\#time-series-plots}{functions}.
 
-% TODo add example plots, talk about how to interpret, ie what models they suggest we try. May mostly be in the Box--Jenkins section
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Stationarity}
 \label{additional:time_series:stationarity}
@@ -93,10 +91,9 @@ Stationarity is an important assumption for many parametric time series models,
 which combines three properties:
 
 \begin{enumerate}[noitemsep]
-\item The mean $\expval{y}$ of the time series is constant, \ie the average is not moving.\label{item:time_series:stationarity:constant_mean}
-\item The variance $\variance{y}$ of the time series is constant.\label{item:time_series:stationarity:constant_var}
-\item The time series does not exhibit seasonality, \ie no periodic fluctuations in $y\left(t\right)$.
-\label{item:time_series:stationarity:seasonality}
+  \item The mean $\expval{y}$ of the time series is constant, \ie the average is not moving.\label{item:time_series:stationarity:constant_mean}
+  \item The variance $\variance{y}$ of the time series is constant.\label{item:time_series:stationarity:constant_var}
+  \item The time series does not exhibit seasonality, \ie no periodic fluctuations in $y\left(t\right)$.\label{item:time_series:stationarity:seasonality}
 \end{enumerate}
 
 If the mean or variance is growing with time
@@ -104,8 +101,14 @@ we can look at the first difference, $\widetilde{y}_{t} = y_{t} - y_{t-1}$,
 and see if the time series of $\widetilde{y}_{t}$ is stationary,
 see \cref{additional:time_series:I} for more.
 Similarly, we can try to remove seasonality
-by subtracting a deterministic time-dependent function
+by subtracting a deterministic time-dependent function $f\left(t\right)$
 or by using the SARIMA model of \cref{additional:time_series:SARIMA}.
+We can also try normalizing with a $Z$-score to address a changing mean or variance;
+subtracting or dividing as needed to make the series more stationary.
+This even works with seasonality if we subtract the mean value per medium-sized time unit, \eg month, quarter, \etc.
+When cleaning the data in this way,
+we will need to invert any preprocessing steps
+while making predictions to return to the original units.
 
 Simply looking at the graph of a time series can give us
 a good intuition on if it is stationary or not.
@@ -146,7 +149,7 @@ is still a good idea if possible.} by setting $\phi_{i} = 0$.
 \subsection{Moving Average (MA) Models}
 \label{additional:time_series:MA}
 
-Instead of looking at the autocorrelation $y_{y-i}$,
+Instead of looking at the auto-correlation $y_{y-i}$,
 we can also build a time series model around
 correcting for prior errors in the prediction,
 \ie fitting to the moving average (MA).
@@ -275,7 +278,8 @@ by including \cref{eq:time_series:I:forward} in \cref{eq:time_series:ARMA_lag}:
 
 \subsubsection{ARIMA Model Example}
 \label{additional:time_series:ARIMA:ex}
-% TODo include example plots and a link to the example notebook
+
+% TODO include example plots of y_{t}, PACF, ACF, predictions, and residuals; and link to the example notebook
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Seasonal ARIMA Model (SARIMA)}
@@ -306,16 +310,55 @@ Computationally, \texttt{ARIMA} preforms fits via maximum likelihood estimation 
 but AR models can also be fit with ordinary least squares (OLS).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Box--Jenkins Method}
-\label{additional:time_series:box_jenkins}
+\subsection{ARMA Model with Exogenous Inputs (ARMAX)}
+\label{additional:time_series:ARMAX}
 
-The Box--Jenkins method, popularized in their book \cite{boxjen76},
-is a recipe for selecting what type of ARIMA-based model
-to fit a given time series.
+The $\text{ARMAX}\left(p,q,b\right)$ model
+extends ARMA by incorporating exogenous (X) inputs
+via another known time series $d_{t}$:
 
-% TODO
+\begin{equation}\label{eq:time_series:ARMAX}
+\hat{y}_{t} = \mu_{0} + \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \sum_{i=1}^{q} \theta_{i}\, \epsilon_{t-i} + \sum_{i=1}^{b} \eta_{i}\, d_{t-i} + \epsilon_{t}.
+\end{equation}
 
-% TODo add sections for ARCH, GARCH, VAR, ARMAX, Anomaly Detection? At least mention them...
+We can think of the $d_{t}$ time series like the driving force of a driven harmonic oscillator.
+In practice, ARMAX usually is implemented as ARMA on
+a transformed $y_{t}$ which takes into account different lags of $d_{t}$,
+so careful interpretation of a given software package's outputs and documentation is required.
+The \texttt{ARIMA}
+\href{https://www.statsmodels.org/stable/generated/statsmodels.tsa.arima.model.ARIMA.html}{class}
+can incorporate an exogenous time series,
+as well as deterministic polynomials of $t$,
+\ie the $f\left(t\right)$ mentioned in \cref{additional:time_series:stationarity}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Other Models (VAR, ARCH, GARCH, Bayesian Approaches)}
+\label{additional:time_series:other_models}
+
+In addition to the SARIMAX family of models detailed above,
+there are a few other useful time series models to note here.
+The vector autoregression (VAR) model is a matrix based
+generalization of $\text{AR}\left(p\right)$ to multiple dimensions.
+See the \texttt{vector\_ar}
+\href{https://www.statsmodels.org/stable/generated/statsmodels.tsa.vector_ar.var_model.VAR.html}{class} for more.
+
+The autoregressive conditional heteroskedasticity (ARCH) and generalized ARCH (GARCH) models,
+popular in finance, are appropriate when the underlying time series
+exhibits periodic episodes of increased variance\footnote{Conditional heteroskedasticity meaning periodically differing variances.}.
+These models predict the volatility $\sigma_{t}^{2}$ as a function of
+the prior errors $\epsilon_{t-1}$ and variances $\sigma_{t-1}^{2}$
+which allow them to cope with ``bursty'' periods of increased volatility.
+See the \texttt{arch}
+\href{https://arch.readthedocs.io/en/stable/univariate/introduction.html}{package}
+for one implementation.
+
+We can also look at time series analysis within a Bayesian framework;
+assuming prior distributions for the model parameters $\bm{\beta}$
+then updating based on the observed data,
+thereby producing distributions of our predictions and parameters instead of only MLE point estimates.
+The \texttt{PyMC3} \href{https://docs.pymc.io/en/v3/}{module}
+has \href{https://docs.pymc.io/en/v3/api/distributions/timeseries.html}{timeseries functions}
+for implementing this approach, including AR and GARCH models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Evaluating Time Series Models}
@@ -328,7 +371,7 @@ $\approx \SI{70}{\percent}$ of the data by time for the training set,
 and the reminding $\approx \SI{30}{\percent}$ for the test set,
 instead of randomly splitting the data as is done for interpolative models.
 To improve on this approach even further, we can use
-``rolling forecast origin'' techniques to evaluate the model.
+rolling forecast origin techniques to evaluate the model.
 In short, we use the first $k$ data points to train the model,
 evaluate it on the next $k + l$ data points, increment $k$ and reiterate.
 Performance metrics can then be averaged across the iterations.
@@ -375,12 +418,62 @@ between the predictions and observed values:
 \end{align}
 \end{subequations}
 
-% TODO AIC, BIC
+\subsubsection{AIC, BIC}
+\label{additional:time_series:AIC_BIC}
+
+% TODO
+% https://youtu.be/McEN54l3EPU
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Box--Jenkins Method (Expanded)}
+\label{additional:time_series:box_jenkins}
+
+The Box--Jenkins method, popularized in their book \cite{boxjen76},
+is a recipe for fitting an ARMA-based model to a given time series $y_{t}$.
+Here I have expanded some of the steps to make the entire process
+for working with time series data more explicit:
+
+\begin{enumerate}[noitemsep]
+  \item Do any necessary pre-cleaning of $y_{t}$ to normalize the data.\label{item:time_series:box_jenkins:cleaning0}
+  \begin{enumerate}[noitemsep]
+    \item $Z$-score normalization, deterministic transforms $f\left(t\right)$, \etc.\label{item:time_series:box_jenkins:cleaning0:detail}
+    \item Also, split the training and test sets.\label{item:time_series:box_jenkins:cleaning0:train_test_split}
+  \end{enumerate}
+  \item Check the stationarity and seasonality of the cleaned $y_{t}$.\label{item:time_series:box_jenkins:assumptions}
+  \begin{enumerate}[noitemsep]
+    \item Look at $y_{t}$ and the MA plot for obvious problems.\label{item:time_series:box_jenkins:assumptions:eye}
+    \item Use the augmented Dickey--Fuller test (ADF) for stationary.\label{item:time_series:box_jenkins:assumptions:ADF}
+    \item Correct any remaining problems with a ARIMA, $1 \leq d$, or SARIMA model.\label{item:time_series:box_jenkins:assumptions:cleaning1}
+  \end{enumerate}
+  \item Select the appropriate ARMA model, \ie choose $p$ and $q$.\label{item:time_series:box_jenkins:order}
+  \begin{enumerate}[noitemsep]
+    \item The PACF plot gives clues to the $\text{AR}\left(p\right)$ order.\label{item:time_series:box_jenkins:order:PACF}
+    \item The ACF plot gives clues to the $\text{MA}\left(q\right)$ order.\label{item:time_series:box_jenkins:order:ACF}
+  \end{enumerate}
+  \item Fit the chosen model.\label{item:time_series:box_jenkins:fit}
+  \item Verify the fitted model by checking the residuals. Return to \cref{item:time_series:box_jenkins:cleaning0} if needed.\label{item:time_series:box_jenkins:verify}
+  \begin{enumerate}[noitemsep]
+    \item Use the Ljung--Box test for white noise on the residuals.\label{item:time_series:box_jenkins:verify:Ljung_Box}
+    \item Measure performance with RMSE and MAPE.\label{item:time_series:box_jenkins:verify:RMSE_MAPE}
+  \end{enumerate}
+  \item Invert any cleaning steps to return to the original units of $y_{t}$ for predictions.\label{item:time_series:box_jenkins:invert}
+\end{enumerate}
+
+In \cref{item:time_series:box_jenkins:order} a simple approach is to
+go out to the last significant non-zero order of $p$ ($q$) in the PACF (ACF) plot.
+However, interpreting the PACF and ACF plots is a developed skill
+and there are many different pieces of advice
+available\footnote{See
+\href{https://people.duke.edu/~rnau/411arim3.htm}{here}
+and the Box--Jenkins method
+\href{https://en.wikipedia.org/wiki/Box\%E2\%80\%93Jenkins\_method\#Autocorrelation\_and\_partial\_autocorrelation\_plots}{wiki page}
+for just two examples.}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Unit Roots}
 \label{additional:time_series:unit_root}
-% TODo
+
+% TODO
 % https://youtu.be/ugOvehrTRRw
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -431,3 +524,10 @@ Note that if we are performing the Ljung--Box test on the remainders of a fitted
 we must adjust the degrees of freedom accordingly, $\nu = h - p - d - q$.
 The Ljung--Box test can be performed with the \texttt{acorr\_ljungbox}
 \href{https://www.statsmodels.org/stable/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html}{function}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Anomaly Detection}
+\label{additional:time_series:anomaly_detection}
+
+% TODO
+% https://youtu.be/XPwCo4cqqt0
