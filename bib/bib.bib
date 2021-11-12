@@ -84,7 +84,6 @@
   title = {Partial Residuals for The Proportional Hazards Regression Model},
   ISSN = {00063444},
   URL = {http://www.jstor.org/stable/2335876},
-  abstract = {Residuals are defined for the proportional hazards regression model introduced by Cox (1972). These residuals can be plotted against time to test the proportional hazards assumption. Histograms of these residuals can be used to examine fit and detect outlying covariate values.},
   journal = {Biometrika},
   number = {1},
   pages = {239--241},
@@ -98,7 +97,6 @@
   title = {Nonparametric Estimation from Incomplete Observations},
   ISSN = {01621459},
   URL = {http://www.jstor.org/stable/2281868},
-  abstract = {In lifetesting, medical follow-up, and other fields the observation of the time of occurrence of the event of interest (called a death) may be prevented for some of the items of the sample by the previous occurrence of some other event (called a loss). Losses may be either accidental or controlled, the latter resulting from a decision to terminate certain observations. In either case it is usually assumed in this paper that the lifetime (age at death) is independent of the potential loss time; in practice this assumption deserves careful scrutiny. Despite the resulting incompleteness of the data, it is desired to estimate the proportion P(t) of items in the population whose lifetimes would exceed t (in the absence of such losses), without making any assumption about the form of the function P(t). The observation for each item of a suitable initial event, marking the beginning of its lifetime, is presupposed. For random samples of size N the product-limit (PL) estimate can be defined as follows: List and label the N observed lifetimes (whether to death or loss) in order of increasing magnitude, so that one has 0 ≤ t1' ≤ t2' ≤ ⋯ ≤ tN'. Then $\hat{P}(t) = \prod_r \lbrack(N - r)/(N - r + 1)\rbrack$, where r assumes those values for which tr' ≤ t and for which tr' measures the time to death. This estimate is the distribution, unrestricted as to form, which maximizes the likelihood of the observations. Other estimates that are discussed are the actuarial estimates (which are also products, but with the number of factors usually reduced by grouping); and reduced-sample (RS) estimates, which require that losses not be accidental, so that the limits of observation (potential loss times) are known even for those items whose deaths are observed. When no losses occur at ages less than t, the estimate of P(t) in all cases reduces to the usual binomial estimate, namely, the observed proportion of survivors.},
   journal = {Journal of the American Statistical Association},
   number = {282},
   pages = {457--481},
@@ -112,7 +110,6 @@
   title = {Regression Models and Life-Tables},
   ISSN = {00359246},
   URL = {http://www.jstor.org/stable/2985181},
-  abstract = {The analysis of censored failure times is considered. It is assumed that on each individual are available values of one or more explanatory variables. The hazard function (age-specific failure rate) is taken to be a function of the explanatory variables and unknown regression coefficients multiplied by an arbitrary and unknown function of time. A conditional likelihood is obtained, leading to inferences about the unknown regression coefficients. Some generalizations are outlined.},
   journal = {Journal of the Royal Statistical Society. Series B (Methodological)},
   number = {2},
   pages = {187--220},
@@ -459,6 +456,24 @@
   dontuseurl="https://doi.org/10.1140/epjc/s10052-016-4099-4"
 }
 
+@article{leiden,
+  author={Traag, V. A.  and Waltman, L.  and van Eck, N. J.},
+  title={From Louvain to Leiden: guaranteeing well-connected communities},
+  journal={Scientific Reports},
+  year={2019},
+  month={Mar},
+  day={26},
+  volume={9},
+  number={1},
+  pages={5233},
+  issn={2045-2322},
+  doi={10.1038/s41598-019-41695-z},
+  dontuseurl={https://doi.org/10.1038/s41598-019-41695-z},
+  archivePrefix = {arXiv},
+  eprint    = {1810.08473},
+  primaryClass   = "cs.SI",
+}
+
 @article{louvain,
   author   = {Vincent D Blondel and Jean-Loup Guillaume and Renaud Lambiotte and Etienne Lefebvre},
   title    = {Fast unfolding of communities in large networks},
@@ -466,9 +481,12 @@
   volume   = {2008},
   number   = {10},
   pages    = {P10008},
-  url      = {http://stacks.iop.org/1742-5468/2008/i=10/a=P10008},
+  dontuseurl      = {http://stacks.iop.org/1742-5468/2008/i=10/a=P10008},
+  doi={10.1088/1742-5468/2008/10/P10008},
   year     = {2008},
-  abstract = {We propose a simple method to extract the community structure of large networks. Our method is a heuristic method that is based on modularity optimization. It is shown to outperform all other known community detection methods in terms of computation time. Moreover, the quality of the communities detected is very good, as measured by the so-called modularity. This is shown first by identifying language communities in a Belgian mobile phone network of 2 million customers and by analysing a web graph of 118 million nodes and more than one billion links. The accuracy of our algorithm is also verified on ad hoc modular networks.}
+  archivePrefix = {arXiv},
+  eprint    = {0803.0476},
+  primaryClass   = "physics.soc-ph",
 }
 
 @misc{python-louvain,
