@@ -272,14 +272,23 @@ The mean and variance are then:
 
 For rare processes with $p \ll 1$, and thus $\lambda \equiv n\,p \ll 1$,
 the binomial distribution reduces\footnote{See
-one \href{https://medium.com/@andrew.chamberlain/deriving-the-poisson-distribution-from-the-binomial-distribution-840cc1668239}{derivation here}.} to the
+one \href{https://medium.com/@andrew.chamberlain/deriving-the-poisson-distribution-from-the-binomial-distribution-840cc1668239}{derivation here}.
+In practice, $\num{20} \lesssim n$, $\lambda = n\,p \lesssim \num{10}$ is a reasonable standard.} to the
 Poisson distribution:
 
 \begin{equation}\label{eq:stats:poisson:P}
-P\left(k;\,\lambda\right) = \frac{\lambda^{k}}{k!}\,e^{-\lambda}\,. \\
+P\left(k;\,\lambda\right) = \frac{\lambda^{k}}{k!}\,e^{-\lambda}\,, \\
 \end{equation}
 
-\noindent Note that here $\lambda$ is continuous, while $k$ is still an integer.
+\noindent where $\lambda$ is the expected number of events in a given interval,
+$\lambda = \left(\text{event density}\right) \times \left(\text{interval}\right)$.
+Note that $\lambda$ has dimensionless units of counts of events\footnote{Although
+we are typically considering $\lambda$ events in a given time interval,
+$\lambda_{\text{Poisson}}$ is not a rate, yet!} and does not have to be an integer.
+When events occur independently and at a constant rate,
+which is low enough that no events occur simultaneously within our measurement resolution,
+the event count per time interval will follow the Poisson distribution.
+Such a situation is known as a Poisson process.
 A plot of the distribution can be found in \cref{fig:dist:poisson}.
 
 Interestingly, the mean and variance of the Poisson distribution are identical and equal to $\lambda$:
@@ -288,17 +297,18 @@ Interestingly, the mean and variance of the Poisson distribution are identical a
 \expval{k} = \sigma^{2} = \lambda\,.
 \end{equation}
 
-\subsubsection{Example: Cars Driving By}
-\label{stats:poisson:cars}
-% TODO add
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exponential Distribution}
 \label{stats:exp}
 
-If we sample the time intervals between Poisson distributed events
-we arrive at the exponential distribution,
+If we sample the time intervals between Poisson distributed events\footnote{Assuming the first event occurs at $T$,
+$P\left(T > t\right) = P_{\text{Poisson}}\left(k=0;\,\lambda_{\text{Poisson}} \equiv \lambda\,t\right) = e^{-\lambda t}$,
+$P\left(t\right) = \dv{t} P\left(T \leq t\right) = \dv{t} 1 - e^{-\lambda t} = \lambda e^{-\lambda t}$.
+Here we have used the Poisson distribution to find the CDF,
+then differentiated to find the PDF.
+$\lambda$ is now a rate, unlike $\lambda_{\text{Poisson}}$!} we
+arrive at the exponential distribution,
 
 \begin{equation}\label{eq:stats:exp:P}
 P\left(x;\,\lambda\right) = \begin{cases}
@@ -307,7 +317,7 @@ P\left(x;\,\lambda\right) = \begin{cases}
 \end{cases}
 \end{equation}
 
-\noindent with rate parameter $\lambda$.
+\noindent with rate parameter $\lambda$ events per unit $x$.
 A plot of the distribution can be found in \cref{fig:dist:exp}.
 
 The mean and standard deviation of the exponential distribution are identical and equal to $1/\lambda$:
@@ -322,6 +332,45 @@ The exponential distribution is memoryless\footnote{The exponential (geometric) 
 \begin{equation}\label{eq:stats:exp:memoryless}
 P\left(T > t + s \mid T > s\right) = P\left(T > t\right)\,, \quad \forall s,t \geq 0.
 \end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Example: Cars Driving By}
+\label{stats:cars}
+
+After watching a patch of road,
+you notice that on average cars are spaced \SI{5}{\minute} apart.
+Assume the cars are traveling independently\footnote{Not a good assumption
+in real life as cars will clump up in traffic, \ie become correlated.
+Better examples include
+radioactive decay,
+photon arrival from a distant star,
+support tickets being created\ldots} of one another.
+
+\subsubsection{Questions}
+\label{stats:cars:questions}
+
+\begin{enumerate}[noitemsep]
+  \item What is $P\left(\text{Observing \num{5} cars in the next \SI{6}{\minute}}\right)$?\label{item:stats:cars:1}
+  \item If \SI{20}{\percent} of the cars are red, what is $P\left(\text{Observing \num{5} red cars in the next \SI{6}{\minute}}\right)$?\label{item:stats:cars:2}
+  \item What is $P\left(\text{Observing \num{2} or more cars in the next \SI{10}{\minute}}\right)$?\label{item:stats:cars:3}
+  \item \num{100} cars have just driven by, how many are expected in the next hour?\label{item:stats:cars:4}
+  \item If we start watching the road at a random time, how long should we expect to wait until we see our first car?\label{item:stats:cars:5}
+\end{enumerate}
+
+\subsubsection{Solutions}
+\label{stats:cars:solutions}
+
+\begin{itemize}[noitemsep]
+  % https://www.wolframalpha.com/input/?i=%281.2%5E5+%2F+5%21%29*e%5E-1.2
+  \item[\cref{item:stats:cars:1}.] $k = 5$, $\lambda = \frac{1\,\text{car observed}}{\SI{5}{\minute}} \times \SI{6}{\minute} = \num{1.2}$, $P_{\text{Poisson}} = \frac{\num{1.2}^{5}}{5!} e^{-1.2} = \num{0.006}$.
+  % https://www.wolframalpha.com/input/?i=%280.24%5E5+%2F+5%21%29*e%5E-0.24
+  \item[\cref{item:stats:cars:2}.] $\lambda = \frac{\num{0.2} \times 1\,\text{car observed}}{\SI{5}{\minute}} \times \SI{6}{\minute} = \num{0.24}$, $P_{\text{Poisson}} = \num{5.2e-6}$.
+  % https://www.wolframalpha.com/input/?i=1+-+3e%5E-2
+  \item[\cref{item:stats:cars:3}.] $\lambda = \frac{1}{\SI{5}{\minute}} \times \SI{10}{\minute} = \num{2}$, $P\left(2 \leq k \right) = 1 - P_{\text{Poisson}}\left(k < 2 \right) = 1 - \left( \frac{2^{0}}{0!} e^{-2} + \frac{2^{1}}{1!} e^{-2}\right) \newline = 1 - 3 e^{-2} = \num{0.6}$.
+  \item[\cref{item:stats:cars:4}.] The cars are independent, so the prior $k$ cars are irrelevant -- gambler's fallacy. $\expval{k} = \lambda = \frac{1}{\SI{5}{\minute}} \times \SI{60}{\minute} = \num{12}$.
+  \item[\cref{item:stats:cars:5}.] We can use the exponential distribution with $\lambda_{\text{Exp}} = \frac{1}{\SI{5}{\minute}}$, $\expval{t} = \frac{1}{\lambda} = \SI{5}{\minute}$,\newline as one would expect\ldots
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
