@@ -110,7 +110,7 @@ s_{p} &= \sqrt{\left(s^{2}_{x_{1}} + s^{2}_{x_{2}}\right)/2} \label{eq:hypo:t:tw
 
 If we relax the sample size condition and let $n_{1} \neq n_{2}$
 we can still compute a $t$-statistic,
-provided the parent distribution's variances are equal\footnote{A useful rule of thumb is $1/2 < s_{x_{1}} / s_{x_{2}} < 2$.}.
+provided the parent distribution's variances are equal\footnote{A useful guideline is $1/2 < s_{x_{1}} / s_{x_{2}} < 2$.}.
 
 The $t$-statistic \cref{eq:hypo:t:two:unpaired:diff_n} can be used with $\nu = n_{1} + n_{2} - 2$ to find a $\pvalue$.
 
@@ -474,21 +474,21 @@ the $n$ necessary to obtain a desired $\alpha$ and $\beta$ before running the ex
 % print(f'Power = 1-beta = {1-norm.cdf(Z_a):.4f}')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Lehr's Rule of Thumb for \texorpdfstring{$t$}{t}-Tests}
-\label{hypo:power:rule_of_thumb}
+\subsection{Lehr's Equation for \texorpdfstring{$t$}{t}-Tests}
+\label{hypo:power:lehr}
 
-As a rough rule of thumb for one-sided (two-sided) $t$-tests,
+As a rough approximation for one-sided (two-sided) $t$-tests,
 Lehr argues that to have a power of $1-\beta \sim \num{0.8}$ with $\alpha = \num{0.05}$,
-$n$ \cref{eq:hypo:power_rule_of_thumb} should be set to 8\footnote{This
+$n$ \cref{eq:hypo:power:lehr} should be set to 8\footnote{This
 factor is $8 \approx \left(Z_{\alpha/2} + Z_{\beta}\right)^{2}$, for $1-\beta = \num{0.8}$, $\alpha = \num{0.05}$.} (16)
 times the ratio of the estimated population variance, $s^{2}$,
 and the desired detectable difference squared, $\Delta^{2} = \left(\mu_{1} - \mu_{2}\right)^{2}$.
-Note that we can also rearrange this rule of thumb to estimate $\Delta^{2}$ given a particular $n$.
+Note that we can also rearrange this approximation to estimate $\Delta^{2}$ given a particular $n$.
 
-\begin{subequations}\label{eq:hypo:power_rule_of_thumb}
+\begin{subequations}\label{eq:hypo:power:lehr}
 \begin{align}
-n &\approx \hphantom{1}8 \frac{s^{2}}{\Delta^{2}}\quad \left(\text{One-Sided}\right), \label{eq:hypo:power_rule_of_thumb:one} \\
-n &\approx 16 \frac{s^{2}}{\Delta^{2}}\quad \left(\text{Two-Sided}\right). \label{eq:hypo:power_rule_of_thumb:two}
+n &\approx \hphantom{1}8 \frac{s^{2}}{\Delta^{2}}\quad \left(\text{One-Sided}\right), \label{eq:hypo:power:lehr:one} \\
+n &\approx 16 \frac{s^{2}}{\Delta^{2}}\quad \left(\text{Two-Sided}\right). \label{eq:hypo:power:lehr:two}
 \end{align}
 \end{subequations}
 
