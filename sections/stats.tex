@@ -408,9 +408,9 @@ Note that the standard normal distribution has $\mu = 0$ and $\sigma =1$.
 \label{stats:t_dist}
 
 If we take a sample of size $m$ from a normal distribution
-we arrive at Student's $t$-distribution.
+we arrive at Student's \tdist.
 Letting $\nu = m-1$ be the number of degrees of freedom,
-Student's $t$-distribution has the form:
+Student's \tdist has the form:
 
 \begin{equation}\label{eq:stats:t_dist:P}
 P\left(t;\,\nu\right) = \frac{
@@ -430,11 +430,11 @@ and variance of $\infty$ for $\nu =2$ and $\nu / \left(\nu-2\right)$ for $\nu > 
 \section{\texorpdfstring{$\chi^{2}$-Distribution}{Chi-Squared Distribution}}
 \label{stats:chi2_dist}
 
-The $\chi^{2}$-distribution with $\nu$ degrees of freedom,
+The \chiSqdist with $\nu$ degrees of freedom,
 \cref{eq:stats:chi2_dist:P} and \cref{fig:dist:chi2},
 is created by summing the squares of $\nu$ independent standard normal random variables.
 It therefore has a mean of $\nu$ and variance of $2\nu$, and is
-primary useful for conducting $\chi^{2}$-tests.
+primary useful for conducting {\chiSqtest}s.
 
 \begin{equation}\label{eq:stats:chi2_dist:P}
 P\left(x;\,\nu\right) = \frac{
@@ -448,24 +448,24 @@ x^{\frac{\nu}{2} - 1} e^{-\frac{x}{2}}
 \section{\texorpdfstring{$F$}{F}-Distribution}
 \label{stats:F_dist}
 
-The $F$-distribution with degrees of freedom $d_{1}$ and $d_{2}$,
+The \Fdist with degrees of freedom $d_{1}$ and $d_{2}$,
 \cref{eq:stats:F_dist:X,eq:stats:F_dist:P} and \cref{fig:dist:F},
 is formed by dividing two $\chi^{2}$-distributed random variables
 $S_{1}$ and $S_{2}$ with their respective degrees of freedom:
 
 \begin{subequations}\label{eq:stats:F_dist}
 \begin{align}
-X_{F\text{-distribution}} &= \frac{S_{1}/d_{1}}{S_{2}/d_{2}}, \label{eq:stats:F_dist:X} \\
+X_{\Fdist} &= \frac{S_{1}/d_{1}}{S_{2}/d_{2}}, \label{eq:stats:F_dist:X} \\
 P\left(x;\,d_{1},d_{2}\right) &= \frac{1}{x B\left(d_{1}/2, d_{2}/2\right)} \sqrt{\frac{\left(d_{1} x\right)^{d_{1}} d_{2}^{d_{2}}}{\left(d_{1} x + d_{2}\right)^{d_{1}+d_{2}}}}, \label{eq:stats:F_dist:P}
 \end{align}
 \end{subequations}
 
 \noindent where $B\left(x,y\right)$ is the beta function\footnote{$B\left(x,y\right) = \int_{0}^{1} t^{x-1} \left(1-t\right)^{y-1} \, \dd{t} = \Gamma\left(x\right)\Gamma\left(y\right) / \Gamma\left(x+y\right)$.}.
 
-The $F$-distribution has a complicated
+The \Fdist has a complicated
 mean and variance\footnote{Mean: $d_{2}/\left(d_{2}-2\right)$ for $2 < d_{2}$.
 Variance: $2 d_{2}^{2}\left(d_{1}+d_{2}-2\right)/\left(d_{1}\left(d_{2}-2\right)^{2}\left(d_{2}-4\right)\right)$ for $4 < d_{2}$.},
-and is primary useful for conducting $F$-tests such as ANOVA.
+and is primary useful for conducting {\Ftest}s such as ANOVA.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

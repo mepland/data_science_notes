@@ -204,7 +204,7 @@ R^{2}_{\text{adj}} = 1 - \frac{
 \label{regression:linear:goodness_of_fit:reduced_chi2}
 
 The standard error of the regression, $s$,
-and reduced $\chi^{2}$-statistic, $\chi_{\nu}^{2}$,
+and reduced \chiSqstat, $\chi_{\nu}^{2}$,
 are additional ways of quantifying goodness of fit.
 $s$ is a measure of the typical residual, in the units of $y$.
 $\chi_{\nu}^{2}$ is a convenient way of reporting this spread in a dimensionless manner,
@@ -235,7 +235,7 @@ $\chi_{\nu}^{2} \ll 1$ & Extreme overfitting or overestimated $\sigma_{i}$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Coefficient Significance}
 \label{regression:linear:coeff_significance}
-% TODO what is the significance of any particular \beta_{i} coefficient, via t-test, chi2-test, F-score?? Should be able to get distribution of any \beta_{i} analytically for OLS, but can use bootstrap sampling for more complex models.
+% TODO what is the significance of any particular \beta_{i} coefficient, via \ttest, \chiSqtest, \Ftest?? Should be able to get distribution of any \beta_{i} analytically for OLS, but can use bootstrap sampling for more complex models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Ridge Regression (L2, or Tikhonov)}
