@@ -282,7 +282,7 @@ the Schoenfeld residuals \cite{schoenfeld} must not change over time.
 An example Schoenfeld residual plot is provided in
 \cref{fig:cox:schoenfeld_residuals}.
 Besides graphically looking at the residuals,
-we can use $\chi^{2}$-tests to compute {\pvalue}s
+we can use {\chiSqtest}s to compute {\pvalue}s
 to test the null hypothesis, \ie the Schoenfeld residuals and time are independent.
 In this case, the proportional hazards assumption is supported
 if we find large, non-significant {\pvalue}s.
@@ -333,7 +333,7 @@ Survival status versus group membership $2\times2$ tables are computed at each d
 before being combined into one $\chi_{\text{logrank}}^{2}$ test statistic
 with the Cochran-Mantel-Haenszel test\footnote{Sometimes
 the logrank test is itself referred to as the Mantel-Haenszel test.}.
-$\chi_{\text{logrank}}^{2}$ approximately has the $\chi^{2}$ distribution with 1 degree of freedom,
+$\chi_{\text{logrank}}^{2}$ approximately has the \chiSqdist with 1 degree of freedom,
 allowing the production of {\pvalue}s to test the null hypothesis
 that there is {\em no} difference in the group's survival functions.
 
@@ -346,6 +346,7 @@ with the parameter $\rho$ left at its default value of $0$.
 \subsubsection{Concordance Statistic}
 \label{additional:Survival:additional:concordance}
 
+% TODO move to general metrics
 The concordance statistic, or C-statistic, is a measure of goodness of fit
 for binary problems such as survival analysis or logistic regression.
 Two subjects are picked at random, if the ordering of model's predicted $\hat{y}$ values

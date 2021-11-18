@@ -103,7 +103,7 @@ see \cref{additional:time_series:I} for more.
 Similarly, we can try to remove seasonality
 by subtracting a deterministic time-dependent function $f\left(t\right)$
 or by using the SARIMA model of \cref{additional:time_series:SARIMA}.
-We can also try normalizing with a $Z$-score to address a changing mean or variance;
+We can also try normalizing with a \Zscore to address a changing mean or variance;
 subtracting or dividing as needed to make the series more stationary.
 This even works with seasonality if we subtract the mean value per medium-sized time unit, \eg month, quarter, \etc.
 When cleaning the data in this way,
@@ -436,7 +436,7 @@ for working with time series data more explicit:
 \begin{enumerate}[noitemsep]
   \item Do any necessary pre-cleaning of $y_{t}$ to normalize the data.\label{item:time_series:box_jenkins:cleaning0}
   \begin{enumerate}[noitemsep]
-    \item $Z$-score normalization, deterministic transforms $f\left(t\right)$, \etc.\label{item:time_series:box_jenkins:cleaning0:detail}
+    \item \Zscore normalization, deterministic transforms $f\left(t\right)$, \etc.\label{item:time_series:box_jenkins:cleaning0:detail}
     \item Also, split the training and test sets.\label{item:time_series:box_jenkins:cleaning0:train_test_split}
   \end{enumerate}
   \item Check the stationarity and seasonality of the cleaned $y_{t}$.\label{item:time_series:box_jenkins:assumptions}
@@ -497,7 +497,7 @@ non-stationary\footnote{As $\delta = 0 \implies \phi_{1} = 1$, \ie the time seri
 vs the alternative hypothesis $H_{a}$ that $\delta < 0$, \ie time series is stationary.
 We fit the data and then perform the hypothesis testing with test statistic
 $t_{\hat{\delta}} = \hat{\delta} / \text{Standard Error}\left(\hat{\delta}\right)$
-by comparing to the Dickey--Fuller distribution\footnote{We can not use the standard $t$-distribution as $y_{t-1}$ is still assumed to be non-stationary under $H_{0}$.}.
+by comparing to the Dickey--Fuller distribution\footnote{We can not use the standard \tdist as $y_{t-1}$ is still assumed to be non-stationary under $H_{0}$.}.
 If we can reject $H_{0}$ we therefore have shown that $y_{t}$ is stationary.
 Note we can further extend the ADF test by replacing the constant $\phi_{0}$
 with a deterministic, quadratic, time trend $\phi_{0} + a_{1} t + a_{2} t^{2}$.
@@ -517,7 +517,7 @@ Q = n \left(n+2\right) \sum_{i=1}^{h} \frac{\corr{y_{t}}{y_{t-i}}^{2}}{n-i}
 \end{equation}
 
 \noindent where $n$ is the sample size and $h$ is the number of lags to be tested.
-Using the $\chi^{2}$-distribution with $\nu = h$ degrees of freedom we find the critical $Q_{c}$
+Using the \chiSqdist with $\nu = h$ degrees of freedom we find the critical $Q_{c}$
 and reject $H_{0}$, the data is white noise, if $Q_{c} < Q$.
 If we fail to reject $H_{0}$, \ie $Q \leq Q_{c}$, we have shown $y$ is white noise.
 Note that if we are performing the Ljung--Box test on the remainders of a fitted model, such as $\text{ARIMA}\left(p,d,q\right)$,

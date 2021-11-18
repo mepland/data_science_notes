@@ -97,12 +97,22 @@ sensitivity (recall) versus specificity, by \href{http://en.wikipedia.org/wiki/F
 \label{fig:graphical_CM_quantities}
 \end{figure}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Davies-Bouldin Index (Clustering)}
+\label{ml:general:eval:davies_bouldin}
+
+% TODO
+\begin{equation} \label{eq:davies_bouldin}
+\text{DB} = \frac{1}{m} \sum_{i=1}^{m} \max_{i \neq j} \left(\frac{\sigma_{i} + \sigma_{j}}{\abs{\mathbf{c}_{i} - \mathbf{c}_{j}}}\right)
+\end{equation}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Other Scores}
 \label{ml:general:eval:other_scores}
 
 The accuracy (ACC), the proportion of correct predictions, is a natural metric for measuring a classifiers performance.
-Various F-scores, such as $F_{1}$ and $F_{\beta}$, combine precision and recall into one metric\footnote{Note that $F_{\beta}$ does not depend on TN at all, a potential shortcoming.}.
+Various $F$-scores, such as $F_{1}$ and $F_{\beta}$, combine precision and recall into one metric\footnote{Note that $F_{\beta}$ does not depend on TN at all, a potential shortcoming.}.
 $F_{1}$ balances precision and recall equally, and is their harmonic mean,
 while $F_{\beta}$ uses $\beta$ to assign different weights to each\footnote{$F_{2}$ weights recall over precision, $F_{0.5}$ weights precision over recall.}.
 
@@ -268,7 +278,7 @@ while L2 is rotationally symmetric and has no such tendencies.
 
 L1, or LASSO\footnote{Least absolute shrinkage and selection operator.},
 regularization uses the norm $\norm{\bm{\beta}}$ \cref{eq:L1}, or taxi cab distance.
-As it's geometric constraints on $\bm{\beta}$ are hypercubes,
+As its geometric constraints on $\bm{\beta}$ are hypercubes,
 it tends to set some model parameters to 0, creating sparsity,
 and thereby acts as a form of built-in feature selection.
 

@@ -12,9 +12,9 @@
 When we sample from a distribution known to be Gaussian,
 or can assume the sample means are approximately normally distributed via the central limit theorem (CLT) of \cref{additional:stats:CLT},
 and know the population standard deviation $\sigma$,
-we can perform hypothesis testing on the sample mean with a $Z$-test.
+we can perform hypothesis testing on the sample mean with a \Ztest.
 For a sample of size $n$ with sample mean $\expval{x}$ and population standard deviation $\sigma$
-we compute the $Z$-score,
+we compute the \Zscore,
 
 \begin{equation}\label{eq:hypo:Z}
 Z = \frac{\expval{x} - \mu_{0}}{\sigma_{\expval{x}}} = \frac{\expval{x} - \mu_{0}}{\sigma/\sqrt{n}},
@@ -23,7 +23,7 @@ Z = \frac{\expval{x} - \mu_{0}}{\sigma_{\expval{x}}} = \frac{\expval{x} - \mu_{0
 \noindent and test the null hypothesis, $H_{0}$, that the mean is $\mu_{0}$
 by comparing $Z$ to the standard normal distribution.
 Depending on if we wish to perform a one-sided or two-sided
-test\footnote{Note we can also perform two-sample and paired $Z$-tests, see the analogous $t$-test sections with $\sigma$ replacing $s$.} we
+test\footnote{Note we can also perform two-sample and paired {\Ztest}s, see the analogous \ttest sections with $\sigma$ replacing $s$.} we
 find the probability of observing $P\left(x < Z\right)$, $P\left(Z < x\right)$, or $P\left(Z < \abs{x}\right)$
 from the cumulative distribution function (CDF).
 This \pvalue then determines if we accept, $\pvalue < \alpha$, or reject, $\alpha \leq \pvalue$,
@@ -34,40 +34,40 @@ We can
 and \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{find the \pvalue} with
 \texttt{scipy.stats.norm.cdf} or \texttt{scipy.stats.norm.sf},
 being careful to include the correct side(s).
-For an illustration see \cref{fig:two_sided_t_test}, with $Z$-scores replacing the $t$-score.
+For an illustration see \cref{fig:two_sided_t_test}, with \Zscore replacing the \tstat.
 
 If we do not know the population standard deviation $\sigma$, as is often the case,
-or if $n \lesssim 30$, we should use a $t$-test instead.
+or if $n \lesssim 30$, we should use a \ttest instead.
 However, if $50 \lesssim n$ we may be able to approximate $\sigma \approx s$
-and use a $Z$-test anyway.
+and use a \Ztest anyway.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Student's \texorpdfstring{$t$}{t}-Test}
 \label{hypo:t_test}
 
-Student's $t$-test can be used to
-statistically compare the means of two samples via the $t$-distribution
-given a $t$-statistic and degrees of freedom $\nu$.
-The $t$-test is appropriate when each sample is small\footnote{For
-larger sample sizes the $t$-distribution approaches the normal distribution which should be used instead.}, $n \lesssim 30$,
+Student's \ttest can be used to
+statistically compare the means of two samples via the \tdist
+given a \tstat and degrees of freedom $\nu$.
+The \ttest is appropriate when each sample is small\footnote{For
+larger sample sizes the \tdist approaches the normal distribution which should be used instead.}, $n \lesssim 30$,
 and drawn from a larger normally distributed population with an unknown standard deviation.
 The \pvalue returned by the test estimates the probability of obtaining the sample means
 assuming $H_{0}$, typically that the samples share the same mean, is true.
 We can compute two-sided, \ie the means are not equal, or one-sided, \ie mean 1 is $>$ or $<$ mean 2,
-forms of the $t$-test in three basic variations.
+forms of the \ttest in three basic variations.
 See \cref{fig:two_sided_t_test} for an illustration of a two-sided test's $H_{0}$ rejection regions.
 The \texttt{scipy.stats.ttest\_*}
 \href{https://docs.scipy.org/doc/scipy/reference/stats.html#statistical-tests}{family of functions}
-to easily compute $t$-statistic and \pvalue in practice.
+make it easily to compute {\tstat}s and {\pvalue}s in practice.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{figures/stats/one_side_t_test_rejection_regions.png}
 \caption{
-Illustration of a two-sided $t$-test's null hypothesis, $H_{0}$, rejection regions,
+Illustration of a two-sided {\ttest}'s null hypothesis, $H_{0}$, rejection regions,
 by \href{https://www.machinelearningplus.com/statistics/t-test-students-understanding-the-math-and-how-it-works/}{Selva Prabhakaran}.
-In a one-sided $t$-test we would only consider the side on a single side.
+In a one-sided \ttest we would only consider the side on a single side.
 $\alpha$ is the significance level, typically \num{0.05} or lower.
 }
 \label{fig:two_sided_t_test}
@@ -77,11 +77,11 @@ $\alpha$ is the significance level, typically \num{0.05} or lower.
 \subsection{One-Sample}
 \label{hypo:t_test:one}
 
-In a one-sample $t$-test we have one sample of size $n$ with mean $\expval{x}$ and standard deviation $s$,
+In a one-sample \ttest we have one sample of size $n$ with mean $\expval{x}$ and standard deviation $s$,
 and test $H_{0}$ that it belongs to a parent population with mean $\mu_{0}$.
 In this case the parent population does not need to be normally distributed, but the distribution of possible $\expval{x}$ is assumed to be normal.
 
-The $t$-statistic \cref{eq:hypo:t:one} can be used with $\nu = n-1$ to find a $\pvalue$.
+The \tstat \cref{eq:hypo:t:one} can be used with $\nu = n-1$ to find a \pvalue.
 
 \begin{equation}\label{eq:hypo:t:one}
 t = \frac{\expval{x} - \mu_{0}}{s / \sqrt{n}}
@@ -91,12 +91,12 @@ t = \frac{\expval{x} - \mu_{0}}{s / \sqrt{n}}
 \subsection{Two-Sample: Unpaired}
 \label{hypo:t_test:two:unpaired}
 
-In a two-sample unpaired $t$-test we have two independent samples, each of size $n$,
+In a two-sample unpaired \ttest we have two independent samples, each of size $n$,
 but with their own sample means $\expval{x_{i}}$ and standard deviations $s_{i}$.
 Provided that we can assume that the two parent distributions of $x_{1}$ and $x_{2}$ have the same variance,
 we can test $H_{0}$ that the two parent distribution means are equal.
 
-The $t$-statistic \cref{eq:hypo:t:two:unpaired} can be used with $\nu = 2n-2$ to find a $\pvalue$.
+The \tstat \cref{eq:hypo:t:two:unpaired} can be used with $\nu = 2n-2$ to find a \pvalue.
 
 \begin{subequations}\label{eq:hypo:t:two:unpaired}
 \begin{align}
@@ -109,10 +109,10 @@ s_{p} &= \sqrt{\left(s^{2}_{x_{1}} + s^{2}_{x_{2}}\right)/2} \label{eq:hypo:t:tw
 \label{hypo:t_test:two:unpaired:diff_n}
 
 If we relax the sample size condition and let $n_{1} \neq n_{2}$
-we can still compute a $t$-statistic,
+we can still compute a \tstat,
 provided the parent distribution's variances are equal\footnote{A useful guideline is $1/2 < s_{x_{1}} / s_{x_{2}} < 2$.}.
 
-The $t$-statistic \cref{eq:hypo:t:two:unpaired:diff_n} can be used with $\nu = n_{1} + n_{2} - 2$ to find a $\pvalue$.
+The \tstat \cref{eq:hypo:t:two:unpaired:diff_n} can be used with $\nu = n_{1} + n_{2} - 2$ to find a \pvalue.
 
 \begin{subequations}\label{eq:hypo:t:two:unpaired:diff_n}
 \begin{align}
@@ -121,16 +121,16 @@ s_{p} &= \sqrt{\left(\left(n_{1} - 1\right)s^{2}_{x_{1}} + \left(n_{2} - 1\right
 \end{align}
 \end{subequations}
 
-\subsubsection{Different Sample Sizes and Variances (Welch's \texorpdfstring{$t$}{t}-test)}
+\subsubsection{Different Sample Sizes and Variances (Welch's \texorpdfstring{$t$}{t}-Test)}
 \label{hypo:t_test:two:unpaired:diff_n_diff_var}
 
 If we further relax the assumptions and also let the population variances differ
-we arrive at Welch's $t$-test which approximates\footnote{The
+we arrive at Welch's \ttest which approximates\footnote{The
 true distribution of $t$ depends somewhat on the unknown population variances,
 see the \href{https://en.wikipedia.org/wiki/Behrens\%E2\%80\%93Fisher_problem}{Behrens--Fisher problem}
-for more.} the $t$-distribution.
+for more.} the \tdist.
 
-The $t$-statistic \cref{eq:hypo:t:two:unpaired:diff_n_diff_var:t} can be used with $\nu$ \cref{eq:hypo:t:two:unpaired:diff_n_diff_var:dof} to find a $\pvalue$.
+The \tstat \cref{eq:hypo:t:two:unpaired:diff_n_diff_var:t} can be used with $\nu$ \cref{eq:hypo:t:two:unpaired:diff_n_diff_var:dof} to find a \pvalue.
 
 \begin{subequations}\label{eq:hypo:t:two:unpaired:diff_n_diff_var}
 \begin{align}
@@ -143,13 +143,13 @@ t &= \frac{\expval{x_{1}} - \expval{x_{2}}}{\sqrt{\frac{s^{2}_{1}}{n_{1}} + \fra
 \subsection{Two-Sample: Paired}
 \label{hypo:t_test:two:paired}
 
-In a two-sample paired $t$-test we have two dependent samples,
+In a two-sample paired \ttest we have two dependent samples,
 such as two sets of measurements from the same $n$ individuals taken at different times.
 In this case, we are testing $H_{0}$ that the difference in means of the two dependent samples is $\mu_{0}$.
 Note, we can set $\mu_{0} = 0$ if we simply want to test for a statistically significant difference, and not an \apriori degree of difference.
 Defining the difference between paired observations as $x_{\Delta}$, we compute the mean difference $\expval{x_{\Delta}}$ and $s_{\Delta}$ standard deviation on the sample.
 
-The $t$-statistic \cref{eq:hypo:t:two:paired} can be used with $\nu = n-1$ to find a $\pvalue$.
+The \tstat \cref{eq:hypo:t:two:paired} can be used with $\nu = n-1$ to find a \pvalue.
 
 \begin{equation}\label{eq:hypo:t:two:paired}
 t = \frac{\expval{x_{\Delta}} - \mu_{0}}{s_{\Delta} / \sqrt{n}}
@@ -160,12 +160,12 @@ t = \frac{\expval{x_{\Delta}} - \mu_{0}}{s_{\Delta} / \sqrt{n}}
 \section{\texorpdfstring{$\chi^{2}$-Test}{Chi-Squared Test}}
 \label{hypo:chi2_test}
 
-Pearson's $\chi^{2}$-test can be used to
+Pearson's \chiSqtest can be used to
 statistically compare a set of observations in
-$n$ variables, $x_{i}$, to prior expectations via the $\chi^{2}$-distribution.
+$n$ variables, $x_{i}$, to prior expectations via the \chiSqdist.
 The \pvalue returned by the test estimates the probability of obtaining the observations
 assuming $H_{0}$, \ie the expectations, is true.
-The $\chi^{2}$-test statistic, $X^{2}$, is created with the assumption that
+The \chiSqstat, $X^{2}$, is created with the assumption that
 the data are normally distributed and independent,
 which often is the case due to the CLT.
 It is constructed by squaring the difference\footnote{Yates's
@@ -174,19 +174,19 @@ also be applied in some low statistics cases.} between
 an expected value, $x^{\text{exp}}_{i}$, and its corresponding observation, $x^{\text{obs}}_{i}$,
 and dividing by the expectation:
 
-\begin{equation}\label{eq:hypo:chi2_score}
+\begin{equation}\label{eq:hypo:chi2_statistic}
 X^{2} = \sum_{i=1}^{n} \frac{\left(x^{\text{obs}}_{i} - x^{\text{exp}}_{i}\right)^{2}}{x^{\text{exp}}_{i}}\,.
 \end{equation}
 
 In the limit that each $x^{\text{obs}}_{i}$ is normally distributed and $n$ is large, $X^{2} \to \chi^{2}$.
-We can then use the $\chi^{2}$ distribution with $\nu = n-1$ degrees of freedom to find the \pvalue as the area to the right of $X^{2}$.
+We can then use the \chiSqdist with $\nu = n-1$ degrees of freedom to find the \pvalue as the area to the right of $X^{2}$.
 An easy way to compute $X^{2}$ and the \pvalue is to use the \texttt{scipy.stats.chisquare(f\_obs, f\_exp)}
 \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.chisquare.html}{function}.
 
-The $\chi^{2}$-test can also be used to test of the data's independence, or homogeneity,
-for $m$ samples of $n$ variables with $\nu = \left(n-1\right)\left(m-1\right)$ and\footnote{Note this is really the same as \cref{eq:hypo:chi2_score} if we reindex, just with a different $\nu$.}
+The \chiSqtest can also be used to test of the data's independence, or homogeneity,
+for $m$ samples of $n$ variables with $\nu = \left(n-1\right)\left(m-1\right)$ and\footnote{Note this is really the same as \cref{eq:hypo:chi2_statistic} if we reindex, just with a different $\nu$.}
 
-\begin{equation}\label{eq:hypo:chi2_score_ind}
+\begin{equation}\label{eq:hypo:chi2_statistic_ind}
 X^{2} = \sum_{i=1}^{n} \sum_{j=1}^{m} \frac{\left(x^{\text{obs}}_{i,j} - x^{\text{exp}}_{i,j}\right)^{2}}{x^{\text{exp}}_{i,j}}\,.
 \end{equation}
 
@@ -196,10 +196,10 @@ X^{2} = \sum_{i=1}^{n} \sum_{j=1}^{m} \frac{\left(x^{\text{obs}}_{i,j} - x^{\tex
 \label{hypo:ANOVA}
 
 When we are tasked with testing for differences between multiple groups
-we should not use multiple pairwise tests, like two-sample unpaired $t$-tests,
+we should not use multiple pairwise tests, like two-sample unpaired {\ttest}s,
 as the family-wise error rate \cref{eq:hypo:alpha_fw}
 will compound and become unreasonable, see \cref{hypo:bonferroni_correction} for more.
-Instead when dealing with three\footnote{When there are only two groups a one-factor ANOVA is equivalent to a two-sample unpaired $t$-test with $F=t^{2}$.} or more groups
+Instead when dealing with three\footnote{When there are only two groups a one-factor ANOVA is equivalent to a two-sample unpaired \ttest with $F=t^{2}$.} or more groups
 the appropriate Analysis of Variance (ANOVA) method should be used.
 Like pairwise tests, there are multiple versions of ANOVA available for different situations, including
 factorial ANOVA for multiple independent variables with interaction terms,
@@ -215,16 +215,16 @@ In general, ANOVA methods work by ``partitioning the sum of squares'',
 and
 ``unexplained variance'', \ie ``within-group variability'',
 components.
-The ratio of these components then form a $F$-test statistic
-which can be compared against the $F$-distribution
+The ratio of these components then form a \Fstat
+which can be compared against the \Fdist
 with the appropriate degrees of freedom to produce a \pvalue.
 The null hypothesis $H_{0}$ is typically that all of the groups come from populations which share the same mean.
 Increased between-group variability, or decreased within-group variability,
-will increase the $F$-test statistic and make rejecting $H_{0}$ more probable.
+will increase the \Fstat and make rejecting $H_{0}$ more probable.
 One downside to ANOVA testing is that if we reject $H_{0}$
 we will not know which group(s) differ from the others.
 In this case additional \posthoc analysis is required,
-such as Bonferroni Corrected $t$-tests or Tukey's honest significance test.
+such as Bonferroni corrected {\ttest}s or Tukey's honest significance test.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Assumptions}
@@ -267,9 +267,9 @@ d_{1} &= K-1,\quad d_{2} = N-K. \label{eq:hypo:ANOVA:one:dof}
 
 Note that $MS_{\text{between-group}}$ is comparing the group means to the overall mean,
 while $MS_{\text{within-group}}$ is comparing all of the data points to their respective group means.
-The $F$-statistic is then the ratio of the mean squares \cref{eq:hypo:ANOVA:one:F},
+The \Fstat is then the ratio of the mean squares \cref{eq:hypo:ANOVA:one:F},
 which can be used with the appropriate degrees of freedom \cref{eq:hypo:ANOVA:one:dof}
-and the $F$-distribution to produce a \pvalue.
+and the \Fdist to produce a \pvalue.
 Depending on the \pvalue and selected $\alpha$
 we can accept or reject $H_{0}$,
 \ie all of the groups share one mean.
@@ -284,17 +284,17 @@ for example implementations.} the one-factor ANOVA test.
 \section{\texorpdfstring{$F$}{F}-Test of Equality of Variances}
 \label{hypo:F_test_var}
 
-We can test $H_{0}$ that the variances of two normally distributed samples are equal with a $F$-test.
+We can test $H_{0}$ that the variances of two normally distributed samples are equal with a \Ftest.
 Given two samples of sizes $n_{1}$ and $n_{2}$ with sample variances $s_{2}^{2} \leq s_{1}^{2}$
-we construct the $F$-statistic as:
+we construct the \Fstat as:
 
 \begin{equation}\label{eq:hypo:F_test_var}
 F = \frac{s_{1}^{2}}{s_{2}^{2}}\,.
 \end{equation}
 
-The $F$-distribution with degrees of freedom $d_{1} = n_{1}-1$ and $d_{2} = n_{2}-1$
+The \Fdist with degrees of freedom $d_{1} = n_{1}-1$ and $d_{2} = n_{2}-1$
 then gives an appropriate \pvalue.
-Note that this $F$-test is particularly sensitive to the assumption that
+Note that this \Ftest is particularly sensitive to the assumption that
 the underlying samples are truly normally distributed;
 not only approximately normal via the CLT.
 
@@ -338,14 +338,14 @@ $\pi \neq \pi_{0}$ & $\mathcal{I} = \left\{\forall \, i: P\left(x=i\right) \leq 
 \label{hypo:binomial_test:one}
 
 For large sample sizes the binomial distribution is approximated by the normal distribution
-and we can use a form of the $Z$-test to produce {\pvalue}s.
+and we can use a form of the \Ztest to produce {\pvalue}s.
 We require the observations to be independent,
 \ie we may only sample $< \SI{10}{\percent}$ of the parent population,
 the sampling distribution of $\pi$ to be approximately normal,
 and that there are $\geq 10$ successes and $\geq 10$ failures,
 $n \pi_{0} \geq 10$ and $n \left(1-\pi_{0}\right) \geq 10$, \ie the success-failure condition.
 
-The $Z$-score is then:
+The \Zscore is then:
 
 \begin{equation}\label{eq:hypo:binomial_test:one}
 Z = \frac{\pi - \pi_{0}}{\sqrt{\pi_{0}\left(1-\pi_{0}\right)/n}} = \frac{k - n \pi_{0}}{\sqrt{n\pi_{0}\left(1-\pi_{0}\right)}}.
@@ -364,7 +364,7 @@ We require that the $\pi$ from the two samples are uncorrelated,
 have approximately normal sampling distributions,
 and that their difference $\pi_{1} - \pi_{2}$ is an unbiased estimator.
 
-The $Z$-score is then:
+The \Zscore is then:
 
 \begin{subequations}\label{eq:hypo:binomial_test:two}
 \begin{align}
@@ -416,8 +416,8 @@ select a more appropriate model\footnote{Parametric
 models tend to have higher powers than the equivalent non-parametric model.
 % https://youtu.be/diRX_NesFkA?t=558
 In particular, comparing
-the Mann-Whitney U and unpaired $t$-test gives $\frac{\left(1-\beta\right)_{\text{MWU}}}{\left(1-\beta\right)_{t}} = \frac{3}{\pi} = \num{0.955}$,
-%while comparing the Wilcoxon signed-rank and paired $t$-test gives $\frac{\left(1-\beta\right)_{\text{WSR}}}{\left(1-\beta\right)_{t}} = \frac{2}{\pi} = \num{0.6437}$, % TODo add if I cover the Wilcoxon signed-rank test in the future
+the Mann-Whitney U and unpaired \ttest gives $\frac{\left(1-\beta\right)_{\text{MWU}}}{\left(1-\beta\right)_{t}} = \frac{3}{\pi} = \num{0.955}$,
+%while comparing the Wilcoxon signed-rank and paired \ttest gives $\frac{\left(1-\beta\right)_{\text{WSR}}}{\left(1-\beta\right)_{t}} = \frac{2}{\pi} = \num{0.6437}$, % TODo add if I cover the Wilcoxon signed-rank test in the future
 for large $n$.},
 or begrudgingly accept some combination of a larger $\alpha$ or larger minimal detectable difference.
 However, the primary lever for improving an experiment's power is by increasing $n$,
@@ -430,15 +430,15 @@ at the cost of additional time and money to complete the study.
 Calculating $\beta$ can be challenging and is commonly done in software\footnote{The \texttt{statsmodels.stats.power}
 \href{https://www.statsmodels.org/dev/stats.html?highlight=statsmodels\%20stats\%20power\#power-and-sample-size-calculations}{module}
 provides many useful functions, see \href{https://machinelearningmastery.com/statistical-power-and-power-analysis-in-python/}{here} for one example implementation.} particular to the model being utilized.
-For a simple example, we can consider a $Z$-test of a null hypothesis $\mu_{0}$
+For a simple example, we can consider a \Ztest of a null hypothesis $\mu_{0}$
 and compute the power of the test at a specific value of the alternative hypothesis $\mu_{a}$, with $\mu_{0} < \mu_{a}$.
-For the given $\alpha$ being used we can look up the corresponding critical $Z$-score, $Z_{\alpha}$.
+For the given $\alpha$ being used we can look up the corresponding critical \Zscore, $Z_{\alpha}$.
 Then assuming a standard deviation of $s_{\text{est}}$ from prior work,
 and knowing $n$, we can estimate the sample mean
-which would put us at the critical $Z$-score, $\expval{x_{c}}$ \cref{eq:hypo:power_ex:x_c}.
-We then calculate the $Z$-score again, this time assuming the alternative hypothesis $\mu_{a}$ is true
+which would put us at the critical \Zscore, $\expval{x_{c}}$ \cref{eq:hypo:power_ex:x_c}.
+We then calculate the \Zscore again, this time assuming the alternative hypothesis $\mu_{a}$ is true
 and we have observed $\expval{x_{c}}$ from our sample, \ie we are right at the edge of rejecting a false null hypothesis.
-This $Z$-score, $Z_{a}$ \cref{eq:hypo:power_ex:Z_a}, can finally be used to find the power $1-\beta = P\left(Z_{a} < Z\right)$.
+This \Zscore, $Z_{a}$ \cref{eq:hypo:power_ex:Z_a}, can finally be used to find the power $1-\beta = P\left(Z_{a} < Z\right)$.
 
 \begin{subequations}\label{eq:hypo:power_ex}
 \begin{align}
@@ -477,7 +477,7 @@ the $n$ necessary to obtain a desired $\alpha$ and $\beta$ before running the ex
 \subsection{Lehr's Equation for \texorpdfstring{$t$}{t}-Tests}
 \label{hypo:power:lehr}
 
-As a rough approximation for one-sided (two-sided) $t$-tests,
+As a rough approximation for one-sided (two-sided) {\ttest}s,
 Lehr argues that to have a power of $1-\beta \sim \num{0.8}$ with $\alpha = \num{0.05}$,
 $n$ \cref{eq:hypo:power:lehr} should be set to 8\footnote{This
 factor is $8 \approx \left(Z_{\alpha/2} + Z_{\beta}\right)^{2}$, for $1-\beta = \num{0.8}$, $\alpha = \num{0.05}$.} (16)
