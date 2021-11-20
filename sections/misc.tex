@@ -118,10 +118,12 @@ e^{-i x} &= \cos\left(x\right) + i \sin\left(x\right) \label{eq:misc:math:eulers
 \abs{\mathbf{u} + \mathbf{v}} &\leq \abs{\mathbf{u}} + \abs{\mathbf{v}} \label{eq:misc:math:triangle_inequality} \\
 \abs{\braket{u}{v}}^{2} &\leq \braket{u} \braket{v} \label{eq:misc:math:cauchy_schwarz_inequality} \\
 n^{k} &= N\left(\text{Permutations Length $k$, with Repetition}\right) \label{eq:misc:math:permutations_with_repetition} \\
-\frac{n!}{\left(n-k\right)!} &= N\left(\text{Permutations Length $k$, without Repetition}\right) \label{eq:misc:math:permutations_without_repetition} \\
-\frac{n!}{k!\left(n-k\right)!} &= {n \choose k} = N\left(\text{Combinations of Length $k$ from $n$}\right) \label{eq:misc:math:binomial_coefficient} \\
+\frac{n!}{\left(n-k\right)!} &= P_{k}^{n} = N\left(\text{Permutations Length $k$, without Repetition}\right) \label{eq:misc:math:permutations_without_repetition} \\
+\frac{n!}{k!\left(n-k\right)!} &= {n \choose k} = C_{k}^{n} = N\left(\text{Combinations of Length $k$ from $n$}\right) \label{eq:misc:math:binomial_coefficient} \\
 \overline{A \cap B} &= \overline{A} \cup \overline{B},\quad \overline{A \cup B} = \overline{A} \cap \overline{B} \label{eq:misc:math:de_morgan} \\
 \dv{}{x}\, a^{x} &= a^{x} \ln\left(a\right), \quad 0 < a \label{eq:misc:math:diff_exp_gen} \\
-\dv{}{x}\, \log_{a}\left(x\right) &= \frac{1}{x \ln a} \label{eq:misc:math:diff_log_gen}
+\dv{}{x}\, \log_{a}\left(x\right) &= \frac{1}{x \ln a} \label{eq:misc:math:diff_log_gen} \\
+\int u \dd{v} &= uv - \int v \dd{u} \label{eq:misc:math:integration_by_parts} \\
+\sqrt{2 \pi c^{2}} &= \int_{-\infty}^{\infty} e^{-\left(x-b\right)^{2} / 2 c^{2}} \dd{x} \label{eq:misc:math:gaussian_integral}
 \end{align}
 \end{subequations}
