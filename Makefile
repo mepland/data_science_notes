@@ -1,4 +1,4 @@
-DOCNAME = ds_notes-epland
+DOCNAME = notes-epland
 
 TEXENG = lualatex
 TEXFLAGS = --file-line-error --interaction=nonstopmode --halt-on-error

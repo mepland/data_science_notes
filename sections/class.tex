@@ -1,38 +1,88 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Supervised Learning}
-\label{ml:supervised}
-
-In supervised learning a model is trained over many known examples
-to use input features $\mathbf{X}$ to make a prediction \yhat about the true value $y$.
-During the training process parameters $\beta$ of
-the model are adjusted to minimize a two-part objective function,
-$S\left(\beta\right) = L\left(\beta\right) + \Omega\left(\beta\right)$.
-The training loss $L\left(\beta\right)$ measures the model's predictive performance
-while $\Omega\left(\beta\right)$ is a regularization term to penalize model complexity.
-Note that $L$ is a measure of the model's bias,
-while $\Omega$ is --- somewhat --- a measure of its variance,
-so $S\left(\beta\right)$ captures both parts of the bias-variance tradeoff \cite{HastieTF09}.
+\chapter{Classification}
+\label{chap:class}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{(Gaussian) N{a\"i}ve Bayes Classification (GNB)}
-\label{ml:supervised:Bayes}
+\section{Logistic Regression}
+\label{class:logistic}
+
+Logistic regression is a simple method to create a classifier,
+typically on two classes $y = 0,1$, though multinomial extensions exist.
+Its name comes from the use of the logit, or log-odds, function
+
+\begin{equation}\label{eq:logistic:logic}
+l = \text{logit}\left(p\right) = \log\left(\frac{p}{1-p}\right)
+\end{equation}
+
+\noindent on the probability $p$ of class $1$.
+$l$ is estimated linearly from $n$ input features $x_{j}$ with $n+1$ parameters $\beta_{j}$ as:
+
+\begin{equation}\label{eq:logistic:logicBeta}
+l = \beta_{0} + \sum_{j=1}^{n} \, \beta_{j}\,x_{j}\,.
+\end{equation}
+
+\noindent The probability $p$ is then
+
+\begin{equation}\label{eq:logistic:p}
+p = \frac{e^l}{e^l + 1} = \frac{1}{1+e^{-l}} = \text{logit}^{-1}\left(l\right)
+\end{equation}
+
+\noindent which can be turned into a predicted class through the choice of a suitable decision threshold.
+
+The model parameters $\bm{\beta}$ are chosen by maximizing
+the log of the likelihood $L$ \cref{eq:logistic:L} over $m$ known example points $\mathbf{x}_{i}, y_{i}$.
+Note that $P\left(y \mid x\right)$ \cref{eq:logistic:Pr} is simply the Bernoulli distribution.
+In practice the log-likelihood $\log\left(L\right)$ is maximized via gradient descent.
+An example of logistic regression can be found in \cref{fig:logistic_regression_ex}.
+
+\begin{subequations} \label{eq:logistic:L_Pr}
+\begin{align}
+L\left(\bm{\beta} \mid \mathbf{x}\right) &= \prod_{i=1}^{m} \, P\left(y_{i} \mid \mathbf{x}_{i};\,\bm{\beta}\right) \label{eq:logistic:L} \\
+P\left(y \mid \mathbf{x}\right) &= p^y\left(1-p\right)^{1-y}, \quad y \in \{0, 1\} \label{eq:logistic:Pr}
+\end{align}
+\end{subequations}
+
+\begin{figure}
+\centering
+% \includegraphics[width=0.8\textwidth]{figures/regression/Exam_pass_logistic_curve.jpeg}
+\includegraphics[width=0.7\textwidth]{figures/regression/logistic-regression-probabilities-curve.png}
+\caption{
+% Example logistic regression curve on one input feature, by \href{https://en.wikipedia.org/wiki/File:Exam_pass_logistic_curve.jpeg}{Michaelg2015}.
+Example logistic regression curve on one input feature, by \href{http://www.sthda.com/english/articles/36-classification-methods-essentials/151-logistic-regression-essentials-in-r/}{Kassambara}.
+}
+\label{fig:logistic_regression_ex}
+\end{figure}
+
+% TODO any more assumptions?
+Some assumptions of the logistic regression approach are:
+\begin{enumerate}[noitemsep]
+  \item $y$ is either present or absent (dichotomous).
+  \item There are minimal correlations between the $x_{j}$ features (no multicollinearity).
+  \item There are no major outliers in the data.
+\end{enumerate}
+
+% TODO pseudo R2, Wald statistic
+% TODO regularized versions?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{N{a\"i}ve Bayes Classification}
+\label{class:Bayes}
 % TODO
 % TODO maximum a posteriori (italics) probability (MAP) estimator
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{\texorpdfstring{$k$}{k}-Nearest Neighbors (\texorpdfstring{$k$}{k}-NN)}
-\label{ml:supervised:kNN}
+\section{Gaussian N{a\"i}ve Bayes Classification (GNB)}
+\label{class:Bayes:GNB}
 % TODO
-% TODO also talk about collaborative filtering
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Support Vector Machines (SVM)}
-\label{ml:supervised:SVM}
+\label{class:SVM}
 
 Basic support vector machines (SVM) work by finding a hyperplane in the $n$-dimensional
 feature space of the training data which best separate the different classes.
@@ -134,12 +184,12 @@ at least $\order{m^{2}}$, limiting $m \sim \num{e4}$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Decision Trees, \texorpdfstring{\ie}{ie} Classification and Regression Trees (CART)}
-\label{ml:supervised:CART}
+\label{class:CART}
 
 A basic classifier can be created from a tree of selections on $\mathbf{X}$ designed to
 separate the classes at each branch.
 Such a model is known as a classification and regression tree (CART) \cite{Breiman:2253780}
-and a simple example can be found in \cref{ml:supervised:CART:small_example_CART}.
+and a simple example can be found in \cref{class:CART:small_example_CART}.
 As the splits are just selections on the input variables,
 they are --- somewhat --- possible to understand,
 and conveniently do not need any kind of feature scaling, unlike other methods.
@@ -156,7 +206,7 @@ $\yhat = 1 /\left(1+e^{-w}\right)$ within $0 < \yhat < 1$.
 Simple classification and regression tree (CART).
 Signal-like (background-like) events receive positive (negative) weights in the leaves.
 }
-\label{ml:supervised:CART:small_example_CART}
+\label{class:CART:small_example_CART}
 \end{figure}
 
 % TODO include gini impurity / importance
@@ -164,7 +214,7 @@ Signal-like (background-like) events receive positive (negative) weights in the 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Boosted Decision Trees (BDT)}
-\label{ml:supervised:BDT}
+\label{class:BDT}
 
 Individual CARTs are rather poor and limited models
 in terms of the behaviors they can successfully predict.
@@ -193,7 +243,7 @@ but is better optimized during the training process via early stopping.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\xgboost}% would rather have the \textsc caps than italics
-\label{ml:supervised:BDT:xgboost}
+\label{class:BDT:xgboost}
 % TODO see https://towardsdatascience.com/boosting-algorithm-xgboost-4d9ec0207d
 % TODO how does the Hessian come into play
 
@@ -218,21 +268,33 @@ For reference $\eta=0.3$ and a maximum depth of 6 are the default values.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{AdaBoost}
-\label{ml:supervised:BDT:AdaBoost}
+\label{class:BDT:AdaBoost}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Random Forest}
-\label{ml:supervised:RF}
+\label{class:RF}
 % TODO
 
 % TODO best results occur when you chose $\sqrt{n}$ features randomly to build each tree
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\texorpdfstring{$k$}{k}-Nearest Neighbors (\texorpdfstring{$k$}{k}-NN)}
+\label{class:kNN}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Collaborative Filtering}
+\label{class:cf}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Artificial Neural Networks (NN)}
-\label{ml:supervised:ANN}
+\label{class:ANN}
 % TODO
 
 % TODO add back prop somewhere, here or in grad descent
@@ -255,3 +317,27 @@ Illustrations of the components of a neural network.
 \label{fig:NN}
 }
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Recursive Neural Networks (RNN)}
+\label{class:RNN}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Long Short Term Memory (LSTM)}
+\label{class:RNN:LSTM}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Convolutional Neural Networks (CNN)}
+\label{class:CNN}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Learning Vector Quantization (LVQ)}
+\label{class:kNN:LVQ}
+% TODO
+

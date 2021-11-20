@@ -6,11 +6,17 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Hypothesis Test Selection}
+\label{hypo:test_selection}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\texorpdfstring{$Z$}{Z}-Test}
 \label{hypo:Z_test}
 
 When we sample from a distribution known to be Gaussian,
-or can assume the sample means are approximately normally distributed via the central limit theorem (CLT) of \cref{additional:stats:CLT},
+or can assume the sample means are approximately normally distributed via the central limit theorem (CLT) of \cref{stats:CLT},
 and know the population standard deviation $\sigma$,
 we can perform hypothesis testing on the sample mean with a \Ztest.
 For a sample of size $n$ with sample mean $\expval{x}$ and population standard deviation $\sigma$
@@ -375,8 +381,14 @@ Z &= \frac{\pi_{1} - \pi_{2} - \pi_{\Delta}}{\pi_{p} \left(1-\pi_{p}\right)\left
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Mann-Whitney U Test}
+\section{Mann-Whitney \texorpdfstring{$U$}{U} Test}
 \label{hypo:mann_whitney_U_test}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Kruskal-Wallis \texorpdfstring{$H$}{H} Test}
+\label{hypo:kruskal_wallis_H_test}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -539,3 +551,29 @@ while the remaining $N-i$ tests fail to reject $H_{0}$.
 In this way we can constrain $\alpha_{\text{FW}} \leq \alpha$,
 while checking most tests against a less stringent condition
 than $\alpha / N$ of the normal Bonferroni correction.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experiment Design}
+\label{hypo:experiment}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Sources of Bias}
+\label{hypo:experiment:bias}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Blocking}
+\label{hypo:experiment:blocking}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Interaction Effects}
+\label{hypo:experiment:interaction}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{AB Testing Example}
+\label{hypo:experiment:AB}
+% TODO

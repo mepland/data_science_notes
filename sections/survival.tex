@@ -1,7 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Survival Analysis}
-\label{additional:Survival}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Survival Analysis}
+\label{chap:survival}
 
 Survival analysis is a subfield of statistics which examines problems involving the timing of events
 such as death, component failure, or exiting a line of therapy after an adverse effect, in a population of subjects under study.
@@ -12,8 +13,9 @@ each with their own assumptions, capabilities, and limitations,
 which make them best suited for certain applications.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Nomenclature}
-\label{additional:Survival:Nomenclature}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Nomenclature}
+\label{survival:Nomenclature}
 
 \begin{symbollist}
   \item[Event] The event of interest in a study, \eg death, component failure\ldots
@@ -55,8 +57,9 @@ S\left(t\right) = \exp\left(-\Lambda\left(t\right)\right) \label{eq:Survival:cum
 \end{subequations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Kaplan-Meier Model}
-\label{additional:Survival:km}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Kaplan-Meier Model}
+\label{survival:km}
 
 The Kaplan-Meier model \cite{km} $\hat{S}_{\text{KM}}\left(t\right)$ is a non-parametric
 estimate of $S\left(t\right)$ computed from empirical data.
@@ -78,8 +81,9 @@ in order to understand the dependence of $S\left(t\right)$ on $x$.
 Note that $x$ can not be a continuous variable, and must be binned to integer classes if that is the case.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Exponential Model}
-\label{additional:Survival:exp}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Exponential Model}
+\label{survival:exp}
 
 The exponential model is a parametric estimate of $S\left(t\right)$
 valid when the hazard is expected to be constant with respect to $t$.
@@ -87,7 +91,7 @@ In nuclear physics\footnote{$\dv{N}{t} = -\lambda N$, $N\left(t\right) = N_{0} e
 half-life $t_{1/2} = \ln\left(2\right) / \lambda = \tau \ln\left(2\right)$, where $\tau$ is the time constant.} $\lambda\left(t\right) = \lambda$
 decays per unit time really is a constant.
 However, in most situations $\lambda = c$ is unrealistic over longer time scales,
-as illustrated in \cref{additional:Survival:additional:bathtub}.
+as illustrated in \cref{survival:additional:bathtub}.
 The exponential model can accommodate both categorical and continuous $x$ independent variables.
 
 The survival function for the exponential model is simply
@@ -124,8 +128,9 @@ The hazard ratio for $x_{j}$ is:
 \end{aligned}
 \end{equation}
 
-\subsubsection{Weibull Model}
-\label{additional:Survival:weibull}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Weibull Model}
+\label{survival:weibull}
 
 The Weibull model expands on the standard exponential model
 by introducing a shape parameter $k$ to adjust the time dependence of the hazard:
@@ -149,8 +154,9 @@ $\lambda = \exp\left(\beta_{0} f\left(t\right) + \sum_{j=1}^{n}\, \beta_{j} x_{j
 where $f\left(t\right)$ is a {\em known}, almost always monotonic, function of $t$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Cox Proportional-Hazards Model}
-\label{additional:Survival:cox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cox Proportional-Hazards Model}
+\label{survival:cox}
 
 The Cox proportional-hazards model \cite{cox} is a
 semiparametric\footnote{Semiparametric as $\lambda_{0}\left(t\right)$ is unspecified, but $\bm{\beta}$ are still parameters of $\lambda$.} model
@@ -179,8 +185,9 @@ When computing hazard ratios $\lambda_{0}\left(t\right)$ then drops out:
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Method Comparison}
-\label{additional:Survival:comp}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Method Comparison}
+\label{survival:comp}
 
 \begin{table}[H]
 \centering
@@ -237,8 +244,9 @@ Con
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Model Assumptions}
-\label{additional:Survival:assumptions}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model Assumptions}
+\label{survival:assumptions}
 
 \begin{enumerate}[noitemsep]
   \item Any censoring is non-informative, \ie censoring is uncorrelated with the probabilities of different event outcomes.\label{item:Survival:assumptions:censoring}
@@ -248,13 +256,14 @@ Con
   \item $\log\left(\lambda\right)$ is linear with respect to the continuous $x_{j}$ independent variables.\label{item:Survival:assumptions:X_linearity}
 \end{enumerate}
 
-\cref{item:Survival:assumptions:censoring,item:Survival:assumptions:t_uncorr,item:Survival:assumptions:X_constant}
+\Cref{item:Survival:assumptions:censoring,item:Survival:assumptions:t_uncorr,item:Survival:assumptions:X_constant}
 are assumptions for all survival models, while
 \cref{item:Survival:assumptions:prop_hazard,item:Survival:assumptions:X_linearity}
 apply to the exponential, Weibull and Cox models.
 
-\subsubsection{Tests and Corrections}
-\label{additional:Survival:assumptions:tests_and_corrections}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Tests and Corrections}
+\label{survival:assumptions:tests_and_corrections}
 
 \begin{itemize}[noitemsep]
   \item[\cref{item:Survival:assumptions:censoring}.] Exploratory data analysis to detect differences in $\mathbf{x}$ distributions between censored and non-censored subjects. If violated, better input data is needed, redesign study.
@@ -268,8 +277,9 @@ apply to the exponential, Weibull and Cox models.
   \item[\cref{item:Survival:assumptions:X_linearity}.] Check the appropriate residual plots. If violated, try to linearize the offending continuous $x_{j}$ with a transformation or bin to a categorical variable.
 \end{itemize}
 
-\subsubsection{Schoenfeld Test}
-\label{additional:Survival:assumptions:schoenfeld}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Schoenfeld Test}
+\label{survival:assumptions:schoenfeld}
 
 Schoenfeld residuals are similar in concept to normal residuals in regression analyses,
 but instead of looking at the difference between the true and estimated values of $y$,
@@ -287,8 +297,9 @@ to test the null hypothesis, \ie the Schoenfeld residuals and time are independe
 In this case, the proportional hazards assumption is supported
 if we find large, non-significant {\pvalue}s.
 
-\subsubsection{Complementary Log-Log Plot}
-\label{additional:Survival:assumptions:cloglog}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Complementary Log-Log Plot}
+\label{survival:assumptions:cloglog}
 
 For categorical variables we can look at the
 complementary log-log plot
@@ -298,8 +309,9 @@ If the different categories have parallel curves
 the proportional hazards assumption is
 valid for the variable in question.
 
-\subsubsection{Other Residual Plots}
-\label{additional:Survival:assumptions:linearity}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Other Residual Plots}
+\label{survival:assumptions:linearity}
 
 To test the linearity of $\log\left(\lambda\right)$ with respect to the continuous $x_{j}$
 we may plot the Martingale residuals.
@@ -322,11 +334,13 @@ Plotting $\hat{\Delta}_{ij}$ versus event number $i$
 can then point to overly influential events, see \cref{fig:cox:outliers:dfbeta}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Additional Concepts}
-\label{additional:Survival:additional}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Additional Concepts}
+\label{survival:additional}
 
-\subsubsection{Logrank Test}
-\label{additional:Survival:additional:logrank}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Logrank Test}
+\label{survival:additional:logrank}
 
 The logrank test is a method for comparing the survival functions of two different groups.
 Survival status versus group membership $2\times2$ tables are computed at each distinct time $t_{i}$,
@@ -343,25 +357,9 @@ but is still somewhat usable if the difference in hazard ratios has only one sig
 In \R the logrank test can be computed with the \texttt{survdiff} function,
 with the parameter $\rho$ left at its default value of $0$.
 
-\subsubsection{Concordance Statistic}
-\label{additional:Survival:additional:concordance}
-
-% TODO move to general metrics
-The concordance statistic, or C-statistic, is a measure of goodness of fit
-for binary problems such as survival analysis or logistic regression.
-Two subjects are picked at random, if the ordering of model's predicted $\hat{y}$ values
-agrees with the order of the observed $y$ values, the pair of subjects is said to be concordant.
-In terms of survival analysis, if the subject of the pair the model predicted to have a longer lifetime
-in fact did have the longer observed lifetime, the pair is concordant.
-
-By measuring the fraction of concordant pairs over all pairs,
-we arrive at the concordance statistic which ranges from $0$ to $1$,
-with $0.5$ being equivalent to random guessing and $1$ representing ideal performance.
-The ROC AUC and C-statistic are equivalent in
-logistic regression\footnote{The pairs here must have a $y=0$ and $y=1$ subject, with the $y=1$ subject receiving the higher $\hat{y}$.}.
-
-\subsubsection{Odds, Log Odds, and the Odds Ratio in Relation to the Hazard Ratio}
-\label{additional:Survival:additional:odds}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Odds, Log Odds, and the Odds Ratio in Relation to the Hazard Ratio}
+\label{survival:additional:odds}
 
 To begin, note that the odds of an event occurring are:
 
@@ -381,7 +379,7 @@ the odds ratio between the biased coin and a fair coin is $2/1 = 2$,
 \ie the odds of getting heads with the biased coin are 2 times that of the fair coin.
 If desired, we can similarly take the ratio of log odds.
 
-In logistic regression models, see \cref{regression:logistic},
+In logistic regression models, see \cref{class:logistic},
 it is possible to compute an odds ratio for the input feature $x_{j}$,
 representing the change in odds due to a one unit increase in $x_{j}$.
 This is very similar in concept to the HR,
@@ -392,8 +390,9 @@ In some cases the relative risk and odds ratio may have similar values,
 see Table 3 of \cite{pmid26623395},
 but it is important to remember they are ultimately different concepts.
 
-\subsubsection{Expected Future Lifetime}
-\label{additional:Survival::additional:efl}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Expected Future Lifetime}
+\label{survival::additional:efl}
 
 The expected future lifetime $\expval{T-t_{0}}$ is the
 expected additional time of survival for a subject having already survived to $t_{0}$.
@@ -414,8 +413,9 @@ P\left(T \leq t_{0} + t \mid T > t_{0}\right)
 \end{gather}
 \end{subequations}
 
-\subsubsection{Bathtub Curve}
-\label{additional:Survival:additional:bathtub}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Bathtub Curve}
+\label{survival:additional:bathtub}
 
 In reliability engineering the hazard function of many components
 can be estimated as a three part ``bathtub'' curve.
@@ -437,8 +437,9 @@ Illustration of a bathtub curve hazard function, by \href{https://en.wikipedia.o
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Example \R Code}
-\label{additional:Survival:Rcode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Example \R Code}
+\label{survival:Rcode}
 
 A simple example survival analysis in \R utilizing the built-in
 \texttt{stanford2} Stanford heart transplant dataset is provided in this section.
@@ -482,7 +483,7 @@ the \pvalue from the logrank test, and a median reference line.
 \end{figure}
 
 \subsubsection{Initialization}
-\label{additional:Survival:Rcode:init}
+\label{survival:Rcode:init}
 
 Here we load the necessary packages and data,
 and create the categorical age variable \texttt{agecat}.
@@ -515,7 +516,7 @@ and create the categorical age variable \texttt{agecat}.
 \end{lstlisting}
 
 \subsubsection{Kaplan-Meier Model}
-\label{additional:Survival:Rcode:km}
+\label{survival:Rcode:km}
 
 The Kaplan-Meier model for this data partitioned by \texttt{agecat}
 shows a median survival time of \num{1271} (\num{431}) for patients Under 40 (Over 40).
@@ -556,7 +557,7 @@ surv.median.line = "h", # add horizontal median
 \end{lstlisting}
 
 \subsubsection{Cox Proportional-Hazards Model}
-\label{additional:Survival:Rcode:cox}
+\label{survival:Rcode:cox}
 
 Two Cox proportional-hazards models are demonstrated here,
 the first using age alone and the second adding the T5 score.
@@ -576,7 +577,8 @@ These test the null hypothesis that all $\beta_{i} = 0$.
 Here all three tests reject the null hypothesis,
 as could be expected since the single $\beta_{\text{age}}$ was significant,
 but would be more interesting for higher dimensional models.
-The concordance statistic of \num{0.595} is poor, but is better than random guessing.
+The concordance statistic, as explained in \cref{ml_general:eval:concordance},
+of \num{0.595} is fairly poor, but is better than random guessing.
 
 In the extended mode the age HR is very similar, \num{1.03006},
 while the T5 HR is \num{1.18579}.
@@ -670,7 +672,7 @@ the age used appears to also be the mean.
 \end{figure}
 
 \subsubsection{Checking Assumptions}
-\label{additional:Survival:Rcode:assumptions}
+\label{survival:Rcode:assumptions}
 
 In this section we check the assumptions made by the Cox and Kaplan-Meier models.
 The Schoenfeld test of the proportional hazards assumption

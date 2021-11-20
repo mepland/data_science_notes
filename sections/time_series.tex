@@ -1,7 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Time Series Analysis}
-\label{additional:time_series}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Time Series Analysis}
+\label{chap:time_series}
 % https://www.youtube.com/playlist?list=PLvcbYUQ5t0UHOLnBzl46_Q6QKtFgfMGc3
 
 Time series analysis is the study of time-dependent data such as price over time.
@@ -23,7 +24,7 @@ is very useful for implementing these modeling methods,
 which will be referenced as appropriate.
 
 \subsubsection{Lag Notation}
-\label{additional:time_series:L}
+\label{time_series:L}
 
 When working with time series data we often index time steps as $t$, $t-1$, $t-2$,\,\ldots\,
 where $t$ is the current time.
@@ -38,8 +39,9 @@ L y_{t} = y_{t-1},\quad L^{2} y_{t} = y_{t-2},\,\ldots \quad L^{k} y_{t} = y_{t-
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Correlation in Time Series}
-\label{additional:time_series:correlation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Correlation in Time Series}
+\label{time_series:correlation}
 
 In time series analysis $y_{t}$ can depend, to varying degree,
 on the previous values $L^{k} y_{t},\, \forall k$.
@@ -48,8 +50,9 @@ $y_{t} \sim f\left(y_{t-1}\right)$,
 but also an indirect or recursive component,
 $y_{t} \sim f\left(y_{t-1}\right) \sim f\left(g\left(y_{t-2}\right)\right)$.
 
-\subsubsection{Auto-Correlation Function (ACF)}
-\label{additional:time_series:ACF}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Auto-Correlation Function (ACF)}
+\label{time_series:ACF}
 
 Neglecting the multiple components of the correlation of $y_{t}$ with prior times,
 we can commute the overall auto-correlation function (ACF) of $y_{t}$
@@ -63,8 +66,9 @@ with itself at some amount of lag $k$ as
 The auto-correlation shows the total correlation and is simple to compute,
 but mixes the direct and indirect effects of prior values together.
 
-\subsubsection{Partial Auto-Correlation Function (PACF)}
-\label{additional:time_series:PACF}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Partial Auto-Correlation Function (PACF)}
+\label{time_series:PACF}
 
 In contrast, partial auto-correlation function
 aims to isolate the direct influence of $y_{t-k}$ on $y_{t}$ for some lag $k$.
@@ -84,8 +88,9 @@ with the \texttt{plot\_acf} and \texttt{plot\_pacf}
 \href{https://www.statsmodels.org/stable/graphics.html\#time-series-plots}{functions}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Stationarity}
-\label{additional:time_series:stationarity}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Stationarity}
+\label{time_series:stationarity}
 
 Stationarity is an important assumption for many parametric time series models,
 which combines three properties:
@@ -99,10 +104,10 @@ which combines three properties:
 If the mean or variance is growing with time
 we can look at the first difference, $\widetilde{y}_{t} = y_{t} - y_{t-1}$,
 and see if the time series of $\widetilde{y}_{t}$ is stationary,
-see \cref{additional:time_series:I} for more.
+see \cref{time_series:I} for more.
 Similarly, we can try to remove seasonality
 by subtracting a deterministic time-dependent function $f\left(t\right)$
-or by using the SARIMA model of \cref{additional:time_series:SARIMA}.
+or by using the SARIMA model of \cref{time_series:SARIMA}.
 We can also try normalizing with a \Zscore to address a changing mean or variance;
 subtracting or dividing as needed to make the series more stationary.
 This even works with seasonality if we subtract the mean value per medium-sized time unit, \eg month, quarter, \etc.
@@ -113,11 +118,12 @@ while making predictions to return to the original units.
 Simply looking at the graph of a time series can give us
 a good intuition on if it is stationary or not.
 However, we can formally test for stationarity
-with the augmented Dickey--Fuller test (ADF) of \cref{additional:time_series:ADF}.
+with the augmented Dickey--Fuller test (ADF) of \cref{time_series:ADF}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{White Noise}
-\label{additional:time_series:white_noise}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{White Noise}
+\label{time_series:white_noise}
 
 In the context of time series analysis, white noise is random fluctuations which
 have mean zero, $\expval{y} = 0$,
@@ -126,11 +132,12 @@ and no correlation between lags, $\corr{y_{t}}{y_{t-k}} = 0,\,\, \forall k$.
 Ideally after fitting a time series, we will capture all of the signal
 in the model and the resulting error term $\epsilon$ will only contain white noise.
 We can test for white noise by looking at the moving average and ACF plot,
-or more formally with the Ljung--Box test of \cref{additional:time_series:ljung_box}.
+or more formally with the Ljung--Box test of \cref{time_series:ljung_box}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Autoregressive (AR) Models}
-\label{additional:time_series:AR}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Autoregressive (AR) Models}
+\label{time_series:AR}
 Building on the PACF, we can construct an autoregressive (AR) model $\text{AR}\left(p\right)$
 from multiple lag components of the time series:
 
@@ -146,8 +153,9 @@ but excluding non-significant coefficients and reducing model complexity
 is still a good idea if possible.} by setting $\phi_{i} = 0$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Moving Average (MA) Models}
-\label{additional:time_series:MA}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Moving Average (MA) Models}
+\label{time_series:MA}
 
 Instead of looking at the auto-correlation $y_{y-i}$,
 we can also build a time series model around
@@ -169,8 +177,9 @@ We can select $q$ by looking at the ACF plot
 and identifying the last non-zero lag.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Invertibility of Time Series}
-\label{additional:time_series:invert}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Invertibility of Time Series}
+\label{time_series:invert}
 % https://youtu.be/QU_VNu3rJKY
 % https://youtu.be/q0vz7dGlZL0
 
@@ -198,7 +207,7 @@ C_{t} \equiv \text{MA}\left(1\right) - \theta_{0} &= -\phi\, \epsilon_{t-1} + \e
 \end{subequations}
 
 \noindent where in \cref{eq:time_series:invert_proof:c} we have used
-the sum of a geometric series \cref{eq:additional:misc:math:geometric}.
+the sum of a geometric series \cref{eq:misc:math:geometric}.
 The proof of \cref{eq:time_series:invert:AR_1} is similar and also relies on the geometric series.
 Essentially we are making the recursive nature of these time series explicit and using it to transform from one to the other.
 The $\text{AR}\left(\infty\right)$ expansion of $\text{MA}\left(1\right)$
@@ -207,8 +216,9 @@ where $\phi^{\,p} \approx 0$ and represent $\text{MA}\left(1\right)$ as
 a pure function of the time series itself, \ie without recursion.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{ARMA Model}
-\label{additional:time_series:ARMA}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ARMA Model}
+\label{time_series:ARMA}
 
 While we can represent AR $\Leftrightarrow$ MA with infinite series,
 it is more practical to include both in one model with a finite number of terms.
@@ -240,8 +250,9 @@ To avoid parameter redundancy, \ie multiple $\phi$, $\theta$ coefficients for $\
 we require the polynomials $\phi\left(L,p\right)$ and $\theta\left(L,q\right)$ to not share any common factors.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Integrated (I) Models}
-\label{additional:time_series:I}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Integrated (I) Models}
+\label{time_series:I}
 
 The previous models have worked well for stationary time series with constant means,
 however we may wish to model a quantity with a mean that linearly changes over time.
@@ -266,8 +277,9 @@ y_{t} &= \widetilde{y}_{t} + 2 y_{t-1} - y_{t-2},\,\, \text{where}\,\, d=2. \lab
 \end{subequations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{ARIMA Model}
-\label{additional:time_series:ARIMA}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ARIMA Model}
+\label{time_series:ARIMA}
 
 Putting everything together, we can construct the $\text{ARIMA}\left(p,d,q\right)$ model
 by including \cref{eq:time_series:I:forward} in \cref{eq:time_series:ARMA_lag}:
@@ -276,16 +288,18 @@ by including \cref{eq:time_series:I:forward} in \cref{eq:time_series:ARMA_lag}:
 \phi\left(L,p\right) \left(1-L\right)^{d} y_{t} = \theta\left(L,q\right) \epsilon_{t}.
 \end{equation}
 
-\subsubsection{ARIMA Model Example}
-\label{additional:time_series:ARIMA:ex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{ARIMA Model Example}
+\label{time_series:ARIMA:ex}
 
 % TODO include example plots of y_{t}, PACF, ACF, predictions, and residuals; and link to the example notebook
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Seasonal ARIMA Model (SARIMA)}
-\label{additional:time_series:SARIMA}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Seasonal ARIMA Model (SARIMA)}
+\label{time_series:SARIMA}
 
-Extending the ideas of the integrated model from \cref{additional:time_series:I},
+Extending the ideas of the integrated model from \cref{time_series:I},
 we can attempt to control for seasonality by
 taking lags across $m$ time steps at once, \ie using $L^{m}$ in place of $L$.
 For example, if $m=12$ corresponds to 1 year,
@@ -310,8 +324,9 @@ Computationally, \texttt{ARIMA} preforms fits via maximum likelihood estimation 
 but AR models can also be fit with ordinary least squares (OLS).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{ARMA Model with Exogenous Inputs (ARMAX)}
-\label{additional:time_series:ARMAX}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ARMA Model with Exogenous Inputs (ARMAX)}
+\label{time_series:ARMAX}
 
 The $\text{ARMAX}\left(p,q,b\right)$ model
 extends ARMA by incorporating exogenous (X) inputs
@@ -329,11 +344,12 @@ The \texttt{ARIMA}
 \href{https://www.statsmodels.org/stable/generated/statsmodels.tsa.arima.model.ARIMA.html}{class}
 can incorporate an exogenous time series,
 as well as deterministic polynomials of $t$,
-\ie the $f\left(t\right)$ mentioned in \cref{additional:time_series:stationarity}.
+\ie the $f\left(t\right)$ mentioned in \cref{time_series:stationarity}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Other Models (VAR, ARCH, GARCH, Bayesian Approaches)}
-\label{additional:time_series:other_models}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Other Models (VAR, ARCH, GARCH, Bayesian Approaches)}
+\label{time_series:other_models}
 
 In addition to the SARIMAX family of models detailed above,
 there are a few other useful time series models to note here.
@@ -361,8 +377,9 @@ has \href{https://docs.pymc.io/en/v3/api/distributions/timeseries.html}{timeseri
 for implementing this approach, including AR and GARCH models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Evaluating Time Series Models}
-\label{additional:time_series:eval}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluating Time Series Models}
+\label{time_series:eval}
 
 Like other machine learning problems, we must split our data into train and test sets
 when fitting and evaluating time series models.
@@ -405,7 +422,7 @@ qualitatively by looking at residual plots of $y_{t} - \hat{y}_{t}$.
 The residuals will show any remaining systematic trends that the model did not learn,
 as ideally they would be white noise.
 Quantitatively, we can test
-if the residuals are white noise with the Ljung--Box test of \cref{additional:time_series:ljung_box},
+if the residuals are white noise with the Ljung--Box test of \cref{time_series:ljung_box},
 as well as can compute the
 root mean squared error\footnote{Also known as the root mean squared deviation (RMSD).} (RMSE)
 and mean absolute percent error (MAPE)
@@ -418,15 +435,17 @@ between the predictions and observed values:
 \end{align}
 \end{subequations}
 
-\subsubsection{AIC, BIC}
-\label{additional:time_series:AIC_BIC}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{AIC, BIC}
+\label{time_series:AIC_BIC}
 
 % TODO
 % https://youtu.be/McEN54l3EPU
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Box--Jenkins Method (Expanded)}
-\label{additional:time_series:box_jenkins}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Box--Jenkins Method (Expanded)}
+\label{time_series:box_jenkins}
 
 The Box--Jenkins method, popularized in their book \cite{boxjen76},
 is a recipe for fitting an ARMA-based model to a given time series $y_{t}$.
@@ -470,15 +489,17 @@ and the Box--Jenkins method
 for just two examples.}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Unit Roots}
-\label{additional:time_series:unit_root}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Unit Roots}
+\label{time_series:unit_root}
 
 % TODO
 % https://youtu.be/ugOvehrTRRw
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Augmented Dickey--Fuller (ADF) Test for Stationarity}
-\label{additional:time_series:ADF}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Augmented Dickey--Fuller (ADF) Test for Stationarity}
+\label{time_series:ADF}
 
 The augmented\footnote{The ADF is an extension of the normal Dickey--Fuller test where $p = 1$.} Dickey--Fuller (ADF) test
 is a hypothesis tests for the stationarity of a time series.
@@ -505,8 +526,9 @@ The ADF test is available via the \texttt{adfuller}
 \href{https://www.statsmodels.org/stable/generated/statsmodels.tsa.stattools.adfuller.html}{function}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Ljung--Box Test for White Noise}
-\label{additional:time_series:ljung_box}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Ljung--Box Test for White Noise}
+\label{time_series:ljung_box}
 
 The Ljung--Box test tests if a time series $y$ solely consists of white noise
 by looking at multiple lags of the ACF.
@@ -526,8 +548,15 @@ The Ljung--Box test can be performed with the \texttt{acorr\_ljungbox}
 \href{https://www.statsmodels.org/stable/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html}{function}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Anomaly Detection}
-\label{additional:time_series:anomaly_detection}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Anomaly Detection}
+\label{time_series:anomaly_detection}
 
 % TODO
 % https://youtu.be/XPwCo4cqqt0
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Kalman Filters}
+\label{time_series:kalman_filters}
+% TODO
