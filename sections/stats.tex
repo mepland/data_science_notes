@@ -6,8 +6,157 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Expectation Value and Variance}
+\label{stats:expval_and_var}
+
+The expectation value \cref{eq:stats:exp_relations} and variance \cref{eq:stats:var_relations} are introductory, yet essential, statistical measures.
+Their definitions and interesting properties are reproduced here for reference.
+Note that $s$ is the unbiased sample variance,
+and the sample mean $\bar{x}$ has $\mu_{\bar{x}} = \mu$, and standard error $\sigma_{\bar{x}} = \sigma / \sqrt{n}$,
+where $\mu$ and $\sigma$ are from the parent population.
+
+\begin{subequations}\label{eq:stats:exp_relations}
+\begin{align}
+\expvalE{X} = \expval{X} &= \sum_{j=1}^{m} x_{j} \, p_{j} = \int_{-\infty}^{\infty} x f\left(x\right) \, \dd{x} \label{eq:stats:exp_relations:def} \\
+\bar{x} = \mu &= \frac{1}{n} \sum_{j=1}^{m} x_{j}\,,\,\text{for uniform}~p_{j} \label{eq:stats:exp_relations:mean} \\
+\expval{X+Y} &= \expval{X} + \expval{X} \label{eq:stats:exp_relations:add} \\
+\expval{a X} &= a \expval{X} \label{eq:stats:exp_relations:mult} \\
+\expval{a} &= a \,\, \implies \, \expval{\expval{X}} = \expval{X} \label{eq:stats:exp_relations:self} \\
+\expval{X Y}^{2} &\leq \expval{X^{2}} \expval{Y^{2}} \label{eq:stats:exp_relations:cbs_ineq}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{eq:stats:var_relations}
+\begin{align}
+\sigma_{X}^{2} = \variance{X} &= \expval{\left(x-\bar{x}\right)^{2}} = \expval{X^{2}} - \expval{X}^{2} \label{eq:stats:var_relations:def} \\
+s^{2} &= \frac{1}{n-1} \sum_{j=1}^{m} \left( x_{j} - \bar{x}\right)^{2} \label{eq:stats:var_relations:sample} \\
+s_{\bar{x}} &= \frac{s}{\sqrt{n}} \label{eq:stats:var_relations:standard_error_of_mean} \\
+\variance{X+a} &= \variance{X} \label{eq:stats:var_relations:add} \\
+\variance{a X} &= a^{2} \, \variance{X} \label{eq:stats:var_relations:mult} \\
+\variance{a X \pm b Y} &= a^{2} \, \variance{X} + b^{2} \, \variance{Y} \pm 2 \, ab \, \cov{X}{Y} \label{eq:stats:var_relations:linear} \\
+\variance{X \mid Y} &= \expval{\left(X - \expval{X \mid Y}\right)^{2} \mid Y} \label{eq:stats:var_relations:conditional1} \\
+\variance{X} &= \expval{\variance{X \mid Y}} + \variance{\expval{X \mid Y}} \label{eq:stats:var_relations:conditional2}
+\end{align}
+\end{subequations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Covariance and Correlation}
+\label{stats:corr_covar}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Covariance}
+\label{stats:corr_covar:covariance}
+
+The covariance between two variables $u$ and $v$,
+
+\begin{equation}\label{eq:stats:covar}
+\begin{split}
+\sigma_{u,v}^{2} = \cov{u}{v} &= \frac{1}{m}\sum_{j=1}^{m}\left(u_{j}-\bar{u}\right)\left(v_{j}-\bar{v}\right) \\
+&= \expval{\left(u-\bar{u}\right)\left(v-\bar{v}\right)} \\
+&= \expval{u v} - \expval{u}\expval{v}\,,
+\end{split}
+\end{equation}
+
+\noindent is a measure of their joint variability,
+\ie a measure of any linear relationship which may exist between them.
+It is helpful to remember the following covariance relations:
+
+\begin{subequations}\label{eq:stats:covar_relations}
+\begin{align}
+\cov{X}{X} &= \variance{X}, \label{eq:stats:covar_relations:var} \\
+\cov{X + a}{Y + b} &= \cov{X}{Y}, \label{eq:stats:covar_relations:add} \\
+\cov{a\,X}{b\,Y} &= ab\,\cov{X}{Y}, \label{eq:stats:covar_relations:mult} \\
+\cov{X}{Y}^{2} &\leq \variance{X}\variance{Y}. \label{eq:stats:covar_relations:inequality}
+\end{align}
+\end{subequations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Pearson Correlation}
+\label{stats:corr_covar:pearson}
+
+The Pearson correlation coefficient,
+
+\begin{equation}\label{eq:stats:corr}
+\rho_{u,v} = \corr{u}{v} = \frac{\sigma_{u,v}^{2}}{\sigma_{u}\sigma_{v}} = \frac{\cov{u}{v}}{\sigma_{u}\sigma_{v}}\,,
+\end{equation}
+
+\noindent is a convenient dimensionless version, normalized to $-1 \leq \rho \leq 1$.
+Example distributions can be found in \cref{fig:stats:corr_ex}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.95\textwidth]{figures/stats/corr_ex}
+\caption{
+Example distributions for
+uncorrelated ($\rho \approx 0$),
+correlated ($\rho \approx 1$),
+and anticorrelated ($\rho \approx -1$)
+variables $u$ and $v$ \cite{DougNotes}.
+}
+\label{fig:stats:corr_ex}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Spearman Correlation}
+\label{stats:corr_covar:spearman}
+
+% TODO
+% Spearman's rank correlation coefficient
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Covariance Matrix}
+\label{stats:corr_covar:covar_matrix}
+
+The covariance matrix,
+
+\begin{align}
+  \mathbf{M} = \begin{pmatrix}
+    \sigma_1^2   & \cov{1}{2} & \cov{1}{3} & \ldots \\
+    \cov{1}{2}   & \sigma_2^2 & \cov{2}{3} & \ldots \\
+    \cov{1}{3}   & \cov{2}{3} & \sigma_3^2 & \ldots \\
+    \vdots       & \vdots     & \vdots     & \ddots
+  \end{pmatrix}\,,
+\end{align}
+
+\noindent with elements $M_{ij} = \expval{\left(u_{i} - \bar{u}_{i}\right)\left(u_{j}-\bar{u}_{j}\right)}$
+is the higher dimensional extension of the covariance.
+We can visualize the covariance between variables with
+Gaussian error ellipses given by the probability distribution
+
+\begin{equation}\label{eq:stats:P_error_ellipse_k}
+P\left(x_{1},x_{2},\ldots,x_{k}\right) = \frac{1}{(2\pi)^{k/2}}\frac{1}{\abs{\mathbf{M}}^{1/2}}\exp\left[-\frac{1}{2}\left(\mathbf{x}-\bm{\mu}\right)^{\transpose}\mathbf{M}\left(\mathbf{x}-\bm{\mu}\right)\right]\,,
+\end{equation}
+
+\noindent where the ellipse semi-axes are directed along the eigenvectors of $\mathbf{M}$.
+In two dimensions it is easier to see the equation of the error ellipse itself:
+
+\begin{equation}\label{eq:stats:P_error_ellipse_2}
+\begin{split}
+P\left(u,v\right) &= \frac{1}{2\pi\sigma_{u}\sigma_{v}}\frac{1}{\sqrt{1-\rho^{2}}}\exp\bigg\{-\frac{1}{2}\bigg[ \\
+&\frac{1}{(1-\rho)^{2}}\left(\frac{\left(u-\bar{u}\right)^{2}}{\sigma_{u}^{2}}+\frac{\left(v-\bar{v}\right)^{2}}{\sigma_{v}^{2}}-\frac{2\rho \left(u-\bar{u}\right)\left(v-\bar{v}\right)}{\sigma_{u}\sigma_{v}}\right)\bigg]\bigg\}\,.
+\end{split}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Central Limit Theorem (CLT)}
+\label{stats:CLT}
+
+The central limit theorem (CLT) states that
+if we take samples of size $n$ from an independent random variable multiple times,
+from any distribution\footnote{Where the mean is defined, \ie not the Cauchy or other pathological distributions.},
+the sample means will tend to the normal distribution.
+In practice, we typically require $\num{30} \lesssim n$ points per sample before we say the CLT applies.
+The CLT is an important result in statistics as it lets us
+treat many problems in a normally distributed framework,
+in particular finding confidence intervals for the sample mean,
+and hypothesis testing for sample means with a \ttest or ANOVA.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Bayes' Theorem}
-\label{stats:Bayes}
+\label{stats:Bayes_rule}
 
 Bayes' theorem follows from the probability of the intersection of two events $A$ and $B$:
 
@@ -17,7 +166,7 @@ P\left(A \cap B\right) = P\left(A \mid B\right) P\left(B\right) = P\left(B \mid 
 
 \noindent Dividing by $P\left(B\right)$ we have:
 
-\begin{equation}\label{eq:stats:Bayes}
+\begin{equation}\label{eq:stats:Bayes_rule}
 \begin{split}
 P\left(A \mid B\right) &= \frac{P\left(B \mid A\right) P\left(A\right)}{P\left(B\right)}\,, \\
 &= \frac{P\left(B \mid A_{i}\right) P\left(A_{i}\right)}{\sum_{j} P\left(B \mid A_{j}\right)P\left(A_{j}\right)}\,, \\
@@ -25,16 +174,15 @@ P\left(A \mid B\right) &= \frac{P\left(B \mid A\right) P\left(A\right)}{P\left(B
 \end{split}
 \end{equation}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Example: Medical Testing}
-\label{stats:Bayes:medical_test}
+\label{stats:Bayes_rule:medical_test}
 
 Example: Testing for disease with a \SI{2}{\percent} incidence rate in the wider population.
 The test has a \SI{99}{\percent} true positive rate and a \SI{5}{\percent} false positive rate.
 What is the probability an individual has the disease if their test is positive?
 
 % https://www.wolframalpha.com/input/?i=(0.99*0.02)%2F((0.99*0.02)%2B(0.05*(1%E2%88%920.02)))
-\begin{equation}\label{eq:stats:Bayes:medical_test_1}
+\begin{equation}\label{eq:stats:Bayes_rule:medical_test_1}
 \begin{split}
 P\left(\text{Infected} \mid +\right) &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(+\right)}\,, \\
  &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{
@@ -47,7 +195,7 @@ P\left(+ \mid \text{Infected}\right)P\left(\text{Infected}\right) + P\left(+ \mi
 \noindent And if we then run a second, independent, test which also comes back positive?
 
 % https://www.wolframalpha.com/input/?i=(0.99*0.288)%2F((0.99*0.288)%2B(0.05*(1%E2%88%920.288)))
-\begin{equation}\label{eq:stats:Bayes:medical_test_2}
+\begin{equation}\label{eq:stats:Bayes_rule:medical_test_2}
 \begin{split}
 P\left(\text{Infected} \mid ++\right) &= \frac{P\left(+ \mid \text{Infected}\right) P\left(\text{Infected} \mid +\right)}{
 P\left(+ \mid \text{Infected}\right)P\left(\text{Infected} \mid +\right) + P\left(+ \mid \text{Healthy}\right)P\left(\text{Healthy} \mid +\right)}\,, \\
@@ -59,7 +207,7 @@ P\left(+ \mid \text{Infected}\right)P\left(\text{Infected} \mid +\right) + P\lef
 \noindent Note that if we ran both tests the first time we would still have:
 
 % https://www.wolframalpha.com/input/?i=(0.99%5E2*0.02)%2F((0.99%5E2*0.02)%2B(0.05%5E2*(1%E2%88%920.02)))
-\begin{equation}\label{eq:stats:Bayes:medical_test_3}
+\begin{equation}\label{eq:stats:Bayes_rule:medical_test_3}
 \begin{split}
 P\left(\text{Infected} \mid ++\right) &= \frac{P\left(++ \mid \text{Infected}\right) P\left(\text{Infected}\right)}{P\left(++\right)}\,, \\
 &= \frac{\num{0.99}^{2} \times \num{0.02}}{\num{0.99}^{2} \times \num{0.02} + \num{0.05}^{2} \times \left(1-\num{0.02}\right)}\,, \\
@@ -67,16 +215,15 @@ P\left(\text{Infected} \mid ++\right) &= \frac{P\left(++ \mid \text{Infected}\ri
 \end{split}
 \end{equation}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Example: Biased Coin}
-\label{stats:Bayes:biased_coin}
+\label{stats:Bayes_rule:biased_coin}
 
 Consider the case of a bag of $n$ fair coins and $m$ biased coins.
 Let $P\left(H \mid \stcomp{F}\right) \equiv p_{H}$ be the \apriori probability of heads $H$ for an biased coin $\stcomp{F}$.
 Drawing one coin from the bag, you flip it multiple times recording $h$ heads and $t$ tails.
 What is the probability you have drawn an biased coin, $P\left(\stcomp{F} \mid h,t\right)$?
 
-\begin{equation}\label{eq:stats:Bayes:biased_coin_setup}
+\begin{equation}\label{eq:stats:Bayes_rule:biased_coin_setup}
 \begin{gathered}
 P\left(F\right) = \frac{n}{n+m}\,,\quad P\left(\stcomp{F}\right) = \frac{m}{n+m}\,, \\
 P\left(H \mid F\right) = \frac{1}{2}\,,\quad P\left(h,t \mid F\right) = \left(\frac{1}{2}\right)^{h}\,\left(\frac{1}{2}\right)^{t} = \frac{1}{2^{h+t}}\,, \\
@@ -84,7 +231,7 @@ P\left(h,t \mid \stcomp{F}\right) = P\left(H \mid \stcomp{F}\right)^{h} P\left(\
 \end{gathered}
 \end{equation}
 
-\begin{equation}\label{eq:stats:Bayes:biased_coin_solution}
+\begin{equation}\label{eq:stats:Bayes_rule:biased_coin_solution}
 \begin{split}
 P\left(\stcomp{F} \mid h,t\right) &= \frac{
 P\left(h,t \mid \stcomp{F}\right) P\left(\stcomp{F}\right)}{
@@ -95,7 +242,7 @@ m\,p_{H}^{h} \left(1-p_{H}\right)^{t} + n\,2^{-h-t}}\,.
 \end{split}
 \end{equation}
 
-Some example values are provided in \cref{tab:Bayes:biased_coin}.
+Some example values are provided in \cref{tab:Bayes_rule:biased_coin}.
 
 \begin{table}[H]
 \centering
@@ -106,7 +253,7 @@ Some example values are provided in \cref{tab:Bayes:biased_coin}.
 \caption{
 $P\left(\stcomp{F} \mid h,t\right)$ for various values of $h$, $t$, and $p_{H}$ when $m = 50$, $n = 50$.
 }
-\label{tab:Bayes:biased_coin}
+\label{tab:Bayes_rule:biased_coin}
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -469,6 +616,46 @@ and is primary useful for conducting {\Ftest}s such as ANOVA.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Geometric Distribution}
+\label{stats:geo_dist}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Hypergeometric Distribution}
+\label{stats:hypergeo_dist}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Kurtosis and Skewness}
+\label{stats:kurtosis_skewness}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Confidence Intervals}
+\label{stats:CI}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Hoeffding's Inequality}
+\label{stats:CI:hoeffding}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Outliers}
+\label{stats:outliers}
+% TODO
+% interquartile range (IQR)
+
+\begin{equation}\label{eq:stats:outlier_IQR_def}
+\expval{x} \pm \num{1.5}\, \text{IQR}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Bootstrapping}
 \label{stats:bootstrapping}
 
@@ -486,7 +673,7 @@ The statistic of interest is computed on each of the bootstrapped samples
 before being combined into an overall distribution.
 Assuming the original population is independent and identically distributed (i.i.d.)\footnote{Note
 that the i.i.d. assumption is less stringent than
-the usual assumption of normality via the central limit theorem (CLT) of \cref{additional:stats:CLT},
+the usual assumption of normality via the central limit theorem (CLT) of \cref{stats:CLT},
 allowing bootstrapping to be used in cases were $n$ may be to small for other methods.},
 the resulting bootstrapped distribution will approximate the true sampling distribution
 and we can use it to estimate the uncertainty on the statistic.
@@ -548,68 +735,207 @@ in the dissertation \cite{mepland_dissertation}, Appendix E.1.4.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Maximum Likelihood Estimation (MLE)}
-\label{stats:MLE}
+\section{Bayesian Statistics}
+\label{stats:Bayes}
+% TODO
 
-Maximum likelihood estimation (MLE) is a method
-of choosing the optimal parameters of a probability distribution
-to match some set of observed data.
-As the name suggests, MLE works by maximizing the likelihood of observing the given data.
-Note that the terms likelihood and probability are closely related, but different, in this context.
-Here probability refers to the probability of observing $x$ given parameters $\bm{\beta}$, $P\left(x \mid \bm{\beta}\right)$,
-while likelihood refers to the likelihood of the distribution having parameters $\bm{\beta}$ given an observation $x$, $L\left(\bm{\beta} \mid x\right)$.
-$L$ and $P$ are both equal to relevant probability distribution,
-such as \cref{eq:stats:gaus:P} for the Gaussian distribution,
-but which variables are independent and dependent changes.
+% \cref{stats:Bayes_rule}
 
-As we wish to maximize the likelihood with respect to $\bm{\beta}$,
-we will be taking partial derivatives and finding where they equal zero, $\partial_{\bm{\beta}} L = 0$.
-In practice, likelihood functions are complicated\footnote{The value of $L$
-is often close to $0$, making lack of precision an issue when doing computations.
-$\log\left(L\right)$ is larger and also helps address this problem.} and
-it is easier to maximize the log-likelihood $\log\left(L\right)$,
-which has the same maximum as the original likelihood $L$,
-but removes exponents and turns multiplication in to addition.
-Generally there are $m$ points $\mathbf{x}_{i}$, each with $n$ dimensions, in a given dataset,
-thus we are solving \cref{eq:MLE} for $\bm{\beta} = \hat{\bm{\beta}}_{\text{MLE}}$:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Bayesian Conjugate Prior}
+\label{stats:Bayes:conjugate_prior}
+% TODO
 
-\begin{subequations}\label{eq:MLE}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Bayes Estimator}
+\label{stats:Bayes:estimator}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Approximate Bayesian Computation (ABC)}
+\label{stats:Bayes:ABC}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bias of a Predictor}
+\label{stats:bias}
+% TODO
+
+\begin{equation}\label{eq:stats:bias}
+\bias{\hat{f}\left(x\right)} = \expval{\hat{f}\left(x\right)} - f\left(x\right)
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Principle Component Analysis (PCA)}
+\label{stats:PCA}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Singular Value Decomposition (SVD)}
+\label{stats:SVD}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Kullback-Leibler Divergence}
+\label{stats:kld}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mutual Information (MI)}
+\label{stats:MI}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Normalized Mutual Information (NMI)}
+\label{stats:MI:normalized}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Markov Chains}
+\label{misc:markov_chains}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Markov Chain Monte Carlo}
+\label{misc:MCMC}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{PyMC}
+\label{misc:MCMC:PyMC}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Sampling from Probability Distributions}
+\label{misc:sampling_prob_dist}
+
+Most programming languages have built-in functions to generate
+pseudo-random numbers from common probability distributions,
+such as the Poisson \cref{eq:stats:poisson:P} or Gaussian \cref{eq:stats:gaus:P} distributions.
+However, in some cases we may wish to sample from an unsupported esoteric function.
+In these situations we can turn to inverse transform sampling and rejection sampling,
+to give just two examples from many possible computational methods,
+to construct the desired distribution from an existing random number generator.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Inverse Transform Sampling}
+\label{misc:sampling_prob_dist:inverse}
+% https://www.youtube.com/watch?v=9ixzzPQWuAY
+
+If we know the explicit form of the target probability density function (PDF), $X = P\left(x\right)$,
+can integrate it to find the cumulative distribution function (CDF), $F_{X}\left(x\right) = \int_{-\infty}^{x} P\left(t\right) \, \dd{t}$,
+and furthermore can invert the CDF\footnote{The inverse CDF
+is known as the percent point function, \texttt{ppf},
+in \href{https://docs.scipy.org/doc/scipy-0.14.0/reference/stats.html}{\scipy}.}, $F^{-1}_{X}\left(u\right)$ for $0 \leq u \leq 1$,
+we can explicitly transform the uniform distribution $U\left(x\right)$ into $P\left(x\right)$ as:
+
+\begin{equation}\label{eq:stats:sampling_prob_dist:inverse}
+F^{-1}_{X}\left(U\right) = P\left(x\right) = X\,.
+\end{equation}
+
+To prove the method, assuming that $F^{-1}_{X}$ exists, we can do:
+
+\begin{subequations}\label{eq:stats:sampling_prob_dist:inverse_proof}
 \begin{align}
-0 &= \partial_{\bm{\beta}} \, L\left(\bm{\beta} \mid \mathbf{x}\right) \label{eq:MLE:L} \\
-\implies 0 &= \partial_{\bm{\beta}} \log\left(L\left(\bm{\beta} \mid \mathbf{X}\right)\right) = \partial_{\bm{\beta}} \, \log\left(\prod_{i=1}^{m} \, P\left(\mathbf{x}_{i} \mid \bm{\beta}\right)\right) \label{eq:MLE:log_L} \\
-&= \sum_{i=1}^{m} \, \partial_{\bm{\beta}} \log\left(P\left(\mathbf{x}_{i} \mid \bm{\beta}\right)\right) \label{eq:MLE:log_L_sum}
+P\left(F^{-1}_{X}\left(U\right) \leq x\right) &= P\left(U \leq F_{X}\left(x\right) \right) \label{eq:stats:sampling_prob_dist:inverse_proof:inverse} \\
+&= F_{X}\left(x\right)\,,\label{eq:stats:sampling_prob_dist:inverse_proof:def} \\
+P\left(U \leq y\right) &= y\,, \label{eq:stats:sampling_prob_dist:inverse_proof:U}
 \end{align}
 \end{subequations}
 
-In practice, it is unlikely that a closed form solution for $\hat{\bm{\beta}}_{\text{MLE}}$ can be found
-and numerical optimizers, such as gradient descent, are used instead.
-Under certain conditions it can be shown that as $n \to \infty$ the MLE converges to $\hat{\bm{\beta}}$,
-\ie in the limit $n \to \infty$ no consistent estimator
-has a lower MSE\footnote{More formally, the MLE achieves the Cram\'er--Rao lower bound.}.
-Lastly, while the MLE is usually a biased estimator, see \cref{additional:stats:bias},
-the bias is also reduced as $n \to \infty$.
+\noindent where in \cref{eq:stats:sampling_prob_dist:inverse_proof:inverse} we have applied $F$ to both sides of the inner inequality,
+and in \cref{eq:stats:sampling_prob_dist:inverse_proof:def} we have used the definition of the uniform distribution \cref{eq:stats:sampling_prob_dist:inverse_proof:U}.
+As $P\left(F^{-1}_{X}\left(U\right) \leq x\right) = F_{X}\left(x\right) = P\left(X \leq x\right)$
+we can compare terms and see \cref{eq:stats:sampling_prob_dist:inverse}.
+
+The inverse sampling method can be seen graphically \cref{fig:stats:sampling_prob_dist:inverse} being used to generate the normal distribution.
+
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.7\textwidth]{figures/stats/inverse_transform_sampling_normal_dist}
+%\caption{
+%Example application of the inverse sampling method to generate the normal distribution, adapted from \href{https://en.wikipedia.org/wiki/File:Inverse_transform_sampling.png}{Olivier Ricou}.
+%}
+%\label{fig:stats:sampling_prob_dist:inverse}
+%\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Exponential Distribution Example}
-\label{stats:MLE:exp_ex}
+\subsection{Rejection Sampling}
+\label{misc:sampling_prob_dist:reject}
+% https://www.youtube.com/watch?v=OXDqjdVVePY
 
-We can use MLE to find the optimal $\hat{\lambda}_{\text{MLE}}$ of
-the exponential distribution \cref{eq:stats:exp:P}
-given a dataset of $m$ points, $x_{i}$, in 1 dimension:
+While inverse transform sampling is a computationally efficient method
+its assumptions will not be met by all interesting PDFs,
+in particular if we do not have an explicit, invertible CDF.
+In these cases we can turn to rejection sampling instead,
+which can handle more general PDFs at the cost of a lower computational efficiency.
 
-\begin{subequations}\label{eq:MLE:exp_ex}
+In rejection sampling, we assume we know the PDF of the random variable to be sampled from,
+up to a normalization constant $A$ \cref{eq:stats:sampling_prob_dist:reject:X}.
+We then choose a different PDF, $g\left(x\right)$ which is easy for us to sample from.
+Any $g\left(x\right)$ covering the range of $x$ will do,
+but the method is more efficient the closer we can get $g\left(x\right)$ to match $f\left(x\right)$.
+$g\left(x\right)$ is then scaled by a known constant $M$
+such that it is always larger than $f\left(x\right)$ \cref{eq:stats:sampling_prob_dist:reject:f_condition}
+as illustrated in \cref{fig:stats:sampling_prob_dist:reject}.
+Finally, we sample random $x$ values from $g\left(x\right)$ and accept them with probability \cref{eq:stats:sampling_prob_dist:reject:P_accept}.
+The accepted $x$ values will have the same distribution as $X$.
+
+\begin{subequations}\label{eq:stats:sampling_prob_dist:reject}
 \begin{align}
-0 &= \sum_{i=1}^{m} \partial_{\lambda} \log\left(P\left(x_{i} \mid \lambda\right)\right) = \sum_{i=1}^{m} \partial_{\lambda} \log\left(\lambda e^{-\lambda x_{i}}\right), \label{eq:MLE:exp_ex:log_L_sum} \\
-&= \sum_{i=1}^{m}\partial_{\lambda} \left( \log\left(\lambda\right) -\lambda x_{i}\right) = \sum_{i=1}^{m} \frac{1}{\lambda} - x_{i} = \frac{m}{\lambda} - \sum_{i=1}^{m} x_{i}, \label{eq:MLE:exp_ex:solve} \\
-\implies \hat{\lambda}_{\text{MLE}} &= \frac{m}{\sum_{i=1}^{m} x_{i}} = \frac{1}{\expval{x}}. \label{eq:MLE:exp_ex:lambda}
+X = P\left(x\right) &= \frac{1}{A} f\left(x\right), \label{eq:stats:sampling_prob_dist:reject:X} \\
+\forall x, \quad f\left(x\right) & \leq M g\left(x\right), \label{eq:stats:sampling_prob_dist:reject:f_condition} \\
+P\left(\text{Accept} \mid x\right) &= \frac{f\left(x\right)}{M g\left(x\right)}\,. \label{eq:stats:sampling_prob_dist:reject:P_accept}
 \end{align}
 \end{subequations}
 
-For another example of MLE see logistic regression \cref{eq:logistic:L_Pr}.
+\begin{figure}[H]
+  \centering
+  \savebox{\largestimage}{
+    \includegraphics[width=0.47\textwidth,trim={3.0cm 0.5cm 3.0cm 0.1cm},clip]{figures/stats/inverse_transform_sampling_normal_dist}% trim={<left> <lower> <right> <upper>}
+  }% Store largest image in a box
+
+  \begin{subfigure}[b]{0.48\textwidth}\centering
+    \usebox{\largestimage}
+    \vspace{0.01cm}
+  \caption{Inverse Sampling}
+  \label{fig:stats:sampling_prob_dist:inverse}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{\wd\largestimage}\centering
+    \raisebox{\dimexpr.5\ht\largestimage-.5\height}{% Adjust vertical height of smaller image
+      \includegraphics[width=\textwidth]{figures/stats/rejection_sampling}}
+  \caption{Rejection Sampling}
+  \label{fig:stats:sampling_prob_dist:reject}
+  \end{subfigure}
+\caption{
+Illustrations of the inverse sampling and rejection sampling methods, adapted from \href{https://en.wikipedia.org/wiki/File:Inverse_transform_sampling.png}{Olivier Ricou} and \href{https://www.data-blogger.com/2016/01/24/the-mathematics-behind-rejection-sampling/}{Kevin Jacobs}.
+  \label{fig:stats:sampling_prob_distr}
+}
+\end{figure}
+
+For a proof of why the rejection sampling method works see \cref{eq:stats:sampling_prob_dist:reject:proof} below
+which hinges on Bayes' Theorem from \cref{stats:Bayes_rule} in \cref{eq:stats:sampling_prob_dist:reject:proof:x_given_Accept}
+along with other basic definitions from probability theory.
+
+\begin{subequations}\label{eq:stats:sampling_prob_dist:reject:proof}
+\begin{align}
+P\left(x \mid \text{Accept}\right) &= \frac{P\left(\text{Accept} \mid x\right) P\left(x\right)}{P\left(\text{Accept}\right)} = \frac{1}{P\left(\text{Accept}\right)} \frac{f\left(x\right)}{M \cancel{g\left(x\right)}} \cancel{g\left(x\right)}, \label{eq:stats:sampling_prob_dist:reject:proof:x_given_Accept} \\
+P\left(\text{Accept}\right) &= \int_{-\infty}^{\infty} P\left(\text{Accept} \mid x\right) g\left(x\right) \, \dd{x} \label{eq:stats:sampling_prob_dist:reject:proof:P_Accept1} \\
+&= \int_{-\infty}^{\infty} \frac{f\left(x\right)}{M g\left(x\right)} g\left(x\right) \, \dd{x} = \frac{1}{M} \int_{-\infty}^{\infty} f\left(x\right) \, \dd{x} = \frac{A}{M}, \label{eq:stats:sampling_prob_dist:reject:proof:P_Accept2} \\
+\implies P\left(x \mid \text{Accept}\right) &= \frac{f\left(x\right)/M}{A/M} = \frac{1}{A} f\left(x\right) = P\left(x\right) = X. \label{eq:stats:sampling_prob_dist:reject:proof:conclusion}
+\end{align}
+\end{subequations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Maximum A Posteriori (MAP)}
-\label{stats:MAP}
-% TODO In maximum \aposteriori (MAP) estimation
-% TODO MLE is a special case of MAP with a uniform prior
+\subsection{Metropolis-Hastings Algorithm}
+\label{misc:sampling_prob_dist:metropolis_hastings}
+% TODO

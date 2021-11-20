@@ -137,6 +137,7 @@ or finding new independent features which may explain the nonlinearity.
   \item[\cref{item:regression:linear:multicollinearity}.] If some of the features are not linearly independent (multicollinearity),
 they can be biasing the model and should be removed in turn until linear independence is restored.
 Multicollinearity can be spotted in the input feature correlation matrix,
+with the variance inflation factor of \cref{regression:linear:VIF},
 or if the residuals correlate to any of the features.
 
   \item[\cref{item:regression:linear:exogeneity}.] If something is wrong with the errors
@@ -238,6 +239,11 @@ $\chi_{\nu}^{2} \ll 1$ & Extreme overfitting or overestimated $\sigma_{i}$.
 % TODO what is the significance of any particular \beta_{i} coefficient, via \ttest, \chiSqtest, \Ftest?? Should be able to get distribution of any \beta_{i} analytically for OLS, but can use bootstrap sampling for more complex models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Variance Inflation Factor (VIF)}
+\label{regression:linear:VIF}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Ridge Regression (L2, or Tikhonov)}
 \label{regression:linear:ridge}
 
@@ -247,8 +253,7 @@ We wish to minimize the square errors $\norm{\bm{\epsilon}}^{2}$,
 now subject to the condition that $\norm{\bm{\beta}}^{2} < t$ for some $t \geq 0$.
 For any $t \geq 0$ there is a $\lambda \geq 0$ such that minimizing the following
 objective function $S\left(\bm{\beta}\right)$ without conditions is
-equivalent\footnote{This is sometimes termed soft-thresholding, but is really an application of Lagrange multipliers.}:
-% TODo add \cref{additional:misc:opt} to Lagrange multipliers in footnote when written
+equivalent\footnote{This is sometimes termed soft-thresholding, but is really an application of Lagrange multipliers, as described in \cref{opt:lagrange_mult}.}:
 
 \begin{equation} \label{eq:linear:ridge}
 S\left(\bm{\beta}\right) = \norm{\mathbf{y} - \mathbf{X} \bm{\beta}}^{2} + \lambda \norm{\bm{\beta}}^{2}\,.
@@ -298,7 +303,7 @@ In the general case, more sophisticated methods can find numerical solutions.
 \subsection{LASSO vs Ridge Regression}
 \label{regression:linear:lasso_vs_ridge}
 
-All the usual concepts from \cref{ml:general:reg} apply, but specifically for linear regression
+All the usual concepts from \cref{ml_general:reg} apply, but specifically for linear regression
 both LASSO and ridge allow us to relax the multicollinearity condition.
 Lasso tends to use one feature per group of correlated $\mathbf{x}_{j}$'s, setting the rest to $\approx 0$,
 while ridge will keep all of the associated $\beta{j}$'s at a similar magnitude.
@@ -307,64 +312,85 @@ it does a better job when only some of the $n$ input features infuence $\hat{y}$
 while ridge does better if most of the features have similar importances.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{OLS Example}
+\label{regression:linear:example}
+% TODO
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Logistic Regression}
-\label{regression:logistic}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bayesian Linear Regression}
+\label{regression:bayesian_linear}
+% TODO
 
-Logistic regression is a simple method to create a classifier,
-typically on two classes $y = 0,1$, though multinomial extensions exist.
-Its name comes from the use of the logit, or log-odds, function
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{LASSO and Ridge as Priors}
+\label{regression:bayesian_linear:lasso_vs_ridge}
+% TODO
 
-\begin{equation}\label{eq:logistic:logic}
-l = \text{logit}\left(p\right) = \log\left(\frac{p}{1-p}\right)
-\end{equation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Weighted Least Squares}
+\label{regression:WLS}
+% TODO
 
-\noindent on the probability $p$ of class $1$.
-$l$ is estimated linearly from $n$ input features $x_{j}$ with $n+1$ parameters $\beta_{j}$ as:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Generalized Least Squares (GLS)}
+\label{regression:GLS}
+% TODO
 
-\begin{equation}\label{eq:logistic:logicBeta}
-l = \beta_{0} + \sum_{j=1}^{n} \, \beta_{j}\,x_{j}\,.
-\end{equation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Generalized Linear Models (GLM)}
+\label{regression:GLM}
+% TODO
 
-\noindent The probability $p$ is then
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Principal Component Regression (PCR)}
+\label{regression:PCR}
+% TODO
 
-\begin{equation}\label{eq:logistic:p}
-p = \frac{e^l}{e^l + 1} = \frac{1}{1+e^{-l}} = \text{logit}^{-1}\left(l\right)
-\end{equation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Gaussian Process Regression (Kriging)}
+\label{regression:kriging}
+% TODO
 
-\noindent which can be turned into a predicted class through the choice of a suitable decision threshold.
+% TODO see \cite{Brochu2010} section 2.6 and the additional references it cites
 
-The model parameters $\bm{\beta}$ are chosen by maximizing
-the log of the likelihood $L$ \cref{eq:logistic:L} over $m$ known example points $\mathbf{x}_{i}, y_{i}$.
-Note that $P\left(y \mid x\right)$ \cref{eq:logistic:Pr} is simply the Bernoulli distribution.
-In practice the log-likelihood $\log\left(L\right)$ is maximized via gradient descent.
-An example of logistic regression can be found in \cref{fig:logistic_regression_ex}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Difference in Differences (DID)}
+\label{regression:DID}
+% TODO
 
-\begin{subequations} \label{eq:logistic:L_Pr}
-\begin{align}
-L\left(\bm{\beta} \mid \mathbf{x}\right) &= \prod_{i=1}^{m} \, P\left(y_{i} \mid \mathbf{x}_{i};\,\bm{\beta}\right) \label{eq:logistic:L} \\
-P\left(y \mid \mathbf{x}\right) &= p^y\left(1-p\right)^{1-y}, \quad y \in \{0, 1\} \label{eq:logistic:Pr}
-\end{align}
-\end{subequations}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Fixed-Effects Model}
+\label{regression:fixed_effects}
+% TODO
 
-\begin{figure}
-\centering
-% \includegraphics[width=0.8\textwidth]{figures/regression/Exam_pass_logistic_curve.jpeg}
-\includegraphics[width=0.7\textwidth]{figures/regression/logistic-regression-probabilities-curve.png}
-\caption{
-% Example logistic regression curve on one input feature, by \href{https://en.wikipedia.org/wiki/File:Exam_pass_logistic_curve.jpeg}{Michaelg2015}.
-Example logistic regression curve on one input feature, by \href{http://www.sthda.com/english/articles/36-classification-methods-essentials/151-logistic-regression-essentials-in-r/}{Kassambara}.
-}
-\label{fig:logistic_regression_ex}
-\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mixed-Effects Model}
+\label{regression:mixed_effects}
+% TODO
 
-% TODO any more assumptions?
-Some assumptions of the logistic regression approach are:
-\begin{enumerate}[noitemsep]
-  \item $y$ is either present or absent (dichotomous).
-  \item There are minimal correlations between the $x_{j}$ features (no multicollinearity).
-  \item There are no major outliers in the data.
-\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Binomial Regression}
+\label{regression:binomial}
+% TODO
 
-% TODO pseudo R2, Wald statistic
-% TODO regularized versions?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Poisson Regression}
+\label{regression:poisson}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Simpson's Paradox}
+\label{regression:simpsons_paradox}
+% TODO
