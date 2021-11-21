@@ -15,7 +15,7 @@ which make them best suited for certain applications.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Nomenclature}
-\label{survival:Nomenclature}
+\label{survival:nomenclature}
 
 \begin{symbollist}
   \item[Event] The event of interest in a study, \eg death, component failure\ldots
@@ -26,33 +26,33 @@ which make them best suited for certain applications.
   \item[$S\left(t\right)$] The survival function $S\left(t\right)$ is the probability that a subject survives longer than $t$, \ie $S\left(t\right) = P\left(T > t\right)$.
   \item[$F\left(t\right)$] The lifetime distribution function $F\left(t\right)$ is the complement of the survival function, \ie $F\left(t\right) = 1 - S\left(t\right) = P\left(T \leq t\right)$.
   \item[$f\left(t\right)$] The event density function $f\left(t\right)$ is the time derivative of the lifetime distribution function $F\left(t\right)$, $f\left(t\right) = \dv{F}{t} = -\dv{S}{t}$, if it exists.
-  \item[$\lambda\left(t\right)$] The hazard function $\lambda\left(t\right)$ is the event rate at $t$ conditional on survival to time $t$, \ie $T > t$, see \cref{eq:Survival:hazard_def}. Any $\lambda\left(t\right)$ can be a hazard function, provided it satisfies \cref{eq:Survival:hazard_cond}.
-  \item[$\Lambda\left(t\right)$] The cumulative hazard function $\Lambda\left(t\right)$ is the integral of $\lambda\left(t\right)$ with respect to time \cref{eq:Survival:cum_hazard:def}. Also see the relations in \cref{eq:Survival:cum_hazard:to_lambda,eq:Survival:cum_hazard:to_S}.
+  \item[$\lambda\left(t\right)$] The hazard function $\lambda\left(t\right)$ is the event rate at $t$ conditional on survival to time $t$, \ie $T > t$, see \cref{eq:survival:hazard_def}. Any $\lambda\left(t\right)$ can be a hazard function, provided it satisfies \cref{eq:survival:hazard_cond}.
+  \item[$\Lambda\left(t\right)$] The cumulative hazard function $\Lambda\left(t\right)$ is the integral of $\lambda\left(t\right)$ with respect to time \cref{eq:survival:cum_hazard:def}. Also see the relations in \cref{eq:survival:cum_hazard:to_lambda,eq:survival:cum_hazard:to_S}.
   \item[HR] The hazard ratio (HR) compares the hazards of two subsets of subjects partitioned by $x$ at time $t$, $\text{HR} = \lambda\left(x = 1\right) / \lambda\left(x=0\right)$. Also known as the relative risk.
 \end{symbollist}
 
-\begin{subequations}\label{eq:Survival:hazard_def}
+\begin{subequations}\label{eq:survival:hazard_def}
 \begin{align}
-\lambda\left(t\right) \dd{t} &= P\left(T \leq t + \dd{t} \mid T > t\right),\,\text{as} \,\, \dd{t} \to 0 \label{eq:Survival:hazard_def:a} \\
-\lambda\left(t\right) &= \lim_{\dd{t} \to 0} \frac{P\left(T \leq t + \dd{t} \cap T > t\right)}{P\left(T > t\right)\,\dd{t}} \label{eq:Survival:hazard_def:b} \\
-&= \frac{1}{S\left(t\right)} \lim_{\dd{t} \to 0} \frac{P\left(t < T \leq t + \dd{t}\right)}{\dd{t}} \label{eq:Survival:hazard_def:c} \\
-&= \frac{1}{S\left(t\right)} \lim_{\dd{t} \to 0} \frac{F\left(t + \dd{t}\right) - F\left(t\right)}{\dd{t}} \label{eq:Survival:hazard_def:d} \\
-&= \frac{f\left(t\right)}{S\left(t\right)} = -\frac{1}{S} \dv{S}{t} \label{eq:Survival:hazard_def:e}
+\lambda\left(t\right) \dd{t} &= P\left(T \leq t + \dd{t} \mid T > t\right),\,\text{as} \,\, \dd{t} \to 0 \label{eq:survival:hazard_def:a} \\
+\lambda\left(t\right) &= \lim_{\dd{t} \to 0} \frac{P\left(T \leq t + \dd{t} \cap T > t\right)}{P\left(T > t\right)\,\dd{t}} \label{eq:survival:hazard_def:b} \\
+&= \frac{1}{S\left(t\right)} \lim_{\dd{t} \to 0} \frac{P\left(t < T \leq t + \dd{t}\right)}{\dd{t}} \label{eq:survival:hazard_def:c} \\
+&= \frac{1}{S\left(t\right)} \lim_{\dd{t} \to 0} \frac{F\left(t + \dd{t}\right) - F\left(t\right)}{\dd{t}} \label{eq:survival:hazard_def:d} \\
+&= \frac{f\left(t\right)}{S\left(t\right)} = -\frac{1}{S} \dv{S}{t} \label{eq:survival:hazard_def:e}
 \end{align}
 \end{subequations}
 
-\begin{subequations}\label{eq:Survival:hazard_cond}
+\begin{subequations}\label{eq:survival:hazard_cond}
 \begin{gather}
-\forall t \geq 0, \, \lambda\left(t\right) \geq 0 \label{eq:Survival:hazard_cond:a} \\
-\int_{0}^{\infty} \lambda\left(t\right) \, \dd{t} = \infty \label{eq:Survival:hazard_cond:b}
+\forall t \geq 0, \, \lambda\left(t\right) \geq 0 \label{eq:survival:hazard_cond:a} \\
+\int_{0}^{\infty} \lambda\left(t\right) \, \dd{t} = \infty \label{eq:survival:hazard_cond:b}
 \end{gather}
 \end{subequations}
 
-\begin{subequations}\label{eq:Survival:cum_hazard}
+\begin{subequations}\label{eq:survival:cum_hazard}
 \begin{gather}
-\Lambda\left(t\right) = \int_{0}^{t} \lambda\left(u\right) \, \dd{u} = - \ln\left(S\left(t\right)\right) \label{eq:Survival:cum_hazard:def} \\
-\lambda\left(t\right) = \dv{\Lambda}{t} = -\frac{1}{S} \dv{S}{t} \label{eq:Survival:cum_hazard:to_lambda} \\
-S\left(t\right) = \exp\left(-\Lambda\left(t\right)\right) \label{eq:Survival:cum_hazard:to_S}
+\Lambda\left(t\right) = \int_{0}^{t} \lambda\left(u\right) \, \dd{u} = - \ln\left(S\left(t\right)\right) \label{eq:survival:cum_hazard:def} \\
+\lambda\left(t\right) = \dv{\Lambda}{t} = -\frac{1}{S} \dv{S}{t} \label{eq:survival:cum_hazard:to_lambda} \\
+S\left(t\right) = \exp\left(-\Lambda\left(t\right)\right) \label{eq:survival:cum_hazard:to_S}
 \end{gather}
 \end{subequations}
 
@@ -64,7 +64,7 @@ S\left(t\right) = \exp\left(-\Lambda\left(t\right)\right) \label{eq:Survival:cum
 The Kaplan-Meier model \cite{km} $\hat{S}_{\text{KM}}\left(t\right)$ is a non-parametric
 estimate of $S\left(t\right)$ computed from empirical data.
 
-\begin{equation}\label{eq:Survival:km}
+\begin{equation}\label{eq:survival:km}
 \hat{S}_{\text{KM}}\left(t\right) = \prod_{i:\,t_{i} < t} \left(1 - \frac{d_{i}}{n_{i}}\right)
 \end{equation}
 
@@ -96,13 +96,13 @@ The exponential model can accommodate both categorical and continuous $x$ indepe
 
 The survival function for the exponential model is simply
 
-\begin{equation}\label{eq:Survival:exp}
+\begin{equation}\label{eq:survival:exp}
 \hat{S}_{\text{Exp}}\left(t\right) = e^{-\lambda t}
 \end{equation}
 
 \noindent where the hazard can be expanded in terms of $\mathbf{x}$, $\bm{\beta}$ as in a regression analysis:
 
-\begin{equation}\label{eq:Survival:exp_lambda}
+\begin{equation}\label{eq:survival:exp_lambda}
 \begin{aligned}
 \lambda\left(x\right) &= \exp\left(\beta_{0} + \sum_{j=1}^{n}\, \beta_{j} x_{j}\right) \\
 \log\left(\lambda\right) &= \mathbf{x} \bm{\beta}
@@ -121,7 +121,7 @@ Similar approaches are also used to fit the later Weibull and Cox proportional-h
 
 The hazard ratio for $x_{j}$ is:
 
-\begin{equation}\label{eq:Survival:exp_HR}
+\begin{equation}\label{eq:survival:exp_HR}
 \begin{aligned}
 \text{HR}_{\text{Exp}} &= e^{\ldots+\beta_{j} 1+\ldots} / e^{\ldots+\beta_{j} 0+\ldots} \\
 &= e^{\beta_{j}}
@@ -135,7 +135,7 @@ The hazard ratio for $x_{j}$ is:
 The Weibull model expands on the standard exponential model
 by introducing a shape parameter $k$ to adjust the time dependence of the hazard:
 
-\begin{equation}\label{eq:Survival:weibull}
+\begin{equation}\label{eq:survival:weibull}
 \begin{aligned}
 \hat{S}_{\text{Weibull}}\left(t\right) &= e^{-\lambda_{\text{Weibull}} t} \\
 \lambda_{\text{Weibull}} &= \exp\left(\beta_{0} t^{k} + \sum_{j=1}^{n}\, \beta_{j} x_{j}\right) \\
@@ -173,14 +173,14 @@ See \cref{fig:cox:cox_age_baseline_survival} for one example.}.
 
 In the Cox model we assume the hazard has the form of
 
-\begin{equation}\label{eq:Survival:cox_lambda}
+\begin{equation}\label{eq:survival:cox_lambda}
 \lambda_{\text{Cox}} = \lambda_{0}\left(t\right) \exp\left(\sum_{j=1}^{n}\, \beta_{j} x_{j}\right)
 \end{equation}
 
 \noindent where $\lambda_{0}\left(t\right)$ is the baseline hazard, an unspecified function of $t$.
 When computing hazard ratios $\lambda_{0}\left(t\right)$ then drops out:
 
-\begin{equation}\label{eq:Survival:cox_HR}
+\begin{equation}\label{eq:survival:cox_HR}
 \text{HR}_{\text{Cox}} = e^{\beta_{j}}
 \end{equation}
 
@@ -249,16 +249,16 @@ Con
 \label{survival:assumptions}
 
 \begin{enumerate}[noitemsep]
-  \item Any censoring is non-informative, \ie censoring is uncorrelated with the probabilities of different event outcomes.\label{item:Survival:assumptions:censoring}
-  \item Survival times $t$ are uncorrelated across subjects.\label{item:Survival:assumptions:t_uncorr}
-  \item $\mathbf{x}$ is constant over time, per subject.\label{item:Survival:assumptions:X_constant}
-  \item Hazards are proportional, \ie hazard ratios are constant over time.\label{item:Survival:assumptions:prop_hazard}
-  \item $\log\left(\lambda\right)$ is linear with respect to the continuous $x_{j}$ independent variables.\label{item:Survival:assumptions:X_linearity}
+  \item Any censoring is non-informative, \ie censoring is uncorrelated with the probabilities of different event outcomes.\label{item:survival:assumptions:censoring}
+  \item Survival times $t$ are uncorrelated across subjects.\label{item:survival:assumptions:t_uncorr}
+  \item $\mathbf{x}$ is constant over time, per subject.\label{item:survival:assumptions:X_constant}
+  \item Hazards are proportional, \ie hazard ratios are constant over time.\label{item:survival:assumptions:prop_hazard}
+  \item $\log\left(\lambda\right)$ is linear with respect to the continuous $x_{j}$ independent variables.\label{item:survival:assumptions:X_linearity}
 \end{enumerate}
 
-\Cref{item:Survival:assumptions:censoring,item:Survival:assumptions:t_uncorr,item:Survival:assumptions:X_constant}
+\Cref{item:survival:assumptions:censoring,item:survival:assumptions:t_uncorr,item:survival:assumptions:X_constant}
 are assumptions for all survival models, while
-\cref{item:Survival:assumptions:prop_hazard,item:Survival:assumptions:X_linearity}
+\cref{item:survival:assumptions:prop_hazard,item:survival:assumptions:X_linearity}
 apply to the exponential, Weibull and Cox models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -266,15 +266,15 @@ apply to the exponential, Weibull and Cox models.
 \label{survival:assumptions:tests_and_corrections}
 
 \begin{itemize}[noitemsep]
-  \item[\cref{item:Survival:assumptions:censoring}.] Exploratory data analysis to detect differences in $\mathbf{x}$ distributions between censored and non-censored subjects. If violated, better input data is needed, redesign study.
+  \item[\cref{item:survival:assumptions:censoring}.] Exploratory data analysis to detect differences in $\mathbf{x}$ distributions between censored and non-censored subjects. If violated, better input data is needed, redesign study.
 
-  \item[\cref{item:Survival:assumptions:t_uncorr}.] Exploratory data analysis, study design question. If violated, redesign study.
+  \item[\cref{item:survival:assumptions:t_uncorr}.] Exploratory data analysis, study design question. If violated, redesign study.
 
-  \item[\cref{item:Survival:assumptions:X_constant}.] Exploratory data analysis, study design question. If unavoidable, can try a more complex time dependent covariate model.
+  \item[\cref{item:survival:assumptions:X_constant}.] Exploratory data analysis, study design question. If unavoidable, can try a more complex time dependent covariate model.
 
-  \item[\cref{item:Survival:assumptions:prop_hazard}.] Check with a Schoenfeld test or complementary log-log plot. If violated, stratify problematic $x_{j}$ variables into separate models, or use more complex models with time dependent $\beta$ coefficients.
+  \item[\cref{item:survival:assumptions:prop_hazard}.] Check with a Schoenfeld test or complementary log-log plot. If violated, stratify problematic $x_{j}$ variables into separate models, or use more complex models with time dependent $\beta$ coefficients.
 
-  \item[\cref{item:Survival:assumptions:X_linearity}.] Check the appropriate residual plots. If violated, try to linearize the offending continuous $x_{j}$ with a transformation or bin to a categorical variable.
+  \item[\cref{item:survival:assumptions:X_linearity}.] Check the appropriate residual plots. If violated, try to linearize the offending continuous $x_{j}$ with a transformation or bin to a categorical variable.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -363,7 +363,7 @@ with the parameter $\rho$ left at its default value of $0$.
 
 To begin, note that the odds of an event occurring are:
 
-\begin{equation}\label{eq:Survival:odds}
+\begin{equation}\label{eq:survival:odds}
 \text{Odds} = \frac{P\left(\text{Occurring}\right)}{P\left(\text{Not Occurring}\right)} = \frac{p}{1-p}
 \end{equation}
 
@@ -396,20 +396,20 @@ but it is important to remember they are ultimately different concepts.
 
 The expected future lifetime $\expval{T-t_{0}}$ is the
 expected additional time of survival for a subject having already survived to $t_{0}$.
-We can derive $\expval{T-t_{0}}$ \cref{eq:Survival:efl_der:efl}
-from the probability of an event occurring between $t_{0}$ and $t_{0} + t$ \cref{eq:Survival:efl_der:P}
-using the prior work of \cref{eq:Survival:hazard_def} and integration by parts:
+We can derive $\expval{T-t_{0}}$ \cref{eq:survival:efl_der:efl}
+from the probability of an event occurring between $t_{0}$ and $t_{0} + t$ \cref{eq:survival:efl_der:P}
+using the prior work of \cref{eq:survival:hazard_def} and integration by parts:
 
-\begin{subequations}\label{eq:Survival:efl_der}
+\begin{subequations}\label{eq:survival:efl_der}
 \begin{gather}
 P\left(T \leq t_{0} + t \mid T > t_{0}\right)
-= \frac{F\left(t_{0} + t\right) - F\left(t_{0}\right)}{S\left(t_{0}\right)} \label{eq:Survival:efl_der:P} \\
+= \frac{F\left(t_{0} + t\right) - F\left(t_{0}\right)}{S\left(t_{0}\right)} \label{eq:survival:efl_der:P} \\
 \text{PDF}
 = \dv{}{t} P\left(T \leq t_{0} + t \mid T > t_{0}\right)
-= \frac{f\left(t_{0} + t\right)}{S\left(t_{0}\right)} \label{eq:Survival:efl_der:pdf} \\
+= \frac{f\left(t_{0} + t\right)}{S\left(t_{0}\right)} \label{eq:survival:efl_der:pdf} \\
 \expval{T-t_{0}}
 = \int_{0}^{\infty} t \, \text{PDF} \, \dd{t}
-= \frac{1}{S\left(t_{0}\right)} \int_{0}^{\infty} S\left(t\right) \, \dd{t} \label{eq:Survival:efl_der:efl}
+= \frac{1}{S\left(t_{0}\right)} \int_{0}^{\infty} S\left(t\right) \, \dd{t} \label{eq:survival:efl_der:efl}
 \end{gather}
 \end{subequations}
 
@@ -820,3 +820,9 @@ for $\hat{\beta}_{\text{age}} = \num{0.02990}$.
 }
 \label{fig:cox:outliers}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Random Survival Forest (RSF)}
+\label{survival:RSF}
+% TODO

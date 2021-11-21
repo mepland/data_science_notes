@@ -126,6 +126,19 @@ sensitivity (recall) versus specificity, by \href{http://en.wikipedia.org/wiki/F
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Cohen's \texorpdfstring{$\kappa$}{Kappa}}
+\label{ml_general:eval:cohens_kappa}
+% TODO
+
+\begin{subequations} \label{eq:cohens_kappa}
+\begin{align}
+\kappa &= \frac{p_{o} - p_{e}}{1-p_{e}} = 1 - \frac{1-p_{o}}{1-p_{e}} \label{eq:cohens_kappa:def} \\
+&= 2\, \frac{\text{TP} \times \text{TN} - \text{FP} \times \text{FN} }{ \left(\text{TP} + \text{FP}\right) \times \left(\text{FP} + \text{TN}\right) \times \left(\text{TP} + \text{FN}\right) \times \left(\text{FN} + \text{TN}\right) } \label{eq:cohens_kappa:cm} \\
+p_{e} &= \frac{1}{N^{2}} \sum_{k} n_{k1} n_{k2} \label{eq:cohens_kappa:pe}
+\end{align}
+\end{subequations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Other Scores}
 \label{ml_general:eval:other_scores}
 
@@ -151,6 +164,11 @@ F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}
 \frac{\left(1+\beta^{2}\right) \text{TP}}{\left(1+\beta^{2}\right) \text{TP} + \beta^{2}\,\text{FN} + \text{FP}}
 \end{equation}
 \end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Multi-Class Extensions}
+\label{ml_general:eval:multi_class}
+% TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ROC and Precision-Recall Curves}
@@ -224,6 +242,27 @@ the model will rank a randomly chosen $y=1$ observation above a randomly chosen 
 \subsection{Bayesian Information Criterion (BIC)}
 \label{ml_general:eval:BIC}
 % TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Feature Importance}
+\label{ml_general:feature_importance}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Dimensionality Reduction \& Feature Selection}
+\label{ml_general:feature_selection}
+% TODO
+% TODO Can look at correlation or mutual information between variables
+% TODO could also use a chi2 test for independence between input variables and the dependent variable, see which ones might be useful. See https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Linear Discriminant Analysis (LDA)}
+\label{ml_general:feature_selection:LDA}
+% TODO
+
+% TODO include Gaussian Discriminant Analysis (GDA) and Quadratic Discriminant Analysis (QDA)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -484,6 +523,12 @@ Ideally the curve should reach a clear asymptote before the maximum $m$ is used.
 }
 \label{fig:enough_training_data}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Propensity Score Matching}
+\label{ml_general:propensity}
+% TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
