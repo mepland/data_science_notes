@@ -30,7 +30,7 @@
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Silhouette Value}
+\subsection{Silhouette Coefficient}
 \label{cluster:eval:silhouette}
 % TODO
 
@@ -66,8 +66,13 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Gaussian Mixture Model (GMM)}
-\label{cluster:GMM}
+\section{Expectation Maximization (EM)}
+\label{cluster:EM}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Gaussian Mixture Model (GMM)}
+\label{cluster:EM:GMM}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,7 +83,8 @@
 When working with a graph, \ie network, based dataset
 we can use the Louvain\footnote{Named for the location of the author's university in Louvain-la-Neuve, Belgium.} method \cite{louvain}
 to detect related clusters, \ie communities,
-of nodes by optimizing the graph's modularity.
+of nodes by optimizing the graph's modularity\footnote{Today the Louvain method can refer to the greedy optimization algorithm on its own,
+with the modularity $Q$ being one possible objective function}.
 The modularity $Q$ of a graph $G$ with a given set of clusters $C$
 is a measure of the graph's degree of clustering;
 being the fraction of edges within the clusters
@@ -100,7 +106,7 @@ $W_{G}$ is the total edge weight of the graph,
 $c_{i} \in C$ is the cluster of node $i$,
 and $0 < \gamma$ is a resolution hyperparameter.
 
-The Louvain method constructs $C$ by maximizing $Q$ in an iterative two phase process as shown in \cref{fig:louvain}.
+The Louvain method constructs $C$ by greedily maximizing $Q$ in an iterative two phase process as shown in \cref{fig:louvain}.
 In the first phase, we define each node $n_{i} \in G$ to be its own cluster $c_{i}$.
 We then merge each $c_{i}$ with the neighboring $c_{j}$, $0 < w_{ij}$, which maximizes $\Delta Q$.
 If $\max\left(\Delta Q\right) = 0$ we leave $c_{i}$ unmerged.
@@ -129,6 +135,18 @@ implements the Louvain method for \texttt{networkx} \cite{networkx}
 Community detection in large networks is an important problem for social networks and other use cases,
 making this an active area of research.
 For example, one proposed improvement to the Louvain method is the Leiden algorithm \cite{leiden}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Correlation Clustering}
+\label{cluster:correlation}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Affinity Clustering}
+\label{cluster:affinity}
+% TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
