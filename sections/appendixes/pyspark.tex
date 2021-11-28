@@ -88,7 +88,13 @@ spark.sql('select * from df limit 10').show(10)
 \section{Joining}
 \label{pyspark:join}
 
-\noindent See the \href{http://spark.apache.org/docs/2.1.0/api/python/pyspark.sql.html?highlight=join#pyspark.sql.DataFrame.join}{documentation} and this \href{http://www.learnbymarketing.com/1100/pyspark-joins-by-example/}{useful guide}. In addition to the standard types of joins \texttt{left\_semi}, or \texttt{leftsemi}, is very useful for filtering the left table to the matching rows in the join condition, without actually joining any columns from the right table.
+\noindent See the
+\href{https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.join.html#pyspark-sql-dataframe-join}{documentation}
+and this
+\href{http://www.learnbymarketing.com/1100/pyspark-joins-by-example/}{useful guide}.
+In addition to the standard types of joins \texttt{left\_semi}, or \texttt{leftsemi},
+is very useful for filtering the left table to the matching rows in the join condition,
+without actually joining any columns from the right table.
 
 \begin{lstlisting}[language=Python]
 df = df_l.join(df_r, df_l['id_left'] == df_r['id_right'], 'left')
@@ -99,7 +105,9 @@ df = df_l.join(df_r, df_l['id_left'] == df_r['id_right'], 'left')
 \section{Pivoting}
 \label{pyspark:pivoting}
 
-\noindent \href{https://spark.apache.org/docs/2.1.0/api/python/pyspark.sql.html?highlight=pivot#pyspark.sql.GroupedData.pivot}{\texttt{pivot} documentation}, and \href{https://sparkbyexamples.com/pyspark/pyspark-pivot-and-unpivot-dataframe/}{examples}.
+\noindent \href{https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.pivot.html#pyspark-sql-groupeddata-pivot}{\texttt{pivot} documentation},
+and
+\href{https://sparkbyexamples.com/pyspark/pyspark-pivot-and-unpivot-dataframe/}{examples}.
 
 \begin{lstlisting}[language=Python]
 df.groupBy('product').pivot('state').sum('cost')
