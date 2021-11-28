@@ -1,0 +1,8 @@
+.ipynb_checkpoints
+.DS_Store
+output
+*.swp
+*.pyc
+*style_file*.html
+*.pdf
+*.png
