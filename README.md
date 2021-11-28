@@ -17,6 +17,7 @@ grep -rIn ".  " . > tmp.txt
 grep -rIn '[[:blank:]]$' . > tmp.txt
 pcregrep -rInM '(\b[a-zA-Z]+)\s+\1\b' . > tmp.txt
 grep -rIn '.%' . > tmp.txt
+grep -rIn '([A-Z][A-Z]*)' . > tmp.txt
 ```
 
 ### Checking for spelling mistakes  
