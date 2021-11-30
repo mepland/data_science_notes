@@ -325,7 +325,7 @@ having actually observed $k$ successes, $k = n \pi$.
 The \pvalue is then the sum
 
 \begin{equation}\label{eq:hypo:binomial_test:exact}
-\pvalue = \sum_{i \in \, \mathcal{I}} {n \choose i}\pi_{0}^{i} \left(1-\pi_{0}\right)^{n-i},
+\pvalue = \sum_{i \in \, \mathcal{I}} \binom{n}{i} \pi_{0}^{i} \left(1-\pi_{0}\right)^{n-i},
 \end{equation}
 
 \noindent where $\mathcal{I}$ depends on the type of test:
@@ -536,7 +536,7 @@ and simply divide our nominal $\alpha$ by $N$
 before conducting the tests\footnote{Or equivalently multiply the observed {\pvalue}s by $N$.}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Sequential Bonferroni Correction, \ie Holm--Bonferroni Correction}
+\subsection{Sequential Bonferroni Correction, \texorpdfstring{\ie}{ie} Holm--Bonferroni Correction}
 \label{hypo:bonferroni_correction:sequential}
 
 We can control $\alpha_{\text{FW}}$ more efficiently in terms of the cost imposed on $\alpha$, and hence decreased power,

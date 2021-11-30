@@ -357,8 +357,8 @@ when $p$ is the probability of success in any one trial.
 
 \begin{subequations}\label{eq:stats:binomial}
 \begin{align}
-P\left(k;\,n,p\right) &= {n \choose k}p^{k} \left(1-p\right)^{n-k}, \label{eq:stats:binomial:P} \\
-{n \choose k} &\equiv \frac{n!}{k!\left(n-k\right)!}\,. \label{eq:stats:binomial_coefficient}
+P\left(k;\,n,p\right) &= \binom{n}{k} p^{k} \left(1-p\right)^{n-k}, \label{eq:stats:binomial:P} \\
+\binom{n}{k} &\equiv \frac{n!}{k!\left(n-k\right)!}\,. \label{eq:stats:binomial_coefficient}
 \end{align}
 \end{subequations}
 
@@ -390,11 +390,11 @@ P\left(k;\,p\right) = p^{k} \left(1-p\right)^{1-k}, \quad \expval{k} = p\,, \qua
 If we are interested in the probability of
 observing $k$ successes before we observe $r$ failures,
 we can slightly modify the binomial distribution to be
-the ``negative''\footnote{Negative as in ${k+r-1 \choose k} = \left(-1\right)^{k} {-r \choose k}$.} binomial distribution:
+the ``negative''\footnote{Negative as in $\binom{k+r-1}{k} = \left(-1\right)^{k} \binom{-r}{k}$.} binomial distribution:
 
 \begin{subequations}\label{eq:stats:binomial:neg:P}
 \begin{align}
-P\left(k;\,r,p\right) = {k+r-1 \choose k} p^{k} \left(1-p\right)^{r}\,,
+P\left(k;\,r,p\right) = \binom{k+r-1}{k} p^{k} \left(1-p\right)^{r}\,,
 \end{align}
 \end{subequations}
 

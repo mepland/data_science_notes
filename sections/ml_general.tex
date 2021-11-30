@@ -218,7 +218,7 @@ By measuring the fraction of concordant pairs over all pairs we arrive at the co
 
 \begin{subequations} \label{eq:concordance}
 \begin{align}
-C &= \frac{1}{ {m \choose 2} } \sum_{i \neq j} \text{Concordance}\left(i, j\right), \label{eq:concordance:C} \\
+C &= \frac{1}{ \binom{m}{2} } \sum_{i \neq j} \text{Concordance}\left(i, j\right), \label{eq:concordance:C} \\
 &= \text{ROC AUC} = \int_{0}^{1} \text{TPR}\, \dd{\left(\text{FPR}\right)}, \label{eq:concordance:ROC_AUC} \\
 &= P\left(\hat{y}_{i} < \hat{y}_{j} \mid y_{i} < y_{j} \right), \label{eq:concordance:P} \\
 \text{Concordance}\left(i, j\right) &= \begin{dcases}
