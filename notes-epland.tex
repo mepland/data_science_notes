@@ -24,10 +24,12 @@
 \usepackage{cancel}
 \usepackage{graphicx}
 \usepackage{xcolor}
+\usepackage[TU,T1]{fontenc}
 \usepackage{textcomp} % needed to fix \mico \textmu from siunitx to work with microtype: https://tex.stackexchange.com/questions/74670/microtype-siunitx-and-micro-mysterious-warnings
 \usepackage[protrusion=true,expansion=true]{microtype} % make text flow nicely... might screw up duke dissertation template
 \usepackage{verbatim} % verbatim text and comment environment
 \usepackage{lmodern} % allowing font sizes at arbitrary sizes
+\DeclareFontShape{TU}{lmr}{bx}{sc} { <-> ssub * lmr/bx/n }{} % https://tex.stackexchange.com/questions/22240/choosing-font-for-bold-small-caps-or-any-other-particular-familyseriesshape-c]
 \usepackage{notoccite} % fixes citation numbering in captions with respect to lof & lot, see https://ctan.org/pkg/notoccite
 \usepackage[nocompress]{cite} % orders references numerically within one \cite{}, see https://tex.stackexchange.com/questions/69230/numbered-ordering-of-multiple-citations Also changes spacing after comma
 \usepackage{fnpct} % make multiple footnotes at one point look nice, https://tex.stackexchange.com/questions/28465/multiple-footnotes-at-one-point
@@ -41,7 +43,6 @@
 \usepackage{lscape} % landscape https://ctan.org/pkg/lscape
 \usepackage{moresize}
 \usepackage{listings}
-\usepackage[T1]{fontenc}
 \usepackage{fontawesome}
 
 \usepackage[top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
@@ -61,6 +62,8 @@
 \usepackage[style=base,skip=2pt,width=\textwidth]{caption} % ,font={stretch=1.3}
 \usepackage[skip=1pt]{subcaption}
 \newsavebox{\largestimage} % see https://tex.stackexchange.com/questions/239128/subcaption-vertical-alignment-of-two-images-of-different-vertical-size
+
+%\renewcommand{\GenericWarning}[2]{\GenericError{#1}{#2}{}{This warning has been turned into a fatal error.}} % crash on warnings for debugging https://stackoverflow.com/a/3277465
 
 % Don't let floats get before the subsection where they're included
 % https://tex.stackexchange.com/questions/32598/force-latex-image-to-appear-in-the-section-in-which-its-declared
