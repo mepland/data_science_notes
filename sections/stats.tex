@@ -620,9 +620,9 @@ and is primary useful for conducting {\Ftest}s such as ANOVA.
 
 The geometric distribution gives the probability of
 requiring $k$ independent Boolean trials to observe one success\footnote{With the success occurring in trial $k$.},
-as in \cref{eq:stats:geo:P_trials} and \cref{fig:dist:geometric_trials},
+\cref{eq:stats:geo:P_trials} and \cref{fig:dist:geometric_trials},
 or the probability of observing $k$ failed trials before the first success,
-as in \cref{eq:stats:geo:P_failures} and \cref{fig:dist:geometric_failures}.
+\cref{eq:stats:geo:P_failures} and \cref{fig:dist:geometric_failures}.
 As usual $p$ is the probability of success for any single trial.
 Note that $k$ is indexed differently depending on the framing of the problem.
 
@@ -648,9 +648,28 @@ Like the exponential distribution, its continuous analogue, the geometric distri
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Hypergeometric Distribution}
 \label{stats:hypergeo_dist}
-% TODO
 
-\cref{fig:dist:hypergeometric}
+The hypergeometric distribution, \cref{eq:stats:hypergeometric:P} and \cref{fig:dist:hypergeometric},
+gives the probability of obtaining $k$ ``successes'' in $n$ draws, {\em without replacement},
+from a population of size $N$ which contains $K$ successes.
+One example is getting $k$ red balls, \ie successes,
+out of $n$ draws from a bag of $K$ red and $N-K$ white balls.
+
+\begin{equation}\label{eq:stats:hypergeometric:P}
+P\left(k;\,N,K,n\right) = \frac{\binom{K}{k}\binom{N-K}{n-k}}{\binom{N}{n}}\,.
+\end{equation}
+
+The mean and standard deviation of the hypergeometric distribution are:
+
+\begin{subequations}\label{eq:stats:hypergeometric:neg:mean_variance}
+\begin{gather}
+\expval{k} = n K / N = n p, \label{eq:stats:hypergeometric:mean} \\
+\sigma^{2} = n \frac{K}{N} \frac{N-K}{N} \frac{N-n}{N-1} = n p \left(1-p\right) \frac{N-n}{N-1}\,. \label{eq:stats:hypergeometric:variance}
+\end{gather}
+\end{subequations}
+
+The hypergeometric distribution should not be confused with the geometric distribution,
+and is far more similar to the binomial distribution where $p = K/N$ and we draw with replacement.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
