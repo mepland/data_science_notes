@@ -617,9 +617,32 @@ and is primary useful for conducting {\Ftest}s such as ANOVA.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Geometric Distribution}
 \label{stats:geo_dist}
-% TODO
 
-\cref{fig:dist:geometric_trials} and \cref{fig:dist:geometric_failures}
+The geometric distribution gives the probability of
+requiring $k$ independent Boolean trials to observe one success\footnote{With the success occurring in trial $k$.},
+as in \cref{eq:stats:geo:P_trials} and \cref{fig:dist:geometric_trials},
+or the probability of observing $k$ failed trials before the first success,
+as in \cref{eq:stats:geo:P_failures} and \cref{fig:dist:geometric_failures}.
+As usual $p$ is the probability of success for any single trial.
+Note that $k$ is indexed differently depending on the framing of the problem.
+
+\begin{subequations}\label{eq:stats:geo}
+\begin{align}
+P_{\text{Trials}}\left(k;\,p\right) &= \left(1-p\right)^{k-1}\,p,\quad k \in \left\{1,2,3,\ldots\right\}, \label{eq:stats:geo:P_trials} \\
+P_{\text{Failures}}\left(k;\,p\right) &= \left(1-p\right)^{k}\,p,\quad k \in \left\{0, 1,2,3,\ldots\right\}. \label{eq:stats:geo:P_failures}
+\end{align}
+\end{subequations}
+
+The mean and standard deviation of the geometric distribution are:
+
+\begin{subequations}\label{eq:stats:geo_dist:mean_variance}
+\begin{gather}
+\expval{k}_{\text{Trials}} = \frac{1}{p}\,, \quad \expval{k}_{\text{Failures}} = \frac{1-p}{p}\,, \label{eq:stats:geo_dist:mean} \\
+\sigma^{2} = \frac{1-p}{p^{2}}\,. \label{eq:stats:geo_dist:variance}
+\end{gather}
+\end{subequations}
+
+Like the exponential distribution, its continuous analogue, the geometric distribution is memoryless \cref{eq:stats:exp:memoryless}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
