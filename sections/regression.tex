@@ -171,7 +171,7 @@ The coefficient of determination\footnote{For additional details see
 \href{https://economictheoryblog.com/2014/11/05/the-coefficient-of-determination-latex-r2/}{here},
 \href{https://economictheoryblog.com/2014/11/05/proof/}{here}, and
 \href{http://people.duke.edu/~rnau/rsquared.htm}{here}.}, $R^{2}$,
-measures how much of $\mathbf{y}$'s variation is explained by the fitted model $\hat{\mathbf{y}}$,
+measures how much of $\mathbf{y}$'s variance is explained by the fitted model $\hat{\mathbf{y}}$,
 versus by random errors $\mathbf{\epsilon}$ or other unknown sources,
 as $\mathbf{y} = \hat{\mathbf{y}} + \mathbf{\epsilon}$.
 $R^{2} \approx 1$ is ideal and, depending on the particular definition,
@@ -183,7 +183,7 @@ R^{2} = \frac{
 }{
 \sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}
 } = 1 - \frac{
-\sum_{i=1}^{m} \hat{\epsilon}_{i}^{2}
+\sum_{i=1}^{m} \hat{\epsilon}_{i}^{\,2}
 }{
 \sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}
 } = \rho_{y,\hat{y}}^{2}
@@ -194,7 +194,7 @@ fitted sample, $m-1$, and in the model, $m-n-1$, and is thus a better metric.
 
 \begin{equation}\label{eq:regression:linear:goodness_of_fit:R2_adj}
 R^{2}_{\text{adj}} = 1 - \frac{
-\left(\sum_{i=1}^{m} \hat{\epsilon}_{i}^{2}\right)/\left(m-n-1\right)
+\left(\sum_{i=1}^{m} \hat{\epsilon}_{i}^{\,2}\right)/\left(m-n-1\right)
 }{
 \left(\sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}\right)/\left(m-1\right)
 }
