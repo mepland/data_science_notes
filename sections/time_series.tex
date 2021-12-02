@@ -499,8 +499,58 @@ for just two examples.}.
 \section{Unit Roots}
 \label{time_series:unit_root}
 
-% TODO
-% https://youtu.be/ugOvehrTRRw
+A time series with $\abs{\phi} = 1$ for the leading AR coefficient
+is said to have a unit root and is non-stationary.
+More formally, we can construct the characteristic
+equation\footnote{As if we were solving a
+homogeneous linear ordinary differential equation with constant coefficients.} \cref{eq:time_series:unit_roots:characteristic}
+for a $\text{AR}\left(p\right)$ time series $y_{t}$ and look for roots $m$.
+If $m=1$ is one of the roots, the time series then has a unit root.
+
+\begin{subequations}\label{eq:time_series:unit_roots}
+\begin{gather}
+y_{t} = \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \epsilon_{t}\,, \label{eq:time_series:unit_roots:y} \\
+\implies m^{p} - \left(\, \sum_{i=1}^{p} \phi_{i}\, m^{i-1} \right) = 0. \label{eq:time_series:unit_roots:characteristic}
+\end{gather}
+\end{subequations}
+
+Time series with unit roots are non-stationary,
+as can be illustrated with the $\text{AR}\left(1\right)$ series\footnote{The expansion
+in \cref{eq:time_series:unit_root_ex:expand} is really
+$\text{AR}\left(1\right) = \text{MA}\left(\infty\right)$ \cref{eq:time_series:invert:AR_1} written out.}:
+
+\begin{subequations}\label{eq:time_series:unit_root_ex}
+\begin{align}
+y_{t}
+= \phi\, y_{t-1} + \epsilon_{t}
+&= \phi \left(\phi\, y_{t-2} + \epsilon_{t-1}\right) + \epsilon_{t}
+= \cdots
+= \phi^{t} y_{0} + \sum_{i=0}^{t-1} \phi^{i} \epsilon_{t-i}\,, \label{eq:time_series:unit_root_ex:expand} \\
+\expval{y_{t}}
+&= \phi^{t} \expval{y_{0}} + \sum_{i=0}^{t-1} \phi^{i} \expval{\epsilon_{t-i}}
+= \phi^{t} y_{0}\,, \label{eq:time_series:unit_root_ex:expval} \\
+\variance{y_{t}}
+&= \phi^{2t}\, \variance{y_{0}} + \sum_{i=0}^{t-1} \phi^{2i}\, \variance{\epsilon_{t-i}}
+= \sigma^{2} \sum_{i=0}^{t-1} \phi^{2i}. \label{eq:time_series:unit_root_ex:var}
+\end{align}
+\end{subequations}
+
+\noindent Note that we are assuming the errors only contain white noise,
+and thus are uncorrelated with constant variance $\variance{\epsilon} = \sigma^{2}$.
+When $\abs{\phi} < 1$, $\expval{y_{t}} \to 0$ and
+$\variance{y_{t}} \to \sigma^{2}/\left(1-\phi^{2}\right)$ are constant
+as $t \to \infty$, and the time series is stationary.
+When $1 < \abs{\phi}$, $\expval{y_{t}} = \phi^{t} y_{0}$
+will diverge as $t \to \infty$, and the time series is clearly non-stationary\footnote{Technically,
+the time series is an ``explosive process'', more than just non-stationary.}.
+When we have a unit root $\abs{\phi} = 1$,
+$\expval{y_{t}} = y_{0}$ is constant\footnote{Making these unit roots harder to identify visually.},
+but $\variance{y_{t}} = t \sigma^{2}$ is not constant and the time series is non-stationary.
+
+Lastly, a time series with unit roots can be made stationary through
+differencing\footnote{$d_{t} \equiv y_{t} - y_{t-1} = \epsilon_{t}$, $\expval{d_{t}} = 0$, $\variance{d_{t}} = \sigma^{2}$.}.
+In particular, if the $m=1$ unit root of the characteristic equation has multiplicity $d$,
+a $\text{I}\left(d\right)$ model will make the time series stationary.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -520,8 +570,11 @@ and construct the difference:
 \end{subequations}
 
 Now we test $H_{0}$ that $0 \leq \delta$ and the time series is
-non-stationary\footnote{As $\delta = 0 \implies \phi_{1} = 1$, \ie the time series has a unit root and is non-stationary.}
-vs the alternative hypothesis $H_{a}$ that $\delta < 0$, \ie time series is stationary.
+non-stationary\footnote{As $\delta = 0 \implies \phi_{1} = 1$,
+\ie the time series has a unit root and is non-stationary.
+Note that it is possible to have a non-stationary time series without a unit root,
+thus the ADF test is not fully comprehensive.} vs
+the alternative hypothesis $H_{a}$ that $\delta < 0$, \ie time series is stationary.
 We fit the data and then perform the hypothesis testing with test statistic
 $t_{\hat{\delta}} = \hat{\delta} / \text{Standard Error}\left(\hat{\delta}\right)$
 by comparing to the Dickey--Fuller distribution\footnote{We can not use the standard \tdist as $y_{t-1}$ is still assumed to be non-stationary under $H_{0}$.}.
