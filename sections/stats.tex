@@ -28,8 +28,8 @@ where $\mu$ and $\sigma$ are from the parent population.
 
 \begin{subequations}\label{eq:stats:var_relations}
 \begin{align}
-\sigma_{X}^{2} = \variance{X} &= \expval{\left(x-\bar{x}\right)^{2}} = \expval{X^{2}} - \expval{X}^{2} \label{eq:stats:var_relations:def} \\
-s^{2} &= \frac{1}{n-1} \sum_{j=1}^{m} \left( x_{j} - \bar{x}\right)^{2} \label{eq:stats:var_relations:sample} \\
+\sigma_{X}^{2} = \variance{X} &= \expval{\left(x-\expval{x}\right)^{2}} = \expval{X^{2}} - \expval{X}^{2} \label{eq:stats:var_relations:def} \\
+s^{2} &= \frac{1}{n-1} \sum_{j=1}^{m} \left( x_{j} - \expval{x}\right)^{2} \label{eq:stats:var_relations:sample} \\
 s_{\bar{x}} &= \frac{s}{\sqrt{n}} \label{eq:stats:var_relations:standard_error_of_mean} \\
 \variance{X+a} &= \variance{X} \label{eq:stats:var_relations:add} \\
 \variance{a X} &= a^{2} \, \variance{X} \label{eq:stats:var_relations:mult} \\
@@ -52,8 +52,8 @@ The covariance between two variables $u$ and $v$,
 
 \begin{equation}\label{eq:stats:covar}
 \begin{split}
-\sigma_{u,v}^{2} = \cov{u}{v} &= \frac{1}{m}\sum_{j=1}^{m}\left(u_{j}-\bar{u}\right)\left(v_{j}-\bar{v}\right) \\
-&= \expval{\left(u-\bar{u}\right)\left(v-\bar{v}\right)} \\
+\sigma_{u,v}^{2} = \cov{u}{v} &= \frac{1}{m}\sum_{j=1}^{m}\left(u_{j}-\expval{u}\right)\left(v_{j}-\expval{v}\right) \\
+&= \expval{\left(u-\expval{u}\right)\left(v-\expval{v}\right)} \\
 &= \expval{u v} - \expval{u}\expval{v}\,,
 \end{split}
 \end{equation}
@@ -119,7 +119,7 @@ The covariance matrix,
   \end{pmatrix}\,,
 \end{align}
 
-\noindent with elements $M_{ij} = \expval{\left(u_{i} - \bar{u}_{i}\right)\left(u_{j}-\bar{u}_{j}\right)}$
+\noindent with elements $M_{ij} = \expval{\left(u_{i} - \expval{u}_{i}\right)\left(u_{j}-\expval{u}_{j}\right)}$
 is the higher dimensional extension of the covariance.
 We can visualize the covariance between variables with
 Gaussian error ellipses given by the probability distribution
@@ -134,7 +134,7 @@ In two dimensions it is easier to see the equation of the error ellipse itself:
 \begin{equation}\label{eq:stats:P_error_ellipse_2}
 \begin{split}
 P\left(u,v\right) &= \frac{1}{2\pi\sigma_{u}\sigma_{v}}\frac{1}{\sqrt{1-\rho^{2}}}\exp\bigg\{-\frac{1}{2}\bigg[ \\
-&\frac{1}{(1-\rho)^{2}}\left(\frac{\left(u-\bar{u}\right)^{2}}{\sigma_{u}^{2}}+\frac{\left(v-\bar{v}\right)^{2}}{\sigma_{v}^{2}}-\frac{2\rho \left(u-\bar{u}\right)\left(v-\bar{v}\right)}{\sigma_{u}\sigma_{v}}\right)\bigg]\bigg\}\,.
+&\frac{1}{(1-\rho)^{2}}\left(\frac{\left(u-\expval{u}\right)^{2}}{\sigma_{u}^{2}}+\frac{\left(v-\expval{v}\right)^{2}}{\sigma_{v}^{2}}-\frac{2\rho \left(u-\expval{u}\right)\left(v-\expval{v}\right)}{\sigma_{u}\sigma_{v}}\right)\bigg]\bigg\}\,.
 \end{split}
 \end{equation}
 
