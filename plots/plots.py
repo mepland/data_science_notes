@@ -36,6 +36,7 @@ warnings.filterwarnings('ignore', message='Matplotlib is currently using module:
 ########################################################
 # set global rnd_seed for reproducability
 rnd_seed = 42
+np.random.seed(rnd_seed)
 
 
 # In[2]:
@@ -393,5 +394,99 @@ if inline:
 else:
     os.makedirs(output, exist_ok=True)
     fig.savefig(f'{output}/hypergeometric_pmf.pdf')
+    plt.close('all')
+
+
+# ***
+# # Spearman Correlation
+# Addapted from https://en.wikipedia.org/wiki/File:Spearman_fig1.svg and https://en.wikipedia.org/wiki/File:Spearman_fig3.svg
+
+# In[23]:
+
+
+fig, ax = plt.subplots()
+
+ax.tick_params(
+    axis='both',
+    which='minor',
+    bottom=False,
+    top=False,
+    left=False,
+    right=False,
+    labelleft=True,
+    labelbottom=True)
+
+rnd_state = np.random.RandomState(43)
+x = rnd_state.uniform(size=100)
+y = np.log(x/(1-x))
+y = np.sign(y)*np.abs(y)**1.4
+
+Rx = np.argsort(np.argsort(x))
+Ry = np.argsort(np.argsort(y))
+
+cs = np.cov(Rx,Ry)
+cs = cs[0,1]/np.sqrt(cs[0,0]*cs[1,1])
+
+cp = np.cov(x,y)
+cp = cp[0,1]/np.sqrt(cp[0,0]*cp[1,1])
+
+ax.plot(x, y, 'o', color='orange', markeredgecolor='black', lw=3)
+fig.suptitle(f'Spearman correlation = {cs:.2f}\nPearson correlation = {cp:.2f}')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+
+plt.tight_layout()
+if inline:
+    fig.show()
+else:
+    os.makedirs(output, exist_ok=True)
+    fig.savefig(f'{output}/spearman_corr_non_para.pdf')
+    plt.close('all')
+
+
+# In[24]:
+
+
+fig, ax = plt.subplots()
+
+ax.tick_params(
+    axis='both',
+    which='minor',
+    bottom=False,
+    top=False,
+    left=False,
+    right=False,
+    labelleft=True,
+    labelbottom=True)
+
+r = 0.8
+
+rnd_state = np.random.RandomState(0)
+x = rnd_state.normal(size=100)
+y = r*x + np.sqrt(1-r**2)*rnd_state.normal(size=100)
+
+ii = np.argsort(-x)
+x[ii[0:5]] *= 3
+
+Rx = np.argsort(np.argsort(x))
+Ry = np.argsort(np.argsort(y))
+
+cs = np.cov(Rx,Ry)
+cs = cs[0,1]/np.sqrt(cs[0,0]*cs[1,1])
+
+cp = np.cov(x,y)
+cp = cp[0,1]/np.sqrt(cp[0,0]*cp[1,1])
+
+ax.plot(x, y, 'o', color='orange', markeredgecolor='black', lw=3)
+fig.suptitle(f'Spearman correlation = {cs:.2f}\nPearson correlation = {cp:.2f}')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+
+plt.tight_layout()
+if inline:
+    fig.show()
+else:
+    os.makedirs(output, exist_ok=True)
+    fig.savefig(f'{output}/spearman_corr_outliers.pdf')
     plt.close('all')
 
