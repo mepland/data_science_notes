@@ -77,12 +77,12 @@ It is helpful to remember the following covariance relations:
 
 The Pearson correlation coefficient,
 
-\begin{equation}\label{eq:stats:corr}
+\begin{equation}\label{eq:stats:corr:pearson}
 \rho_{u,v} = \corr{u}{v} = \frac{\sigma_{u,v}^{2}}{\sigma_{u}\sigma_{v}} = \frac{\cov{u}{v}}{\sigma_{u}\sigma_{v}}\,,
 \end{equation}
 
 \noindent is a convenient dimensionless version, normalized to $-1 \leq \rho \leq 1$.
-Example distributions can be found in \cref{fig:stats:corr_ex}.
+Example distributions can be found in \cref{fig:stats:corr_ex:pearson}.
 
 \begin{figure}
 \centering
@@ -94,15 +94,53 @@ correlated ($\rho \approx 1$),
 and anticorrelated ($\rho \approx -1$)
 variables $u$ and $v$ \cite{DougNotes}.
 }
-\label{fig:stats:corr_ex}
+\label{fig:stats:corr_ex:pearson}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Spearman Correlation}
 \label{stats:corr_covar:spearman}
 
-% TODO
-% Spearman's rank correlation coefficient
+The Spearman rank correlation coefficient $r_{s}$ \cref{eq:stats:corr:spearman} is a non-parametric measure
+used to quantify how well two variables are monotonically related,
+\ie measure the degree of rank ordering between two variables across the available data points.
+In contrast to the Pearson correlation coefficient,
+a linear relationship between the variables is not assumed,
+only that they increase or decrease in a consistent manner.
+The Spearman correlation is simply the Pearson correlation of the variable's ranks,
+where the rank function $R\left(x_{i}\right)$ returns the order,
+$1, 2, 3, \ldots, m$, of a data point $x_{i}$ after being sorted\footnote{Ties
+can be handled via dense ranking $1,2,2,3$, fractional ranking $1,2.5,2.5,4$, or arbitrarily broken with ordinal ranking $1,2,3,4$, \ie row numbering.}.
+A comparison to the Pearson correlation coefficient can be found in \cref{fig:stats:corr_ex:spearman}.
+
+\begin{equation}\label{eq:stats:corr:spearman}
+r_{s} = \rho_{R\left(u\right),R\left(v\right)} = \frac{\cov{R\left(u\right)}{R\left(v\right)}}{\sigma_{R\left(u\right)}\sigma_{R\left(v\right)}}\,.
+\end{equation}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+    \includegraphics[width=\textwidth]{figures/stats/spearman_corr_non_para}
+  \caption{Non-Parametric}
+  \label{fig:stats:corr_ex:spearman:non_para}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+    \includegraphics[width=\textwidth]{figures/stats/spearman_corr_outliers}
+  \caption{Outliers}
+  \label{fig:stats:corr_ex:spearman:outliers}
+  \end{subfigure}
+\caption{
+Comparisons of the Spearman rank correlation and Pearson correlation coefficients,
+adapted from
+\href{https://en.wikipedia.org/wiki/File:Spearman_fig1.svg}{Skbkekas} and
+\href{https://en.wikipedia.org/wiki/File:Spearman_fig3.svg}{Skbkekas}.
+Note that non-parametric Spearman rank correlation
+only measures the monotonic nature of the data, not its linearity,
+and is more resilliant to outliers.
+\label{fig:stats:corr_ex:spearman}
+}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Covariance Matrix}
