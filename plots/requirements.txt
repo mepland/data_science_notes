@@ -1,5 +1,7 @@
 jupyterlab
+pandas
 numpy
 matplotlib
 xgboost
 scikit-learn
+bisect

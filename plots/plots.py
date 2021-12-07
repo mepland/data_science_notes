@@ -11,9 +11,11 @@ get_ipython().run_line_magic('autoreload', '2')
 
 ########################################################
 # python
+import pandas as pd
 import numpy as np
 import scipy.stats
 norm = scipy.stats.norm
+import bisect
 
 ########################################################
 # xgboost, sklearn
@@ -96,10 +98,10 @@ params_bad = {'max_depth': 2, 'learning_rate': 1.0, 'gamma': 0.0, 'reg_alpha': 0
 
 
 fixed_setup_params = {
-'max_num_boost_rounds': 500, # maximum number of boosting rounds to run / trees to create
-'xgb_objective': 'binary:logistic', # objective function for binary classification
-'xgb_verbosity': 0, #  The degree of verbosity. Valid values are 0 (silent) - 3 (debug).
-'xgb_n_jobs': -1, # Number of parallel threads used to run XGBoost. -1 makes use of all cores in your system
+    'max_num_boost_rounds': 500, # maximum number of boosting rounds to run / trees to create
+    'xgb_objective': 'binary:logistic', # objective function for binary classification
+    'xgb_verbosity': 0, #  The degree of verbosity. Valid values are 0 (silent) - 3 (debug).
+    'xgb_n_jobs': -1, # Number of parallel threads used to run XGBoost. -1 makes use of all cores in your system
 }
 
 
@@ -144,23 +146,34 @@ model_bad.fit(X_train, y_train, **fixed_fit_params);
 # In[12]:
 
 
-y_holdout_pred_default = model_default.predict_proba(X_holdout, iteration_range=(0, model_default.best_iteration+1))[:,1]
-fpr_default, tpr_default, thr_default = roc_curve(y_holdout, y_holdout_pred_default)
-precision_default, recall_default, thr2_default = precision_recall_curve(y_holdout, y_holdout_pred_default)
+def eval_model(model, X, y):
+    y_pred = model.predict_proba(X, iteration_range=(0, model.best_iteration+1))[:,1]
+    y_pred_sorted = sorted(y_pred)
 
-y_holdout_pred_bad = model_bad.predict_proba(X_holdout, iteration_range=(0, model_bad.best_iteration+1))[:,1]
-fpr_bad, tpr_bad, thr_bad = roc_curve(y_holdout, y_holdout_pred_bad)
-precision_bad, recall_bad, thr2_bad = precision_recall_curve(y_holdout, y_holdout_pred_bad)
+    fpr, tpr, thr_of_fpr_tpr = roc_curve(y, y_pred)
+    n_predicted_positive_of_fpr_tpr = [len(y_pred_sorted) - bisect.bisect_left(y_pred_sorted, _thr) for _thr in thr_of_fpr_tpr]
+    dfp_eval_fpr_tpr = pd.DataFrame({'fpr': fpr, 'tpr': tpr, 'thr': thr_of_fpr_tpr, 'n_predicted_positive': n_predicted_positive_of_fpr_tpr})
+    dfp_eval_fpr_tpr = dfp_eval_fpr_tpr.sort_values(by='thr').reset_index(drop=True)
 
-models_for_roc= [
-    {'name': 'model_1', 'nname': 'Model 1', 'fpr': fpr_default, 'tpr': tpr_default,
-     'pre': precision_default, 'rec':recall_default, 'c': 'C2', 'ls': '-'},
-    {'name': 'model_2', 'nname': 'Model 2', 'fpr': fpr_bad, 'tpr': tpr_bad,
-     'pre': precision_bad, 'rec':recall_bad, 'c': 'black', 'ls': '--'},
-]
+    precision, recall, thr_of_precision_recall = precision_recall_curve(y, y_pred)
+    thr_of_precision_recall = np.insert(thr_of_precision_recall, 0, [0])
+    n_predicted_positive_of_precision_recall = [len(y_pred_sorted) - bisect.bisect_left(y_pred_sorted, _thr) for _thr in thr_of_precision_recall]
+    dfp_eval_precision_recall = pd.DataFrame({'precision': precision, 'recall': recall, 'thr': thr_of_precision_recall, 'n_predicted_positive': n_predicted_positive_of_precision_recall})
+    dfp_eval_precision_recall['f1'] = 2*(dfp_eval_precision_recall['precision'] * dfp_eval_precision_recall['recall']) / (dfp_eval_precision_recall['precision'] + dfp_eval_precision_recall['recall'])
+
+    return {'dfp_eval_fpr_tpr': dfp_eval_fpr_tpr, 'dfp_eval_precision_recall': dfp_eval_precision_recall}
 
 
 # In[13]:
+
+
+models_for_roc= [
+    {**{'name': 'model_1', 'nname': 'Model 1', 'c': 'C2', 'ls': '-'}, **eval_model(model_default, X_holdout, y_holdout)},
+    {**{'name': 'model_2', 'nname': 'Model 2', 'c': 'black', 'ls': '--'}, **eval_model(model_bad, X_holdout, y_holdout)},
+]
+
+
+# In[14]:
 
 
 pop_PPV = len(np.where(y_holdout == 1)[0]) / len(y_holdout) # P / (P + N)
@@ -168,44 +181,68 @@ pop_PPV = len(np.where(y_holdout == 1)[0]) / len(y_holdout) # P / (P + N)
 
 # ### Standard TPR vs FPR ROC
 
-# In[14]:
+# In[15]:
 
 
-plot_rocs(models_for_roc, m_path=output, rndGuess=True, inverse_log=False, inline=inline)
+plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=True, inverse_log=False, inline=inline)
 
 
 # #### Inverse Log TPR vs FPR ROC
 
-# In[15]:
+# In[16]:
 
 
-plot_rocs(models_for_roc, m_path=output, rndGuess=True, inverse_log=True,
-          x_axis_params={'max': 0.6}, y_axis_params={'min': 1e0, 'max': 1e1}, inline=inline)
+plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=True, inverse_log=True,
+    x_axis_params={'max': 0.6}, y_axis_params={'min': 1e0, 'max': 1e1}, inline=inline)
 
 
 # ### Precision vs Recall ROC
 
-# In[16]:
+# In[17]:
 
 
-plot_rocs(models_for_roc, m_path=output, rndGuess=True, inverse_log=False, precision_recall=True, pop_PPV=pop_PPV,
-          y_axis_params={'min': 0.0}, inline=inline)
+plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=True, inverse_log=False, precision_recall=True,
+    pop_PPV=pop_PPV, y_axis_params={'min': -0.05}, inline=inline)
 
 
 # #### Inverse Log Precision vs Recall ROC
 
-# In[17]:
+# In[18]:
 
 
-plot_rocs(models_for_roc, m_path=output, rndGuess=False, inverse_log=True, precision_recall=True, pop_PPV=pop_PPV, inline=inline)
+plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=False, inverse_log=True, precision_recall=True, pop_PPV=pop_PPV, inline=inline)
 
 
-# ### Precision vs Recall ROC with F1 and TP + FP TODO
+# ### Precision vs Recall ROC with Additional Plots
+
+# In[19]:
+
+
+plot_rocs(models_for_roc[:1], m_path=f'{output}/roc_curves', tag='_f1', rndGuess=True, inverse_log=False, precision_recall=True, pop_PPV=pop_PPV,
+    y_axis_params={'min': -0.05}, inline=inline, better_ann=False,
+    plot_f1=True, plot_n_predicted_positive=False)
+
+
+# In[20]:
+
+
+plot_rocs(models_for_roc[:1], m_path=f'{output}/roc_curves', tag='_n_pos', rndGuess=True, inverse_log=False, precision_recall=True, pop_PPV=pop_PPV,
+    y_axis_params={'min': -0.05}, inline=inline, better_ann=False,
+    plot_f1=False, plot_n_predicted_positive=True)
+
+
+# In[21]:
+
+
+plot_rocs(models_for_roc[:1], m_path=f'{output}/roc_curves', tag='_f1_n_pos', rndGuess=True, inverse_log=False, precision_recall=True, pop_PPV=pop_PPV,
+    y_axis_params={'min': -0.05}, inline=inline, better_ann=False,
+    plot_f1=True, plot_n_predicted_positive=True)
+
 
 # ***
 # # Hypothesis Testing Power Example
 
-# In[18]:
+# In[22]:
 
 
 Z_a = norm.ppf(1-0.05) + np.sqrt(100)*(10-10.5)/2
@@ -217,7 +254,7 @@ print(f'Power = 1-beta = {1-norm.cdf(Z_a):.4f}')
 # # inverse_transform_sampling_normal_dist
 # Adapted from https://commons.wikimedia.org/wiki/File:Inverse_transform_sampling.png
 
-# In[19]:
+# In[23]:
 
 
 norm = scipy.stats.norm
@@ -243,20 +280,20 @@ ax.yaxis.set_ticks(np.arange(-2, 3, 1))
 
 plt.text(-0.5, -0.5, 'Invert', size=12, rotation=-45, horizontalalignment='center', verticalalignment='center', bbox=dict(edgecolor='white', facecolor='white', alpha=1))
 
-dx = 0/72.; dy = -5/72. 
+dx = 0/72.; dy = -5/72.
 offsetx = matplotlib.transforms.ScaledTranslation(dx, dy, fig.dpi_scale_trans)
 offsety = matplotlib.transforms.ScaledTranslation(dy, dx, fig.dpi_scale_trans)
 for label in ax.xaxis.get_majorticklabels():
     label.set_transform(label.get_transform() + offsetx)
 for label in ax.yaxis.get_majorticklabels():
     label.set_transform(label.get_transform() + offsety)
-    
+
 leg = ax.legend(loc='upper left',frameon=False)
 leg.get_frame().set_facecolor('none')
 
 plt.tight_layout()
 if inline:
-    fig.show()      
+    fig.show()
 else:
     os.makedirs(output, exist_ok=True)
     fig.savefig(f'{output}/inverse_transform_sampling_normal_dist.pdf')
@@ -267,7 +304,7 @@ else:
 # # rejection_sampling
 # Adapted from https://www.data-blogger.com/2016/01/24/the-mathematics-behind-rejection-sampling/
 
-# In[20]:
+# In[24]:
 
 
 # The multiplication constant to make our probability estimation fit
@@ -292,18 +329,13 @@ u = np.random.uniform(0, 1, (N, ))
 samples = [(x_samples[i], u[i] * M * g(x_samples[i])) for i in range(N) if u[i] < f(x_samples[i]) / (M * g(x_samples[i]))]
 
 
-# In[21]:
+# In[25]:
 
 
 fig, ax = plt.subplots()
-# ax.set_aspect('equal')
-# ax.axhline(y=0, color='k', lw=1)
-# ax.axvline(x=0, color='k', lw=1)
 
 ax.set_xlim([0.,1.])
 ax.set_ylim([0.,6.5])
-# ax.axis('off')
-# ax.set_xlabel('$x$', labelpad=7)
 
 ax.tick_params(
     axis='both',
@@ -315,9 +347,6 @@ ax.tick_params(
     labelleft=False,
     labelbottom=False)
 
-# ax.xaxis.set_ticks(np.arange(-2, 3, 1))
-# ax.yaxis.set_ticks(np.arange(-2, 3, 1))
-
 x = np.linspace(0, 1, 500)
 
 ax.plot(x, f(x), '-', label='$f(x)$')
@@ -325,14 +354,6 @@ ax.plot(x, M * g(x), '-', label='$M \cdot g(x)$')
 
 ax.plot([sample[0] for sample in samples], [sample[1] for sample in samples], '.', label='Samples')
 
-# dx = 0/72.; dy = -5/72. 
-# offsetx = matplotlib.transforms.ScaledTranslation(dx, dy, fig.dpi_scale_trans)
-# offsety = matplotlib.transforms.ScaledTranslation(dy, dx, fig.dpi_scale_trans)
-# for label in ax.xaxis.get_majorticklabels():
-#     label.set_transform(label.get_transform() + offsetx)
-# for label in ax.yaxis.get_majorticklabels():
-#     label.set_transform(label.get_transform() + offsety)
-    
 leg = ax.legend(loc='upper right',frameon=False)
 leg.get_frame().set_facecolor('none')
 
@@ -349,7 +370,7 @@ else:
 # # Hypergeometric PMF
 # Adapted from https://en.wikipedia.org/wiki/File:HypergeometricPDF.png and https://en.wikipedia.org/wiki/File:Geometric_pmf.svg
 
-# In[22]:
+# In[26]:
 
 
 fig, ax = plt.subplots()
@@ -401,7 +422,7 @@ else:
 # # Spearman Correlation
 # Addapted from https://en.wikipedia.org/wiki/File:Spearman_fig1.svg and https://en.wikipedia.org/wiki/File:Spearman_fig3.svg
 
-# In[23]:
+# In[27]:
 
 
 fig, ax = plt.subplots()
@@ -444,7 +465,7 @@ else:
     plt.close('all')
 
 
-# In[24]:
+# In[28]:
 
 
 fig, ax = plt.subplots()
