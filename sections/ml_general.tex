@@ -181,13 +181,13 @@ F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}
 \begin{figure}[H]
 \centering
   \begin{subfigure}[c]{0.48\textwidth}\centering
-  \includegraphics[width=\textwidth,trim={0.18cm 0.3cm 0.18cm 0.3cm},clip]{figures/ml/roc_curves/roc}% trim={<left> <lower> <right> <upper>}
+  \includegraphics[width=\textwidth,trim={0.18cm 0.3cm 0.18cm 0.3cm},clip]{figures/ml/roc_curves/roc_model_1_model_2}% trim={<left> <lower> <right> <upper>}
   \caption{TPR vs FPR}
   \label{fig:ml:roc:standard}
   \end{subfigure}
   ~
   \begin{subfigure}[c]{0.48\textwidth}\centering
-  \includegraphics[width=\textwidth,trim={0.18cm 0.3cm 0.18cm 0.3cm},clip]{figures/ml/roc_curves/roc_precision_recall}% trim={<left> <lower> <right> <upper>}
+  \includegraphics[width=\textwidth,trim={0.18cm 0.3cm 0.18cm 0.3cm},clip]{figures/ml/roc_curves/roc_precision_recall_model_1_model_2}% trim={<left> <lower> <right> <upper>}
   \caption{Precision vs Recall}
   \label{fig:ml:roc:precision_recall}
   \end{subfigure}
@@ -198,6 +198,17 @@ The random guess line in the precision vs recall plot is set by the class balanc
 in this case the training set contained \SI{34}{\percent} signal.
 }
 \label{fig:ml:roc}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth,trim={0.18cm 0.3cm 0.18cm 0.3cm}]{figures/ml/roc_curves/roc_precision_recall_model_1_f1_n_pos}% trim={<left> <lower> <right> <upper>}
+\caption{
+Additional information, such as the $F_{1}$ score and number of predicted positive members,
+can be plotted as a function of recall on a single ROC plot,
+at the cost of potentially making the plot harder to read.
+}
+\label{fig:ml:roc:precision_recall:extended}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -484,8 +495,8 @@ and is more stable, \ie less dependent on the particular training data.
 % TODO ref in text \cref{fig:ml_general:early_stopping}
 
 \begin{figure}[H]
-\centering
-\includegraphics[width=0.8\textwidth]{figures/ml/test_train_err_curves}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/ml/test_train_err_curves}
 \caption{
 Illustrated effects of increasing model complexity on the error rates for the test and train sets \cite{HastieTF09}.
 Early stopping would halt the training process when the test (or better yet, validation) set error stops decreasing.
@@ -502,8 +513,8 @@ This is also another example of the bias-variance tradeoff in action.
 % TODO ref in text \cref{fig:enough_training_data}
 
 \begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{figures/ml/acc_vs_m}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/ml/acc_vs_m}
 \caption{
 Illustration of the decrease in classification error rate
 with larger sets of training data \cite{HastieTF09}.
