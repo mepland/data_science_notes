@@ -143,7 +143,8 @@ p_{e} &= \frac{1}{N^{2}} \sum_{k} n_{k1} n_{k2} \label{eq:cohens_kappa:pe}
 \label{ml_general:eval:other_scores}
 
 The accuracy (ACC), the proportion of correct predictions, is a natural metric for measuring a classifiers performance.
-Various $F$-scores, such as $F_{1}$ and $F_{\beta}$, combine precision and recall into one metric\footnote{Note that $F_{\beta}$ does not depend on TN at all, a potential shortcoming.}.
+Various $F$-scores, such as $F_{1}$ and $F_{\beta}$, combine precision and recall
+into one metric\footnote{Note that $F_{\beta}$ does not depend on TN at all, a benefit with imbalanced classes.}.
 $F_{1}$ balances precision and recall equally, and is their harmonic mean,
 while $F_{\beta}$ uses $\beta$ to assign different weights to each\footnote{$F_{2}$ weights recall over precision, $F_{0.5}$ weights precision over recall.}.
 
@@ -166,19 +167,31 @@ F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Multi-Class Extensions}
-\label{ml_general:eval:multi_class}
-% TODO
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Receiver Operating Characteristic (ROC) and Precision-Recall Curves}
 \label{ml_general:eval:ROC}
-% TODO
 
-% Receiver Operating Characteristic (ROC) and Area Under Curve (AUC)
-% \cref{fig:ml:roc}, \cite{Fawcett2006861}
+When working with a binary classifier that returns predictions as probabilities, $\hat{y} = P\left(\text{Positive}\right)$,
+we eventually need to select a decision threshold to divide the positive and negative classes,
+see \cref{ml_general:decision_threshold} for more.
+Any chosen threshold will represent a tradeoff between the TPR and FPR,
+\eg a threshold of $\num{0}$ ($\num{1}$) would only produce positive (negative) predictions.
+We can construct a receiver operating characteristic\footnote{The method and name originated in the context of radar receiver operators in WWII.} (ROC) curve
+of the TPR and FPR values at different operating thresholds to visualize this tradeoff \cite{Fawcett2006861}.
+ROC curves are particularly useful when comparing multiple classifiers
+as their relative performance can be observed across all operating points,
+see \cref{fig:ml:roc:standard} for one example with toy classifiers.
+The integrated area under the curve (AUC) is a convenient performance metric for reducing the comparison to a single dimension.
 
-\begin{figure}[H]
+We can also plot the precision and recall as a function of decision threshold to produce a similar precision-recall curve,
+see \cref{fig:ml:roc:precision_recall} for an example with the same toy classifiers.
+A precision-recall curve can be more useful than a ROC curve when working with a large class imbalance \cite{10.1371/journal.pone.0118432}.
+As precision is not a function of TN, unlike the FPR, the precision-recall curve is only dependent on TP, via recall,
+instead of both TP and TN, \ie the class balance.
+Lastly, we can add additional metrics to a precision-recall curve,
+such as the $F_{1}$ score or the number of predicted positives as in \cref{fig:ml:roc:precision_recall:extended},
+when they would help further illustrate the classifier's performance.
+
+\begin{figure}
 \centering
   \begin{subfigure}[c]{0.48\textwidth}\centering
   \includegraphics[width=\textwidth,trim={0.18cm 0.3cm 0.18cm 0.3cm},clip]{figures/ml/roc_curves/roc_model_1_model_2}% trim={<left> <lower> <right> <upper>}
@@ -192,10 +205,10 @@ F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}
   \label{fig:ml:roc:precision_recall}
   \end{subfigure}
 \caption{
-Example ROC curves, generated \href{https://github.com/mepland/data_science_notes/blob/main/plots/plots.ipynb}{here}.
-Note that model $1$ in solid green outperforms model $2$ when looking at TPR vs FPR and precision vs recall.
-The random guess line in the precision vs recall plot is set by the class balance,
-in this case the training set contained \SI{34}{\percent} signal.
+Example ROC and precision-recall curves, generated \href{https://github.com/mepland/data_science_notes/blob/main/plots/plots.ipynb}{here}.
+Note that model $1$ in solid green outperforms model $2$ when looking at both TPR vs FPR and precision vs recall.
+The random guess line in the precision-recall plot is set by the class balance,
+in this case the training set contained \SI{34}{\percent} positive examples.
 }
 \label{fig:ml:roc}
 \end{figure}
@@ -204,9 +217,9 @@ in this case the training set contained \SI{34}{\percent} signal.
   \centering
   \includegraphics[width=0.7\textwidth,trim={0.18cm 0.3cm 0.18cm 0.3cm}]{figures/ml/roc_curves/roc_precision_recall_model_1_f1_n_pos}% trim={<left> <lower> <right> <upper>}
 \caption{
-Additional information, such as the $F_{1}$ score and number of predicted positive members,
-can be plotted as a function of recall on a single ROC plot,
-at the cost of potentially making the plot harder to read.
+Additional information, such as the $F_{1}$ score and number of predicted positives,
+can be plotted as a function of recall on a single precision-recall plot,
+at the cost of potentially making it harder to read.
 }
 \label{fig:ml:roc:precision_recall:extended}
 \end{figure}
@@ -244,7 +257,13 @@ with $0.5$ being equivalent to random guessing and $1$ representing ideal perfor
 The ROC AUC\footnote{The ROC curve should have TPR on the vertical axis and FPR on the horizontal axis as in \cref{fig:ml:roc:standard}.} and $C$-statistic are equivalent for
 binary classification\footnote{The model must be setup such that the $y=1$ class receives the higher $\hat{y}$ prediction.},
 both representing the probability that
-the model will rank a randomly chosen $y=1$ observation above a randomly chosen $y=0$ observation \cite{Fawcett2006861}.
+the model will rank a randomly chosen $y=1$ observation above a randomly chosen $y=0$ observation \cite{Hand2001,Fawcett2006861}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Multi-Class Extensions}
+\label{ml_general:eval:multi_class}
+% TODO Multi-Class ROC AUC extensions \cite{Hand2001}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Akaike Information Criterion (AIC)}
@@ -263,9 +282,10 @@ the model will rank a randomly chosen $y=1$ observation above a randomly chosen 
 
 % include \cref to significance section, if eventually added
 
-In physics we may try to maximize the significance $Z$ of a classifier\footnote{And or
-work with the \href{https://en.wikipedia.org/wiki/Neyman\%E2\%80\%93Pearson\_lemma}{Neyman-Pearson framework}.} by
-picking an optimal point along the ROC curve to set the decision threshold.
+In physics we may try to maximize the significance $Z$ of a classifier\footnote{In practice,
+particle physicists work with the \href{https://en.wikipedia.org/wiki/Neyman\%E2\%80\%93Pearson\_lemma}{Neyman-Pearson framework}
+to construct likelihood-ratio based tests specific to an analysis, and then optimize that significance.} by
+picking an optimal point along the ROC or precision-recall curve to set the decision threshold.
 However in data science it is often better to create a payoff matrix of the anticipated
 benefits associated with a TP or TN, and costs associated with a FP or FN,
 for the particular business case at hand.
@@ -555,7 +575,7 @@ Ideally the curve should reach a clear asymptote before the maximum $m$ is used.
 \subsection{Binary Logistic}
 \label{ml_general:loss_func:binary_logistic}
 
-In two class, signal $y=1$ and background $y=0$, classification problems the binary logistic function is an appropriate choice of $L$:
+In two class, positive $y=1$ and negative $y=0$, classification problems the binary logistic function is an appropriate choice of $L$:
 
 \begin{equation} \label{eq:binary_logistic}
 L = \sum_{j=1}^{m} \left[y_{j} \ln\left(1 + \exp(-\yhat_{j})\right) +\left(1-y_{j}\right) \ln\left(1 + \exp(\yhat_{j})\right)\right].
