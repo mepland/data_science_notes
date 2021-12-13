@@ -40,7 +40,12 @@ and $\mathbf{y}$, $\bm{\epsilon}$ are $m \times 1$.
 \subsection{Derivation}
 \label{regression:linear:derivation}
 
-The ordinary least squares (OLS) estimate of the parameters $\hat{\bm{\beta}}$
+The ordinary least squares (OLS) estimate\footnote{When
+the errors are assumed to be normal,
+as in \cref{item:regression:linear:exogeneity,item:regression:linear:spherical,item:regression:linear:normality},
+OLS is equivalent to the maximum likelihood estimation (MLE) approach of \cref{opt:MLE}.
+See one derivation \href{https://machinelearningmastery.com/linear-regression-with-maximum-likelihood-estimation/}{here}.} of
+the parameters $\hat{\bm{\beta}}$
 can be found by minimizing the squares of the errors,
 \ie the objective function $S\left(\bm{\beta}\right) = \norm{\bm{\epsilon}}^{2}$:
 
