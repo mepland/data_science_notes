@@ -436,13 +436,6 @@ between the predictions and observed values:
 \end{subequations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{AIC, BIC}
-\label{time_series:AIC_BIC}
-% TODO
-
-% https://youtu.be/McEN54l3EPU
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Granger Causality}
 \label{time_series:granger_causality}
@@ -480,6 +473,7 @@ for working with time series data more explicit:
   \begin{enumerate}[noitemsep]
     \item Use the Ljung--Box test for white noise on the residuals.\label{item:time_series:box_jenkins:verify:Ljung_Box}
     \item Measure performance with RMSE and MAPE.\label{item:time_series:box_jenkins:verify:RMSE_MAPE}
+    \item Measure the relative performance of multiple models with AIC and BIC.\label{item:time_series:box_jenkins:verify:AIC_BIC}
   \end{enumerate}
   \item Invert any cleaning steps to return to the original units of $y_{t}$ for predictions.\label{item:time_series:box_jenkins:invert}
 \end{enumerate}
