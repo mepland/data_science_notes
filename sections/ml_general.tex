@@ -268,12 +268,96 @@ the model will rank a randomly chosen $y=1$ observation above a randomly chosen 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Akaike Information Criterion (AIC)}
 \label{ml_general:eval:AIC}
-% TODO
+
+The Akaike information criterion (AIC) \cite{1100705}
+is a metric for comparing the performance of multiple models,
+balancing their raw performance against their complexity.
+It was derived from information theory underpinnings by Akaike,
+and estimates the information lost, \ie underfitting,
+by a model when compared to the true model, \ie reality.
+The performance of the model is captured in a
+log-likelihood term, $\log\left(\hat{L}\right)$,
+where $\hat{L}$ is the maximum value of the model's likelihood function.
+The model's complexity is incorporated via $k$, the number of parameters in the model\footnote{Including parameters of the assumed errors,
+\eg \iid normal errors with a mean of 0 would still contribute 1 parameter from the unknown variance, per dimension.}.
+The AIC is then:
+
+\begin{equation} \label{eq:AIC}
+\text{AIC} = 2k - 2\log\left(\hat{L}\right).
+\end{equation}
+
+When computing the AIC for multiple models,
+the best performing model will tend to have the lowest AIC.
+Note that AIC is a relative measure;
+a low AIC does not guarantee good absolute model performance.
+Differences in AIC can be interpreted via the relative likelihood,
+$\exp\left(\left(\text{AIC}_{\text{min}} - \text{AIC}_{i}\right)/2\right)$,
+which is proportional to the probability that model $i$ minimizes the information loss.
+For example, $\exp\left(\left(100 - 110\right)/2\right) = \num{0.007}$ implies that
+a model with $\text{AIC} = 110$ is only $\num{0.007}$ times as probable
+to minimize the information loss as a $\text{AIC}_{\text{min}} = 100$ model.
+
+The AIC is only asymptotically valid,
+and model specific $\order{k^{2}}$ corrections may be needed
+if the training set size $n$ is small compared to $k$.
+For example, the AIC with corrections (AICc) for a linear,
+univariate model with normally distributed residuals, \ie linear regression, is:
+
+\begin{equation} \label{eq:AICc}
+\text{AICc} = \text{AIC} + \frac{2k^{2}+2k}{n-k-1}.
+\end{equation}
+
+Lastly, as the AIC compares multiple statistical models in a general way,
+it can be used as a theoretical basis for hypothesis testing, and statistics in general,
+grounded in information theory rather than the frequentist or Bayesian frameworks.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Bayesian Information Criterion (BIC)}
 \label{ml_general:eval:BIC}
-% TODO
+The Bayesian information criterion (BIC) \cite{10.1214/aos/1176344136}
+is very similar to the AIC, but derived within the Bayesian framework.
+It assumes a uniform prior\footnote{The AIC can be derived from a different prior \cite{doi:10.1177/0049124104268644},
+but can also be formulated independently of any Bayesian framework.} over the models being considered,
+leading to a larger model complexity term \cite{1311138} of
+$k\ln\left(n\right)$, where $n$ is the size of training set:
+
+\begin{equation} \label{eq:BIC}
+\text{BIC} = k\ln\left(n\right) - 2\log\left(\hat{L}\right).
+\end{equation}
+
+Again, the BIC is both a relative measure of performance,
+with lower BIC values being better,
+and an approximate measure, valid when $k \ll n$.
+When a model's residuals are independent and identically distributed (\iid) normal random variables,
+and $\pdv*{\log\left(\hat{L}\right)}{\left(\text{true variance}\right)} = 0$,
+the BIC simplifies \cite{priestley1981spectral} to
+
+\begin{subequations} \label{eq:BIC_gaus_errors}
+\begin{align}
+\text{BIC} &= k\ln\left(n\right) + n \ln\left(\hat{\sigma}_{e}^{2}\right) + C\left(n\right), \label{eq:BIC_gaus_errors:BIC} \\
+\hat{\sigma}_{e}^{2} &= \frac{1}{n} \sum_{i=1}^{n} \left(x_{i} - \hat{x}_{i}\right)^{2} = \frac{1}{n} \text{RSS}, \label{eq:BIC_gaus_errors:RSS}
+\end{align}
+\end{subequations}
+
+\noindent where RSS is the residual sum of squares,
+commonly used in ordinary least squares (OLS) regression,
+and $C\left(n\right)$ is a function of $n$ alone\footnote{This term
+likely absorbs the error's variance parameter from where it should appear in $k$.}, independent of the model.
+
+\subsubsection{AIC and BIC Comparisons}
+\label{ml_general:eval:BIC_comp_AIC}
+
+In the limit $n \to \infty$ the BIC is guaranteed to select the true model,
+if the true model is in the set of models under consideration,
+which is not guaranteed with the AIC.
+However, we commonly do not have the true model in our set of possible models,
+and $n$ may be small in comparison to $k$.
+In these cases, the AIC can select a better model than BIC
+\cite{1311138,doi:10.1177/0049124104268644,Vrieze_2012,8498082}.
+In practice these differences do not have a large impact;
+as both the AIC and BIC are readily provided by statistical software
+they can both be used to pick a few leading models
+for a final comparison on absolute performance.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
