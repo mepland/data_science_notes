@@ -437,12 +437,6 @@ between the predictions and observed values:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Granger Causality}
-\label{time_series:granger_causality}
-% TODO
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Box--Jenkins Method (Expanded)}
 \label{time_series:box_jenkins}
 
@@ -599,6 +593,43 @@ Note that if we are performing the Ljung--Box test on the remainders of a fitted
 we must adjust the degrees of freedom accordingly, $\nu = h - p - d - q$.
 The Ljung--Box test can be performed with the \texttt{acorr\_ljungbox}
 \href{https://www.statsmodels.org/stable/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html}{function}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Granger Causality}
+\label{time_series:granger_causality}
+
+When one time series, $x_{t}$, appears to
+predict the behavior of another time series, $y_{t}$,
+we can test for Granger causality \cite{10.2307/1912791}.
+We begin by constructing two $\text{AR}\left(p\right)$ models:
+
+\begin{subequations}\label{eq:time_series:granger_causality}
+\begin{align}
+\text{AR}_{y}\left(p_{y}\right) &= \phi_{y}\left(L,p_{y}\right) y_{t} + \epsilon_{t}\,, \label{eq:time_series:granger_causality:y} \\
+\text{AR}_{y,x}\left(p_{y}, p_{x}\right) &= \phi_{y}\left(L,p_{y}\right) y_{t} + \phi_{x}\left(L,p_{x}\right) x_{t} + \epsilon_{t}\,, \label{eq:time_series:granger_causality:yx}
+\end{align}
+\end{subequations}
+
+\noindent where $\text{AR}_{y}$ is only a function of the $y_{t}$ time series,
+and $\text{AR}_{y,x}$ is a function of both the $y_{t}$ and $x_{t}$ time series.
+For both models we test the $\phi$ coefficients for significance\footnote{The
+individual coefficient significances are determined via \ttest methods,
+while a \Ftest of lack-of-fit sum of squares, \cref{hypo:F_test_fit},
+is used to test the model fit as a whole.} individually,
+removing any non-significant lags, and collectively for the whole model.
+After this process, if $\text{AR}_{y,x}$ still contains $x_{t}$ terms
+and is found to fit $y$ better than $\text{AR}_{y}$,
+we can say that $x_{t}$ Granger-causes $y_{t}$.
+More formally, the null hypothesis $H_{0}$ that $x_{t}$ does not Granger-cause $y_{t}$,
+is accepted if and only if all $\phi_{x}$ terms have been removed from the final model.
+
+A confirmation of Granger causality does not imply ``true causality'' in the general sense,
+it is merely a statement that a linear model of $x_{t}$ forecasts, or predicts, $y_{t}$.
+For example, there maybe latent confounding effects behind both $x_{t}$ and $y_{t}$
+which would require a more sophisticated analysis to detect or rule out.
+Even with this limited causal interpretation,
+there are still challenges \cite{GRASSMANN2020} to the validity of Granger causality.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
