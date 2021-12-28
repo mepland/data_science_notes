@@ -100,12 +100,12 @@ The survival function for the exponential model is simply
 \hat{S}_{\text{Exp}}\left(t\right) = e^{-\lambda t}
 \end{equation}
 
-\noindent where the hazard can be expanded in terms of $\mathbf{x}$, $\bm{\beta}$ as in a regression analysis:
+\noindent where the hazard can be expanded in terms of $\vb{x}$, $\vb*{\beta}$ as in a regression analysis:
 
 \begin{equation}\label{eq:survival:exp_lambda}
 \begin{aligned}
 \lambda\left(x\right) &= \exp\left(\beta_{0} + \sum_{j=1}^{n}\, \beta_{j} x_{j}\right) \\
-\log\left(\lambda\right) &= \mathbf{x} \bm{\beta}
+\log\left(\lambda\right) &= \innerproduct{\vb{x}}{\vb*{\beta}}
 \end{aligned}
 \end{equation}
 
@@ -113,7 +113,7 @@ The survival function for the exponential model is simply
 \ie the differences in $\lambda$ between subgroups in $x_{j}$
 are proportional\footnote{Really $\log\left(\lambda\right) \propto \beta$.} to $\beta_{j}$
 and constant over $t$.
-To find the best estimate of $\hat{\bm{\beta}}$,
+To find the best estimate of $\hat{\vb*{\beta}}$,
 $\lambda$ is used to derive a likelihood function which is
 then optimized\footnote{The exact details of this optimization
 are handled by common software libraries and are omitted here.
@@ -159,7 +159,7 @@ where $f\left(t\right)$ is a {\em known}, almost always monotonic, function of $
 \label{survival:cox}
 
 The Cox proportional-hazards model \cite{cox} is a
-semiparametric\footnote{Semiparametric as $\lambda_{0}\left(t\right)$ is unspecified, but $\bm{\beta}$ are still parameters of $\lambda$.} model
+semiparametric\footnote{Semiparametric as $\lambda_{0}\left(t\right)$ is unspecified, but $\vb*{\beta}$ are still parameters of $\lambda$.} model
 which further expands on the Weibull model by allowing
 the time dependence of $\lambda$ to be an unknown function.
 As the name suggests, the proportional hazards assumption is retained
@@ -168,7 +168,7 @@ without even knowing $\lambda\left(t\right)$,
 or $S\left(t\right)$\footnote{We can
 plot Kaplan-Meier $S\left(t\right)$ curves of predictions from a Cox model,
 after fitting the baseline hazard emperically on a reference subset,
-but only at discrete values of $\mathbf{x}$.
+but only at discrete values of $\vb{x}$.
 See \cref{fig:cox:cox_age_baseline_survival} for one example.}.
 
 In the Cox model we assume the hazard has the form of
@@ -251,7 +251,7 @@ Con
 \begin{enumerate}[noitemsep]
   \item Any censoring is non-informative, \ie censoring is uncorrelated with the probabilities of different event outcomes.\label{item:survival:assumptions:censoring}
   \item Survival times $t$ are uncorrelated across subjects.\label{item:survival:assumptions:t_uncorr}
-  \item $\mathbf{x}$ is constant over time, per subject.\label{item:survival:assumptions:X_constant}
+  \item $\vb{x}$ is constant over time, per subject.\label{item:survival:assumptions:X_constant}
   \item Hazards are proportional, \ie hazard ratios are constant over time.\label{item:survival:assumptions:prop_hazard}
   \item $\log\left(\lambda\right)$ is linear with respect to the continuous $x_{j}$ independent variables.\label{item:survival:assumptions:X_linearity}
 \end{enumerate}
@@ -266,7 +266,7 @@ apply to the exponential, Weibull and Cox models.
 \label{survival:assumptions:tests_and_corrections}
 
 \begin{itemize}[noitemsep]
-  \item[\cref{item:survival:assumptions:censoring}.] Exploratory data analysis to detect differences in $\mathbf{x}$ distributions between censored and non-censored subjects. If violated, better input data is needed, redesign study.
+  \item[\cref{item:survival:assumptions:censoring}.] Exploratory data analysis to detect differences in $\vb{x}$ distributions between censored and non-censored subjects. If violated, better input data is needed, redesign study.
 
   \item[\cref{item:survival:assumptions:t_uncorr}.] Exploratory data analysis, study design question. If violated, redesign study.
 
@@ -283,8 +283,8 @@ apply to the exponential, Weibull and Cox models.
 
 Schoenfeld residuals are similar in concept to normal residuals in regression analyses,
 but instead of looking at the difference between the true and estimated values of $y$,
-$\hat{\bm{\epsilon}} = \mathbf{y} - \mathbf{X} \hat{\bm{\beta}}$,
-we look at the difference in $\bm{\beta}$ and $\hat{\bm{\beta}}$ for a particular $y$ value.
+$\hat{\vb*{\epsilon}} = \vb{y} - \mathbf{X} \hat{\vb*{\beta}}$,
+we look at the difference in $\vb*{\beta}$ and $\hat{\vb*{\beta}}$ for a particular $y$ value.
 In this way, Schoenfeld residuals represent the difference in the
 coefficient $\beta_{j}$ fit from all data points, and a single point.
 To validate the proportional hazards assumption
