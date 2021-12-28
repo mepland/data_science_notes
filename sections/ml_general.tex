@@ -170,7 +170,7 @@ F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}
 \subsection{Receiver Operating Characteristic (ROC) and Precision-Recall Curves}
 \label{ml_general:eval:ROC}
 
-When working with a binary classifier that returns predictions as probabilities, $\hat{y} = P\left(\text{Positive}\right)$,
+When working with a binary classifier that returns predictions as probabilities, $\yhat = P\left(\text{Positive}\right)$,
 we eventually need to select a decision threshold to divide the positive and negative classes,
 see \cref{ml_general:decision_threshold} for more.
 Any chosen threshold will represent a tradeoff between the TPR and FPR,
@@ -231,7 +231,7 @@ at the cost of potentially making it harder to read.
 The concordance statistic, or $C$-statistic, \cref{eq:concordance:C} is a measure of goodness of fit
 for binary classification and regression models, in particular being commonly used in survival analysis.
 To begin we pick two observations at random from the $m$ available observations;
-if the ordering of model's predicted $\hat{y}$ values agrees\footnote{The treatment of ties depends on implementation,
+if the ordering of model's predicted \yhat values agrees\footnote{The treatment of ties depends on implementation,
 see \href{https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf}{here}
 for the survival analysis concordance function in \R.} with the order of the true $y$ values,
 then the pair of observations is said to be concordant\footnote{In survival analysis,
@@ -244,10 +244,10 @@ By measuring the fraction of concordant pairs over all pairs we arrive at the co
 \begin{align}
 C &= \frac{1}{ \binom{m}{2} } \sum_{i \neq j} \text{Concordance}\left(i, j\right), \label{eq:concordance:C} \\
 &= \text{ROC AUC} = \int_{0}^{1} \text{TPR}\, \dd{\left(\text{FPR}\right)}, \label{eq:concordance:ROC_AUC} \\
-&= P\left(\hat{y}_{i} < \hat{y}_{j} \mid y_{i} < y_{j} \right), \label{eq:concordance:P} \\
+&= P\left(\yhat_{i} < \yhat_{j} \mid y_{i} < y_{j} \right), \label{eq:concordance:P} \\
 \text{Concordance}\left(i, j\right) &= \begin{dcases}
-1 & \hat{y}_{i} < \hat{y}_{j},\, y_{i} < y_{j}, \\
-0 & \hat{y}_{i} \geq \hat{y}_{j},\, y_{i} < y_{j}.
+1 & \yhat_{i} < \yhat_{j},\, y_{i} < y_{j}, \\
+0 & \yhat_{i} \geq \yhat_{j},\, y_{i} < y_{j}.
 \end{dcases} \label{eq:concordance:concordance} \\
 \end{align}
 \end{subequations}
@@ -255,7 +255,7 @@ C &= \frac{1}{ \binom{m}{2} } \sum_{i \neq j} \text{Concordance}\left(i, j\right
 The concordance statistic ranges from $0$ to $1$,
 with $0.5$ being equivalent to random guessing and $1$ representing ideal performance.
 The ROC AUC\footnote{The ROC curve should have TPR on the vertical axis and FPR on the horizontal axis as in \cref{fig:ml:roc:standard}.} and $C$-statistic are equivalent for
-binary classification\footnote{The model must be setup such that the $y=1$ class receives the higher $\hat{y}$ prediction.},
+binary classification\footnote{The model must be setup such that the $y=1$ class receives the higher \yhat prediction.},
 both representing the probability that
 the model will rank a randomly chosen $y=1$ observation above a randomly chosen $y=0$ observation \cite{Hand2001,Fawcett2006861}.
 
@@ -431,9 +431,9 @@ while the training error continues to decrease.
 
 We can analytically decompose the mean square error (MSE) into explicit
 bias, variance, and irreducable error components.
-Let $y = f\left(\mathbf{x}\right) + \epsilon$ represent
-the observed data, $y_{i}$, $\mathbf{x}_{i}$,
-where $f\left(\mathbf{x}\right)$ is the true parent distribution\footnote{$\expval{f} = f$ is deterministic,
+Let $y = f\left(\vb{x}\right) + \epsilon$ represent
+the observed data, $y_{i}$, $\vb{x}_{i}$,
+where $f\left(\vb{x}\right)$ is the true parent distribution\footnote{$\expval{f} = f$ is deterministic,
 and acts as a constant as far as expectation values are concerned.} and
 $\epsilon$ is random noise\footnote{This is the source of the irreducible error.
 Since future data will still have $\epsilon$, the predictions can't be perfect
@@ -442,7 +442,7 @@ $\sigma^{2} = \variance{\epsilon} = \expval{\epsilon^{2}} - \expval{\epsilon}^{2
 $\expval{\epsilon} = 0$, $\variance{\epsilon} = \sigma^{2}$.
 Representing the trained model\footnote{Note
 that $\cov{\epsilon}{\hat{f}} = 0 \implies \expval{\epsilon \hat{f}} = \expval{\epsilon} \expval{\hat{f}}$.} as
-$\hat{f}\left(\mathbf{x}\right)$, we expand the MSE:
+$\hat{f}\left(\vb{x}\right)$, we expand the MSE:
 
 \begin{subequations} \label{eq:bias_variance_tradeoff:decop}
 \begin{align}
@@ -499,26 +499,26 @@ In terms of \cref{ml_general:bias_variance_tradeoff}, regularization forces the 
 bias to grow on the training set in order to lower the variance on future data.
 The two main types of regularization are shown in \cref{eq:L1_L2}
 and depend on different powers of the norm\footnote{In
-the case of OLS linear regression the constant intercept term $\beta_{0}$ is not included in $\norm{\bm{\beta}}$.} of the model parameters $\bm{\beta}$.
+the case of OLS linear regression the constant intercept term $\beta_{0}$ is not included in $\norm{\vb*{\beta}}$.} of the model parameters $\vb*{\beta}$.
 In order to treat all features equally, normalization must be used before applying regularization.
 A hyperparameter $\lambda$ is included to tune the amount of regularization applied in the objective function,
-$S\left(\bm{\beta}\right) = L + \Omega$.
+$S\left(\vb*{\beta}\right) = L + \Omega$.
 As $\lambda$ is increased, it decreases the size the model's coefficients, and thereby its variance (overfitting),
 up to a point when the model is unable to adequately train on the available data and the bias (underfitting) begins to grow.
 
 \begin{subequations} \label{eq:L1_L2}
 \begin{align}
-\Omega_{\text{L1}}\left(\bm{\beta}\right) &= \lambda \norm{\bm{\beta}}\hphantom{^{1}}
+\Omega_{\text{L1}}\left(\vb*{\beta}\right) &= \lambda \norm{\vb*{\beta}}\hphantom{^{1}}
 = \lambda \sum_{j=1}^{n} \, \abs{\beta_{j}}\,, \label{eq:L1} \\
-\Omega_{\text{L2}}\left(\bm{\beta}\right) &= \lambda \norm{\bm{\beta}}^{2}
+\Omega_{\text{L2}}\left(\vb*{\beta}\right) &= \lambda \norm{\vb*{\beta}}^{2}
 = \lambda \sum_{j=1}^{n} \,\, \beta_{j}^{2}\,. \label{eq:L2}
 \end{align}
 \end{subequations}
 
 For a particular value of $\lambda$, the effect of L1 and L2 regularization\footnote{Here
-$q$ is being used as the power of $\norm{\bm{\beta}}$. For L1 (L2), $q=1$ ($q=2$).} is
-to constrain $\norm{\bm{\beta}}^{q} \leq t\left(\lambda\right)$ for some $t\left(\lambda\right)$.
-As can be seen in \cref{fig:ml:l1l2} the L1 norm constrains $\bm{\beta}$ to lie within a hypercube,
+$q$ is being used as the power of $\norm{\vb*{\beta}}$. For L1 (L2), $q=1$ ($q=2$).} is
+to constrain $\norm{\vb*{\beta}}^{q} \leq t\left(\lambda\right)$ for some $t\left(\lambda\right)$.
+As can be seen in \cref{fig:ml:l1l2} the L1 norm constrains $\vb*{\beta}$ to lie within a hypercube,
 while the L2 constraint is a hypersphere.
 
 \begin{figure}[H]
@@ -535,9 +535,9 @@ while the L2 constraint is a hypersphere.
   \label{fig:ml:l1l2:L2}
   \end{subfigure}
 \caption{
-A graphical representation of the L1 and L2 regularization constraints on $\bm{\beta}$ \cite{HastieTF09}.
-The best value of $\bm{\beta}$ for optimizing the loss function $L$ is indicated as $\hat{\bm{\beta}}$.
-For a given contour in $L$, L1 will tend to force $\bm{\beta}$ along one of the axes,
+A graphical representation of the L1 and L2 regularization constraints on $\vb*{\beta}$ \cite{HastieTF09}.
+The best value of $\vb*{\beta}$ for optimizing the loss function $L$ is indicated as $\hat{\vb*{\beta}}$.
+For a given contour in $L$, L1 will tend to force $\vb*{\beta}$ along one of the axes,
 identically setting some $\beta_{i}$ coefficients to zero,
 while L2 is rotationally symmetric and has no such tendencies.
 \label{fig:ml:l1l2}
@@ -549,8 +549,8 @@ while L2 is rotationally symmetric and has no such tendencies.
 \label{ml_general:reg:L1}
 
 L1, or LASSO\footnote{Least absolute shrinkage and selection operator.},
-regularization uses the norm $\norm{\bm{\beta}}$ \cref{eq:L1}, or taxi cab distance.
-As its geometric constraints on $\bm{\beta}$ are hypercubes,
+regularization uses the norm $\norm{\vb*{\beta}}$ \cref{eq:L1}, or taxi cab distance.
+As its geometric constraints on $\vb*{\beta}$ are hypercubes,
 it tends to set some model parameters to 0, creating sparsity,
 and thereby acts as a form of built-in feature selection.
 
@@ -580,8 +580,8 @@ and is more stable, \ie less dependent on the particular training data.
 
 \begin{equation} \label{eq:elastic_net}
 \begin{split}
-\Omega_{\text{EN}}\left(\bm{\beta}\right) &= \lambda_{1} \norm{\bm{\beta}} + \lambda_{2} \norm{\bm{\beta}}^{2}\\
-&= \lambda \left( \alpha\norm{\bm{\beta}} + \left(1-\alpha\right)\norm{\bm{\beta}}^{2} \right)
+\Omega_{\text{EN}}\left(\vb*{\beta}\right) &= \lambda_{1} \norm{\vb*{\beta}} + \lambda_{2} \norm{\vb*{\beta}}^{2}\\
+&= \lambda \left( \alpha\norm{\vb*{\beta}} + \left(1-\alpha\right)\norm{\vb*{\beta}}^{2} \right)
 \end{split}
 \end{equation}
 

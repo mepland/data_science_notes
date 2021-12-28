@@ -17,34 +17,34 @@ of choosing the optimal parameters of a probability distribution
 to match some set of observed data.
 As the name suggests, MLE works by maximizing the likelihood of observing the given data.
 Note that the terms likelihood and probability are closely related, but different, in this context.
-Here probability refers to the probability of observing $x$ given parameters $\bm{\beta}$, $P\left(x \mid \bm{\beta}\right)$,
-while likelihood refers to the likelihood of the distribution having parameters $\bm{\beta}$ given an observation $x$, $L\left(\bm{\beta} \mid x\right)$.
+Here probability refers to the probability of observing $x$ given parameters $\vb*{\beta}$, $P\left(x \mid \vb*{\beta}\right)$,
+while likelihood refers to the likelihood of the distribution having parameters $\vb*{\beta}$ given an observation $x$, $L\left(\vb*{\beta} \mid x\right)$.
 $L$ and $P$ are both equal to relevant probability distribution,
 such as \cref{eq:stats:gaus:P} for the Gaussian distribution,
 but which variables are independent and dependent changes.
 
-As we wish to maximize the likelihood with respect to $\bm{\beta}$,
-we will be taking partial derivatives and finding where they equal zero, $\partial_{\bm{\beta}} L = 0$.
+As we wish to maximize the likelihood with respect to $\vb*{\beta}$,
+we will be taking partial derivatives and finding where they equal zero, $\partial_{\vb*{\beta}} L = 0$.
 In practice, likelihood functions are complicated\footnote{The value of $L$
 is often close to $0$, making lack of precision an issue when doing computations.
 $\log\left(L\right)$ is larger and also helps address this problem.} and
 it is easier to maximize the log-likelihood $\log\left(L\right)$,
 which has the same maximum as the original likelihood $L$,
 but removes exponents and turns multiplication in to addition.
-Generally there are $m$ points $\mathbf{x}_{i}$, each with $n$ dimensions, in a given dataset,
-thus we are solving \cref{eq:MLE} for $\bm{\beta} = \hat{\bm{\beta}}_{\text{MLE}}$:
+Generally there are $m$ points $\vb{x}_{i}$, each with $n$ dimensions, in a given dataset,
+thus we are solving \cref{eq:MLE} for $\vb*{\beta} = \hat{\vb*{\beta}}_{\text{MLE}}$:
 
 \begin{subequations}\label{eq:MLE}
 \begin{align}
-0 &= \partial_{\bm{\beta}} \, L\left(\bm{\beta} \mid \mathbf{x}\right) \label{eq:MLE:L} \\
-\implies 0 &= \partial_{\bm{\beta}} \log\left(L\left(\bm{\beta} \mid \mathbf{X}\right)\right) = \partial_{\bm{\beta}} \, \log\left(\prod_{i=1}^{m} \, P\left(\mathbf{x}_{i} \mid \bm{\beta}\right)\right) \label{eq:MLE:log_L} \\
-&= \sum_{i=1}^{m} \, \partial_{\bm{\beta}} \log\left(P\left(\mathbf{x}_{i} \mid \bm{\beta}\right)\right) \label{eq:MLE:log_L_sum}
+0 &= \partial_{\vb*{\beta}} \, L\left(\vb*{\beta} \mid \vb{x}\right) \label{eq:MLE:L} \\
+\implies 0 &= \partial_{\vb*{\beta}} \log\left(L\left(\vb*{\beta} \mid \mathbf{X}\right)\right) = \partial_{\vb*{\beta}} \, \log\left(\prod_{i=1}^{m} \, P\left(\vb{x}_{i} \mid \vb*{\beta}\right)\right) \label{eq:MLE:log_L} \\
+&= \sum_{i=1}^{m} \, \partial_{\vb*{\beta}} \log\left(P\left(\vb{x}_{i} \mid \vb*{\beta}\right)\right) \label{eq:MLE:log_L_sum}
 \end{align}
 \end{subequations}
 
-In practice, it is unlikely that a closed form solution for $\hat{\bm{\beta}}_{\text{MLE}}$ can be found
+In practice, it is unlikely that a closed form solution for $\hat{\vb*{\beta}}_{\text{MLE}}$ can be found
 and numerical optimizers, such as gradient descent, are used instead.
-Under certain conditions it can be shown that as $n \to \infty$ the MLE converges to $\hat{\bm{\beta}}$,
+Under certain conditions it can be shown that as $n \to \infty$ the MLE converges to $\hat{\vb*{\beta}}$,
 \ie in the limit $n \to \infty$ no consistent estimator
 has a lower MSE\footnote{More formally, the MLE achieves the Cram\'er--Rao lower bound.}.
 Lastly, while the MLE is usually a biased estimator, see \cref{stats:bias},
@@ -122,10 +122,10 @@ For another example of MLE see logistic regression \cref{eq:logistic:L_Pr}.
 \label{opt:BO}
 
 Frequently we are fortunate enough to have a fairly explicit form of
-the objective function $S\left(\bm{\beta}\right)$ to be optimized in order to solve a problem.
-However, when $S\left(\bm{\beta}\right)$ is not well-known,
+the objective function $S\left(\vb*{\beta}\right)$ to be optimized in order to solve a problem.
+However, when $S\left(\vb*{\beta}\right)$ is not well-known,
 is expensive to compute\footnote{The performance of a machine learning model as a function of its hyperparameters is a classic example of this.
-In that case, evaluating $S$ amounts to training the model with a particular set of hyperparameters $\bm{\beta}$,
+In that case, evaluating $S$ amounts to training the model with a particular set of hyperparameters $\vb*{\beta}$,
 then determining it's performance on a metric such as ROC AUC.}, or is non-differentiable,
 the usual gradient based approaches, such as SGD and Newton's method, break down.
 In these cases ``black box''\footnote{Black box as in
@@ -134,7 +134,7 @@ Tree-Structured Parzen Estimators (TPE),
 genetic algorithms,
 and some additional tree based methods described in \cite{Hutter2011,Hutter2014}.
 A TPE is a close relative of Bayesian optimization, making use of the opposite side of Bayes' theorem by
-estimating $P\left(\bm{\beta} \mid S\right)$ and $P\left(S\right)$ rather than $P\left(S \mid \bm{\beta}\right)$.
+estimating $P\left(\vb*{\beta} \mid S\right)$ and $P\left(S\right)$ rather than $P\left(S \mid \vb*{\beta}\right)$.
 TPEs can accommodate categorical $\beta_{i}$ in a hierarchical manner,
 however they can not model interactions between the $\beta_{i}$ \cite{bissuel_2019,NIPS2011_4443}.},
 such as Bayesian optimization, may be used instead.
@@ -148,18 +148,18 @@ a Random Forest or Boosted Decision Tree (BDT).
 GPs \cref{eq:GP} are
 extensions of Gaussian distributions which return a Gaussian at any point along their domain.
 They are parameterized by a mean function\footnote{For convenience,
-the prior $m\left(\bm{x}\right)$ is usually assumed to be zero, $m\left(\bm{x}\right)=0$.}, $m\left(\bm{x}\right)$,
-and covariance function, $k\left(\bm{x}_{i}, \bm{x}_{j}\right)$,
+the prior $m\left(\vb{x}\right)$ is usually assumed to be zero, $m\left(\vb{x}\right)=0$.}, $m\left(\vb{x}\right)$,
+and covariance function, $k\left(\vb{x}_{i}, \vb{x}_{j}\right)$,
 \ie kernel\footnote{The kernel of the GP is a hyperparameter to be chosen in advance.
 Standard kernel choices include
-the radial basis function kernel $k\left(\bm{x}_{i}, \bm{x}_{j}\right) = \exp\left(-\frac{1}{2\sigma^{2}}\norm{\bm{x}_{i}-\bm{x}{j}}^{2}\right)$,
+the radial basis function kernel $k\left(\vb{x}_{i}, \vb{x}_{j}\right) = \exp\left(-\frac{1}{2\sigma^{2}}\norm{\vb{x}_{i}-\vb{x}{j}}^{2}\right)$,
 Mat\'{e}rn kernel,
-and white noise kernel $k\left(\bm{x}_{i}, \bm{x}_{j}\right) \propto \delta_{ij}$.},
+and white noise kernel $k\left(\vb{x}_{i}, \vb{x}_{j}\right) \propto \delta_{ij}$.},
 instead of a constant mean $\mu$ and variance $\sigma^{2}$.
 An illustration of a GP is provided in \cref{fig:GP_ex}.
 
 \begin{equation}\label{eq:GP}
-f\left(\bm{x}\right) \sim \mathcal{GP}\left(m\left(\bm{x}\right), k\left(\bm{x}_{i}, \bm{x}_{j}\right)\right).
+f\left(\vb{x}\right) \sim \mathcal{GP}\left(m\left(\vb{x}\right), k\left(\vb{x}_{i}, \vb{x}_{j}\right)\right).
 \end{equation}
 
 \begin{figure}[H] % TODo might want to eventually remove
@@ -167,28 +167,28 @@ f\left(\bm{x}\right) \sim \mathcal{GP}\left(m\left(\bm{x}\right), k\left(\bm{x}_
 \includegraphics[width=0.85\textwidth]{figures/ml/gp}
 \caption{
 Illustration of a Gaussian process (GP) in 1D \cite{Brochu2010}.
-Note that at any point $\bm{x}_{1}$, $\bm{x}_{2}$, $\bm{x}_{3}$ the GP
+Note that at any point $\vb{x}_{1}$, $\vb{x}_{2}$, $\vb{x}_{3}$ the GP
 returns a Gaussian distribution characterizing the estimated mean and uncertainty on the
-unknown true function, \ie the objective function $S\left(\bm{\beta}\right)$ in the case of Bayesian optimization.
+unknown true function, \ie the objective function $S\left(\vb*{\beta}\right)$ in the case of Bayesian optimization.
 }
 \label{fig:GP_ex}
 \end{figure}
 
 The surrogate function is initially fit to
-a random sample of $\bm{\beta}$, $S\left(\bm{\beta}\right)$ points.
+a random sample of $\vb*{\beta}$, $S\left(\vb*{\beta}\right)$ points.
 From this prior, Bayesian optimization
-operates by iteratively sampling $S\left(\bm{\beta}\right)$ and updating
+operates by iteratively sampling $S\left(\vb*{\beta}\right)$ and updating
 the posterior surrogate function as each new piece of information is gained.
 An acquisition function, $u\left(\cdot\right)$, directs the sampling,
-estimating where $S\left(\bm{\beta}\right)$ may be large
+estimating where $S\left(\vb*{\beta}\right)$ may be large
 due to a high predicted value, large uncertainty, or some combination of the two.
 The exploration-exploitation tradeoff inherent in $u\left(\cdot\right)$
 can be tuned in various ways, see Section 2.3 of \cite{Brochu2010} for a full description\footnote{Common types of acquisition function include the
 Expected Improvement (EI);
-$\text{EI}\left(\bm{\beta}\right) = \expvalE{\max\left(0,\,S\big(\bm{\beta}\big) - S\big(\hat{\bm{\beta}}\big)\right)}$
-where $S\big(\hat{\bm{\beta}}\big)$ is the current optimal value of $S$,
+$\text{EI}\left(\vb*{\beta}\right) = \expvalE{\max\left(0,\,S\big(\vb*{\beta}\big) - S\big(\hat{\vb*{\beta}}\big)\right)}$
+where $S\big(\hat{\vb*{\beta}}\big)$ is the current optimal value of $S$,
 Upper Confidence Bound (UCB);
-$\text{UCB}\left(\bm{\beta}\right) = E_{\text{GP}} \left(\bm{\beta}\right) + \kappa\,\text{var}_{\text{GP}} \left(\bm{\beta}\right)$ where the mean and variance are of the GP and $\kappa$ sets the exploration-exploitation tradeoff,
+$\text{UCB}\left(\vb*{\beta}\right) = E_{\text{GP}} \left(\vb*{\beta}\right) + \kappa\,\text{var}_{\text{GP}} \left(\vb*{\beta}\right)$ where the mean and variance are of the GP and $\kappa$ sets the exploration-exploitation tradeoff,
 and Maximum Probability of Improvement (MPI).}.
 The iterative nature of Bayesian optimization is illustrated in \cref{fig:BO_ex}.
 An accessible implementation of Bayesian optimization is available in \skopt \cite{scikit-optimize,Borisyak}.
@@ -199,8 +199,8 @@ An accessible implementation of Bayesian optimization is available in \skopt \ci
 \caption{
 Illustration of Bayesian optimization over three iterations in a toy 1D maximization problem \cite{Brochu2010}.
 Note that the maximum of the acquisition function $u\left(\cdot\right)$
-locates where $S\left(\bm{\beta}\right)$ should be sampled next.
-The GP estimated posterior distribution of $S\left(\bm{\beta}\right)$
+locates where $S\left(\vb*{\beta}\right)$ should be sampled next.
+The GP estimated posterior distribution of $S\left(\vb*{\beta}\right)$
 and $u\left(\cdot\right)$ are then updated.
 This iterative process is repeated until the estimated maximum is satisfactory.
 }

@@ -142,7 +142,7 @@ Building on the PACF, we can construct an autoregressive (AR) model $\text{AR}\l
 from multiple lag components of the time series:
 
 \begin{equation}\label{eq:time_series:AR}
-\hat{y}_{t} = \phi_{0} + \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \epsilon_{t}.
+\yhat_{t} = \phi_{0} + \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \epsilon_{t}.
 \end{equation}
 
 Note that we should look at the PACF plot before fitting \cref{eq:time_series:AR}
@@ -166,8 +166,8 @@ is then:
 
 \begin{subequations}\label{eq:time_series:MA}
 \begin{align}
-\hat{y}_{t} &= \theta_{0} + \sum_{i=1}^{q} \theta_{i}\, \epsilon_{t-i} + \epsilon_{t}, \label{eq:time_series:MA_y} \\
-\epsilon_{t-1} &= y_{t-1} - \hat{y}_{t-1}. \label{eq:time_series:MA_epsilon}
+\yhat_{t} &= \theta_{0} + \sum_{i=1}^{q} \theta_{i}\, \epsilon_{t-i} + \epsilon_{t}, \label{eq:time_series:MA_y} \\
+\epsilon_{t-1} &= y_{t-1} - \yhat_{t-1}. \label{eq:time_series:MA_epsilon}
 \end{align}
 \end{subequations}
 
@@ -226,7 +226,7 @@ The $\text{ARMA}\left(p,q\right)$ model is a simple combination of
 both approaches:
 
 \begin{equation}\label{eq:time_series:ARMA}
-\hat{y}_{t} = \mu_{0} + \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \sum_{i=1}^{q} \theta_{i}\, \epsilon_{t-i} + \epsilon_{t}.
+\yhat_{t} = \mu_{0} + \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \sum_{i=1}^{q} \theta_{i}\, \epsilon_{t-i} + \epsilon_{t}.
 \end{equation}
 
 Using lag notation we can write \cref{eq:time_series:ARMA} more
@@ -333,7 +333,7 @@ extends ARMA by incorporating exogenous (X) inputs
 via another known time series $d_{t}$:
 
 \begin{equation}\label{eq:time_series:ARMAX}
-\hat{y}_{t} = \mu_{0} + \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \sum_{i=1}^{q} \theta_{i}\, \epsilon_{t-i} + \sum_{i=1}^{b} \eta_{i}\, d_{t-i} + \epsilon_{t}.
+\yhat_{t} = \mu_{0} + \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \sum_{i=1}^{q} \theta_{i}\, \epsilon_{t-i} + \sum_{i=1}^{b} \eta_{i}\, d_{t-i} + \epsilon_{t}.
 \end{equation}
 
 We can think of the $d_{t}$ time series like the driving force of a driven harmonic oscillator.
@@ -369,7 +369,7 @@ See the \texttt{arch}
 for one implementation.
 
 We can also look at time series analysis within a Bayesian framework;
-assuming prior distributions for the model parameters $\bm{\beta}$
+assuming prior distributions for the model parameters $\vb*{\beta}$
 then updating based on the observed data,
 thereby producing distributions of our predictions and parameters instead of only MLE point estimates.
 The \pymcThree \href{https://docs.pymc.io}{module}
@@ -406,7 +406,7 @@ Illustration of multiple test train split methods for time series models \cite{b
 Note that $t$ is increasing along the $x$-axis.
 In the fixed origin method, we do not do any retraining and the prediction quality
 can be expected to drop as we go further into the future.
-In the rolling origin update method, we do not retrain the model parameters $\bm{\beta}$
+In the rolling origin update method, we do not retrain the model parameters $\vb*{\beta}$
 with each iteration, but do update the $y_{i}$ lags.
 In the rolling origin recalibration method we fully retrain the model on each iteration.
 Lastly, in the rolling window method we remove data from the beginning of the training period
@@ -418,7 +418,7 @@ but also helps when working with slowly changing non-stationary data.
 \end{figure}
 
 Regardless of the test train split method, we can get a sense of the model's performance
-qualitatively by looking at residual plots of $y_{t} - \hat{y}_{t}$.
+qualitatively by looking at residual plots of $y_{t} - \yhat_{t}$.
 The residuals will show any remaining systematic trends that the model did not learn,
 as ideally they would be white noise.
 Quantitatively, we can test
@@ -430,8 +430,8 @@ between the predictions and observed values:
 
 \begin{subequations}\label{eq:time_series:RMSE_MAPE}
 \begin{align}
-\text{RMSE}\left(\hat{y}\right) &= \sqrt{\expval{\left(y - \hat{y}\right)^{2}}} = \sqrt{\frac{1}{n}\sum_{t=1}^{n} \left(y_{t} - \hat{y}_{t}\right)^{2}}, \label{eq:time_series:RMSE} \\
-\text{MAPE}\left(\hat{y}\right) &= \frac{\SI{100}{\percent}}{n} \sum_{t=1}^{n} \abs{\frac{y_{t} - \hat{y}_{t}}{y_{t}}}\,. \label{eq:time_series:MAPE}
+\text{RMSE}\left(\yhat\right) &= \sqrt{\expval{\left(y - \yhat\right)^{2}}} = \sqrt{\frac{1}{n}\sum_{t=1}^{n} \left(y_{t} - \yhat_{t}\right)^{2}}, \label{eq:time_series:RMSE} \\
+\text{MAPE}\left(\yhat\right) &= \frac{\SI{100}{\percent}}{n} \sum_{t=1}^{n} \abs{\frac{y_{t} - \yhat_{t}}{y_{t}}}\,. \label{eq:time_series:MAPE}
 \end{align}
 \end{subequations}
 

@@ -10,10 +10,10 @@
 \label{regression:linear}
 
 Linear regression fits the best hyperplane, or line in 1D,
-to a collection of $m$ points $\mathbf{x}_{i}, y_{i}$,
+to a collection of $m$ points $\vb{x}_{i}, y_{i}$,
 typically via the method of least squares.
-If $\mathbf{x}$ has $n$ features we can represent the
-linear relationship between $\mathbf{x}$ and $y$ as:
+If $\vb{x}$ has $n$ features we can represent the
+linear relationship between $\vb{x}$ and $y$ as:
 
 \begin{equation}\label{eq:linear:one_point}
 y_{i} = \beta_{0} + \sum_{j=1}^{n}\, \beta_{j} x_{ij} + \epsilon_{i}\,,
@@ -23,18 +23,18 @@ y_{i} = \beta_{0} + \sum_{j=1}^{n}\, \beta_{j} x_{ij} + \epsilon_{i}\,,
 and $\epsilon$ represent random errors.
 Transitioning to matrix notation\footnote{Note
 that \textit{linear} regression refers to the linearity in the model parameters
-$\bm{\beta}$, not $\mathbf{X}$.
+$\vb*{\beta}$, not $\mathbf{X}$.
 The components of $\mathbf{X}_{i}$ can be, and often are,
 non-linear functions of other input features.}, this is simply:
 
 \begin{equation}\label{eq:linear:matrix}
-\mathbf{y} = \mathbf{X} \bm{\beta} + \bm{\epsilon}\,,
+\vb{y} = \mathbf{X} \vb*{\beta} + \vb*{\epsilon}\,,
 \end{equation}
 
 \noindent where we have set $X_{i0} =1$.
 Here $\mathbf{X}$ is $m \times n$,
-$\bm{\beta}$ is $n \times 1$,
-and $\mathbf{y}$, $\bm{\epsilon}$ are $m \times 1$.
+$\vb*{\beta}$ is $n \times 1$,
+and $\vb{y}$, $\vb*{\epsilon}$ are $m \times 1$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Derivation}
@@ -45,59 +45,59 @@ the errors are assumed to be normal,
 as in \cref{item:regression:linear:exogeneity,item:regression:linear:spherical,item:regression:linear:normality},
 OLS is equivalent to the maximum likelihood estimation (MLE) approach of \cref{opt:MLE}.
 See one derivation \href{https://machinelearningmastery.com/linear-regression-with-maximum-likelihood-estimation/}{here}.} of
-the parameters $\hat{\bm{\beta}}$
+the parameters $\hat{\vb*{\beta}}$
 can be found by minimizing the squares of the errors,
-\ie the objective function $S\left(\bm{\beta}\right) = \norm{\bm{\epsilon}}^{2}$:
+\ie the objective function $S\left(\vb*{\beta}\right) = \norm{\vb*{\epsilon}}^{2}$:
 
 \begin{subequations} \label{eq:linear:ols}
 \begin{align}
-\hat{\bm{\beta}} &= \argmin_{\bm{\beta}} S\left(\bm{\beta}\right)\,, \label{eq:linear:argmin} \\
-S\left(\bm{\beta}\right)
-&= \norm{\mathbf{y} - \mathbf{X} \bm{\beta}}^{2} = \left(\mathbf{y} - \mathbf{X} \bm{\beta}\right)\transpose \left(\mathbf{y} - \mathbf{X} \bm{\beta}\right) \label{eq:linear:S_matrix} \\
+\hat{\vb*{\beta}} &= \argmin_{\vb*{\beta}} S\left(\vb*{\beta}\right)\,, \label{eq:linear:argmin} \\
+S\left(\vb*{\beta}\right)
+&= \norm{\vb{y} - \mathbf{X} \vb*{\beta}}^{2} = \left(\vb{y} - \mathbf{X} \vb*{\beta}\right)\transpose \left(\vb{y} - \mathbf{X} \vb*{\beta}\right) \label{eq:linear:S_matrix} \\
 &= \sum_{i=1}^{m} \, \abs{y_{i} - \sum_{j=0}^{n} \, \beta_{j} x_{ij}}^{2}\,. \label{eq:linear:S_components}
 \end{align}
 \end{subequations}
 
-We then find the minimum of $S\left(\bm{\beta}\right)$ with respect to $\bm{\beta}$
+We then find the minimum of $S\left(\vb*{\beta}\right)$ with respect to $\vb*{\beta}$
 by taking the gradient and setting it equal to zero:
 
 \begin{subequations} \label{eq:linear:ols_derivation}
 \begin{align}
-S\left(\bm{\beta}\right) &=
- \mathbf{y}\transpose \mathbf{y}
--\bm{\beta}\transpose \mathbf{X}\transpose \mathbf{y}
--\mathbf{y}\transpose \mathbf{X} \bm{\beta}
-+\bm{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \bm{\beta} \label{eq:linear:S_expand} \\
-&= \mathbf{y}\transpose \mathbf{y}
--2\, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{y}
-+\bm{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \bm{\beta}\,, \label{eq:linear:S_expand_simplified} \\
-\partial_{\bm{\beta}} \, S\left(\bm{\beta}\right) &=
+S\left(\vb*{\beta}\right) &=
+ \vb{y}\transpose \vb{y}
+-\vb*{\beta}\transpose \mathbf{X}\transpose \vb{y}
+-\vb{y}\transpose \mathbf{X} \vb*{\beta}
++\vb*{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \vb*{\beta} \label{eq:linear:S_expand} \\
+&= \vb{y}\transpose \vb{y}
+-2\, \vb*{\beta}\transpose \mathbf{X}\transpose \vb{y}
++\vb*{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \vb*{\beta}\,, \label{eq:linear:S_expand_simplified} \\
+\partial_{\vb*{\beta}} \, S\left(\vb*{\beta}\right) &=
 0
--2\, \partial_{\bm{\beta}} \, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{y}
-+\partial_{\bm{\beta}} \, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \bm{\beta} \label{eq:linear:grad_S_expand} \\
-&= -2\, \mathbf{X}\transpose \mathbf{y} + 2\, \mathbf{X}\transpose \mathbf{X} \bm{\beta} = 0. \, \implies \label{eq:linear:grad_S} \\
-\mathbf{X}\transpose \mathbf{y} &= \mathbf{X}\transpose \mathbf{X} \bm{\beta}\,, \label{eq:linear:penultimate}
+-2\, \partial_{\vb*{\beta}} \, \vb*{\beta}\transpose \mathbf{X}\transpose \vb{y}
++\partial_{\vb*{\beta}} \, \vb*{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \vb*{\beta} \label{eq:linear:grad_S_expand} \\
+&= -2\, \mathbf{X}\transpose \vb{y} + 2\, \mathbf{X}\transpose \mathbf{X} \vb*{\beta} = 0. \, \implies \label{eq:linear:grad_S} \\
+\mathbf{X}\transpose \vb{y} &= \mathbf{X}\transpose \mathbf{X} \vb*{\beta}\,, \label{eq:linear:penultimate}
 \end{align}
 \end{subequations}
 
 \noindent where we have used\footnote{See \href{https://economictheoryblog.com/2015/02/19/ols_estimator/}{here}
 and \href{https://economictheoryblog.com/2018/10/17/derivation-of-the-least-squares-estimator-for-beta-in-matrix-notation-proof-nr-1/}{here}
 for the component-wise proof, but it is essentially the same as the 1D $\partial_{x} b x = b$, $\partial_{x} b x^{2} = 2 b x$.
-Also note that \cref{eq:linear:S_expand_simplified} results from $\mathbf{y}\transpose \mathbf{X} \bm{\beta}$ being scalar
-and thus equal to its own transpose, $\bm{\beta}\transpose \mathbf{X}\transpose \mathbf{y}$.}:
+Also note that \cref{eq:linear:S_expand_simplified} results from $\vb{y}\transpose \mathbf{X} \vb*{\beta}$ being scalar
+and thus equal to its own transpose, $\vb*{\beta}\transpose \mathbf{X}\transpose \vb{y}$.}:
 
 \begin{subequations} \label{eq:grad_relations}
 \begin{align}
-\partial_{\bm{\beta}} \, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{y} &= \mathbf{X}\transpose \mathbf{y}\,, \label{eq:grad_relations:1} \\
-\partial_{\bm{\beta}} \, \bm{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \bm{\beta} &= 2 \, \mathbf{X} \transpose \mathbf{X} \bm{\beta}\,. \label{eq:grad_relations:2}
+\partial_{\vb*{\beta}} \, \vb*{\beta}\transpose \mathbf{X}\transpose \vb{y} &= \mathbf{X}\transpose \vb{y}\,, \label{eq:grad_relations:1} \\
+\partial_{\vb*{\beta}} \, \vb*{\beta}\transpose \mathbf{X}\transpose \mathbf{X} \vb*{\beta} &= 2 \, \mathbf{X} \transpose \mathbf{X} \vb*{\beta}\,. \label{eq:grad_relations:2}
 \end{align}
 \end{subequations}
 
-Consequently, the optimal $\hat{\bm{\beta}}$ of \cref{eq:linear:ols}
-has a closed form solution\footnote{The fitted prediction is $\hat{\mathbf{y}} = \mathbf{X} \hat{\bm{\beta}}$, with residuals $\hat{\bm{\epsilon}} = \mathbf{y} - \hat{\mathbf{y}}$.}:
+Consequently, the optimal $\hat{\vb*{\beta}}$ of \cref{eq:linear:ols}
+has a closed form solution\footnote{The fitted prediction is $\hat{\vb{y}} = \mathbf{X} \hat{\vb*{\beta}}$, with residuals $\hat{\vb*{\epsilon}} = \vb{y} - \hat{\vb{y}}$.}:
 
 \begin{equation}\label{eq:linear:betahat_OLS}
-\hat{\bm{\beta}}^{\text{OLS}} = \left(\mathbf{X}\transpose\mathbf{X}\right)^{-1}\mathbf{X}\transpose \mathbf{y}\,,
+\hat{\vb*{\beta}}^{\text{OLS}} = \left(\mathbf{X}\transpose\mathbf{X}\right)^{-1}\mathbf{X}\transpose \vb{y}\,,
 \end{equation}
 
 \noindent which is the best linear unbiased estimator (BLUE),
@@ -112,7 +112,7 @@ the following assumptions hold\footnote{For additional details see
 \label{regression:linear:assumptions}
 
 \begin{enumerate}[noitemsep]
-  \item The underlying relationship between $\mathbf{x}$ and $y$ is linear, and there are no major outliers.\label{item:regression:linear:linear}
+  \item The underlying relationship between $\vb{x}$ and $y$ is linear, and there are no major outliers.\label{item:regression:linear:linear}
   \item The columns of $\mathbf{X}$, \ie features, are linearly independent, \ie $\mathrm{rank}\left(\mathbf{X}\right) = n$ (no multicollinearity). This allows $\mathbf{X}\transpose\mathbf{X}$ to be inverted.\label{item:regression:linear:multicollinearity}
   \item The errors $\epsilon$ have conditional mean 0, $\expvalE{\epsilon \mid \mathbf{X}} = 0$ (exogeneity). The errors thus:\label{item:regression:linear:exogeneity}
   \begin{enumerate}[noitemsep]
@@ -121,7 +121,7 @@ the following assumptions hold\footnote{For additional details see
   \end{enumerate}
   \item The errors are spherical, $\mathrm{var}\left(\epsilon \mid \mathbf{X}\right) = \sigma^{2} \identity$. Thus:\label{item:regression:linear:spherical}
   \begin{enumerate}[noitemsep]
-    \item Each observation $\mathbf{x}_{i}$ has the same constant variance $\sigma^{2}$ (homoscedasticity).
+    \item Each observation $\vb{x}_{i}$ has the same constant variance $\sigma^{2}$ (homoscedasticity).
     \item The errors are uncorrelated between observations, $\expvalE{\epsilon_{i}\epsilon_{j \neq i} \mid \mathbf{X}} = 0$ (no autocorrelation).
   \end{enumerate}
   \item The errors are normally distributed (multivariate normality)\footnote{This is not required for OLS to be the BLUE, but hypothesis testing works if true.}.\label{item:regression:linear:normality}
@@ -147,14 +147,14 @@ or if the residuals correlate to any of the features.
 
   \item[\cref{item:regression:linear:exogeneity}.] If something is wrong with the errors
 such that they have a non-zero mean or correlate to the input features
-the OLS $\hat{\bm{\beta}}$ is biased and inconsistent.
+the OLS $\hat{\vb*{\beta}}$ is biased and inconsistent.
 This can happen if there are omitted variables or measurement errors.
 Furthermore, if $\expvalE{\epsilon \mid \mathbf{X}} = c$ only the $\beta_{0}$ intercept is affected.
 
   \item[\cref{item:regression:linear:spherical}.] If something is wrong with the errors
 such that they have a changing variance or correlate across observations\footnote{Thus the residuals correlate with row number, \ie autocorrelation.}
 the reported confidence intervals on the model parameters may be over or underestimated.
-The OLS $\hat{\bm{\beta}}$ remains unbiased and has consistent coefficients, but will be biased for standard errors.
+The OLS $\hat{\vb*{\beta}}$ remains unbiased and has consistent coefficients, but will be biased for standard errors.
 
   \item[\cref{item:regression:linear:normality}.] If the errors are not normally distributed the confidence intervals are again suspect.
 This can be diagnosed by comparing the errors to the normal distribution with a normal probability plot, or normal quantile plot,
@@ -176,22 +176,22 @@ The coefficient of determination\footnote{For additional details see
 \href{https://economictheoryblog.com/2014/11/05/the-coefficient-of-determination-latex-r2/}{here},
 \href{https://economictheoryblog.com/2014/11/05/proof/}{here}, and
 \href{http://people.duke.edu/~rnau/rsquared.htm}{here}.}, $R^{2}$,
-measures how much of $\mathbf{y}$'s variance is explained by the fitted model $\hat{\mathbf{y}}$,
-versus by random errors $\mathbf{\epsilon}$ or other unknown sources,
-as $\mathbf{y} = \hat{\mathbf{y}} + \mathbf{\epsilon}$.
+measures how much of $\vb{y}$'s variance is explained by the fitted model $\hat{\vb{y}}$,
+versus by random errors $\vb*{\epsilon}$ or other unknown sources,
+as $\vb{y} = \hat{\vb{y}} + \vb*{\epsilon}$.
 $R^{2} \approx 1$ is ideal and, depending on the particular definition,
 it can take values outside the typical $0 \leq R^{2} \leq 1$ range.
 
 \begin{equation}\label{eq:regression:linear:goodness_of_fit:R2}
 R^{2} = \frac{
-\sum_{i=1}^{m} \left(\hat{y}_{i} - \expval{\hat{y}}\right)^{2}
+\sum_{i=1}^{m} \left(\yhat_{i} - \expval{\yhat}\right)^{2}
 }{
 \sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}
 } = 1 - \frac{
 \sum_{i=1}^{m} \hat{\epsilon}_{i}^{\,2}
 }{
 \sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}
-} = \rho_{y,\hat{y}}^{2}
+} = \rho_{y,\yhat}^{2}
 \end{equation}
 
 The adjusted $R^{2}$, $R^{2}_{\text{adj}}$, accounts for the degrees of freedom in the
@@ -218,8 +218,8 @@ particularly in more sophisticated regressions where each $y_{i}$ has an \aprior
 
 \begin{subequations}\label{eq:regression:linear:goodness_of_fit:s_red_chi2}
 \begin{align}
-s^{2} &= \frac{\norm{\hat{\bm{\epsilon}}}^{2}}{m-n} = \frac{1}{m-n} \sum_{i=1}^{m} \left(\hat{y}_{i} - y_{i}\right)^{2} \label{eq:regression:linear:goodness_of_fit:s} \\
-\chi_{\nu}^{2} &= \frac{1}{m-n} \sum_{i=1}^{m} \frac{\left(\hat{y}_{i} - y_{i}\right)^{2}}{\sigma_{i}^{2}} \label{eq:regression:linear:goodness_of_fit:red_chi2}
+s^{2} &= \frac{\norm{\hat{\vb*{\epsilon}}}^{2}}{m-n} = \frac{1}{m-n} \sum_{i=1}^{m} \left(\yhat_{i} - y_{i}\right)^{2} \label{eq:regression:linear:goodness_of_fit:s} \\
+\chi_{\nu}^{2} &= \frac{1}{m-n} \sum_{i=1}^{m} \frac{\left(\yhat_{i} - y_{i}\right)^{2}}{\sigma_{i}^{2}} \label{eq:regression:linear:goodness_of_fit:red_chi2}
 \end{align}
 \end{subequations}
 
@@ -254,14 +254,14 @@ $\chi_{\nu}^{2} \ll 1$ & Extreme overfitting or overestimated $\sigma_{i}$.
 
 Adding ridge (L2, or Tikhonov) regularization to OLS is much more straight forward than LASSO,
 so we shall discuss it first\footnote{See \href{https://stats.stackexchange.com/a/164546}{here} for an interesting geometric explanation.}.
-We wish to minimize the square errors $\norm{\bm{\epsilon}}^{2}$,
-now subject to the condition that $\norm{\bm{\beta}}^{2} < t$ for some $t \geq 0$.
+We wish to minimize the square errors $\norm{\vb*{\epsilon}}^{2}$,
+now subject to the condition that $\norm{\vb*{\beta}}^{2} < t$ for some $t \geq 0$.
 For any $t \geq 0$ there is a $\lambda \geq 0$ such that minimizing the following
-objective function $S\left(\bm{\beta}\right)$ without conditions is
+objective function $S\left(\vb*{\beta}\right)$ without conditions is
 equivalent\footnote{This is sometimes termed soft-thresholding, but is really an application of Lagrange multipliers, as described in \cref{opt:lagrange_mult}.}:
 
 \begin{equation} \label{eq:linear:ridge}
-S\left(\bm{\beta}\right) = \norm{\mathbf{y} - \mathbf{X} \bm{\beta}}^{2} + \lambda \norm{\bm{\beta}}^{2}\,.
+S\left(\vb*{\beta}\right) = \norm{\vb{y} - \mathbf{X} \vb*{\beta}}^{2} + \lambda \norm{\vb*{\beta}}^{2}\,.
 \end{equation}
 
 After taking the gradient, we have the same terms as \cref{eq:linear:grad_S},
@@ -271,11 +271,11 @@ and quickly arrive at a modified version of the OLS solution \cref{eq:linear:rid
 
 \begin{subequations} \label{eq:linear:ridge_derivation}
 \begin{align}
-\partial_{\bm{\beta}} \, S\left(\bm{\beta}\right)
-&= -2\, \mathbf{X}\transpose \mathbf{y} + 2\, \mathbf{X}\transpose \mathbf{X} \bm{\beta} \label{eq:linear:ridge_derivation:grad_S_repeat} \\
-&+ 2\,\lambda \bm{\beta} = 0 \,\, \implies \label{eq:linear:ridge_derivation:new} \\
-\mathbf{X}\transpose \mathbf{y} &= \left(\mathbf{X}\transpose \mathbf{X} + \lambda\,\identity\right) \bm{\beta} \label{eq:linear:ridge_derivation:penultimate} \\
-\hat{\bm{\beta}}^{\text{ridge}} &= \left(\mathbf{X}\transpose\mathbf{X} + \lambda\,\identity\right)^{-1}\mathbf{X}\transpose \mathbf{y} \label{eq:linear:ridge_derivation:betahat}
+\partial_{\vb*{\beta}} \, S\left(\vb*{\beta}\right)
+&= -2\, \mathbf{X}\transpose \vb{y} + 2\, \mathbf{X}\transpose \mathbf{X} \vb*{\beta} \label{eq:linear:ridge_derivation:grad_S_repeat} \\
+&+ 2\,\lambda \vb*{\beta} = 0 \,\, \implies \label{eq:linear:ridge_derivation:new} \\
+\mathbf{X}\transpose \vb{y} &= \left(\mathbf{X}\transpose \mathbf{X} + \lambda\,\identity\right) \vb*{\beta} \label{eq:linear:ridge_derivation:penultimate} \\
+\hat{\vb*{\beta}}^{\text{ridge}} &= \left(\mathbf{X}\transpose\mathbf{X} + \lambda\,\identity\right)^{-1}\mathbf{X}\transpose \vb{y} \label{eq:linear:ridge_derivation:betahat}
 \end{align}
 \end{subequations}
 
@@ -284,7 +284,7 @@ and quickly arrive at a modified version of the OLS solution \cref{eq:linear:rid
 \label{regression:linear:lasso}
 
 As promised, adding LASSO (L1) regularization to OLS is challenging
-as the condition, $\norm{\bm{\beta}} < t$ for some $t \geq 0$,
+as the condition, $\norm{\vb*{\beta}} < t$ for some $t \geq 0$,
 is not differentiable, see the corners of \cref{fig:ml:l1l2:l1}, and must be dealt with carefully.
 In the special case that $\mathbf{X}$ is orthonormal, $\mathbf{X}\transpose \mathbf{X} = \identity$,
 a closed form solution \cref{eq:linear:lasso:betahat:1} can be derived on a case-by-case basis
@@ -295,12 +295,12 @@ In the general case, more sophisticated methods can find numerical solutions.
 
 \begin{subequations} \label{eq:linear:lasso:betahat_all}
 \begin{align}
-\hat{\bm{\beta}}^{\text{LASSO}}_{j}
-&= \hat{\bm{\beta}}^{\text{OLS}}_{j} \max\left(0, \frac{\lambda}{\abs{\hat{\bm{\beta}}^{\text{OLS}}_{j}}}\right) \label{eq:linear:lasso:betahat:1} \\
-&= \sign{\hat{\bm{\beta}}^{\text{OLS}}_{j}} \left(\abs{\hat{\bm{\beta}}^{\text{OLS}}_{j}} - \lambda\right)^{+} \label{eq:linear:lasso:betahat:2} \\
-\hat{\bm{\beta}}^{\text{OLS}}
-&= \left(\mathbf{X}\transpose\mathbf{X}\right)^{-1}\mathbf{X}\transpose \mathbf{y}
-= \mathbf{X}\transpose \mathbf{y} \label{eq:lasso:modified_betahat_OLS}
+\hat{\vb*{\beta}}^{\text{LASSO}}_{j}
+&= \hat{\vb*{\beta}}^{\text{OLS}}_{j} \max\left(0, \frac{\lambda}{\abs{\hat{\vb*{\beta}}^{\text{OLS}}_{j}}}\right) \label{eq:linear:lasso:betahat:1} \\
+&= \sign{\hat{\vb*{\beta}}^{\text{OLS}}_{j}} \left(\abs{\hat{\vb*{\beta}}^{\text{OLS}}_{j}} - \lambda\right)^{+} \label{eq:linear:lasso:betahat:2} \\
+\hat{\vb*{\beta}}^{\text{OLS}}
+&= \left(\mathbf{X}\transpose\mathbf{X}\right)^{-1}\mathbf{X}\transpose \vb{y}
+= \mathbf{X}\transpose \vb{y} \label{eq:lasso:modified_betahat_OLS}
 \end{align}
 \end{subequations}
 
@@ -310,10 +310,10 @@ In the general case, more sophisticated methods can find numerical solutions.
 
 All the usual concepts from \cref{ml_general:reg} apply, but specifically for linear regression
 both LASSO and ridge allow us to relax the multicollinearity condition.
-Lasso tends to use one feature per group of correlated $\mathbf{x}_{j}$'s, setting the rest to $\approx 0$,
-while ridge will keep all of the associated $\beta{j}$'s at a similar magnitude.
-As one may expect from LASSO shrinking $\beta{j}$'s to zero,
-it does a better job when only some of the $n$ input features infuence $\hat{y}$,
+Lasso tends to use one feature per group of correlated $\vb{x}_{j}$'s, setting the rest to $\approx 0$,
+while ridge will keep all of the associated $\beta_{j}$'s at a similar magnitude.
+As one may expect from LASSO shrinking $\beta_{j}$'s to zero,
+it does a better job when only some of the $n$ input features infuence \yhat,
 while ridge does better if most of the features have similar importances.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
