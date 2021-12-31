@@ -24,6 +24,8 @@ import xgboost as xgb
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_curve, precision_recall_curve
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import scale
 
 ########################################################
 # plotting
@@ -420,7 +422,7 @@ else:
 
 # ***
 # # Spearman Correlation
-# Addapted from https://en.wikipedia.org/wiki/File:Spearman_fig1.svg and https://en.wikipedia.org/wiki/File:Spearman_fig3.svg
+# Adapted from https://en.wikipedia.org/wiki/File:Spearman_fig1.svg and https://en.wikipedia.org/wiki/File:Spearman_fig3.svg
 
 # In[27]:
 
@@ -510,4 +512,23 @@ else:
     os.makedirs(output, exist_ok=True)
     fig.savefig(f'{output}/spearman_corr_outliers.pdf')
     plt.close('all')
+
+
+# ***
+# # PCA Scree Plot
+
+# In[29]:
+
+
+n_dimensions = 20
+n_observations = 100
+X = np.random.randn(n_observations, n_dimensions)
+pca = PCA()
+pca.fit(scale(X));
+
+
+# In[30]:
+
+
+plot_scree(pca, m_path=output, plot_cumsum=True, reference_lines=True, inline=inline)
 

@@ -172,7 +172,6 @@ def plot_rocs(models, m_path='output', fname='roc', tag='', rndGuess=False, bett
         ax.set_yscale('log')
         ax.set_ylabel(f'Inverse {ylabel}')
     else:
-        ax.set_xlim([0.,1.])
         ax.set_ylabel(ylabel)
 
     if not isinstance(x_axis_params, dict):
@@ -220,6 +219,87 @@ def plot_rocs(models, m_path='output', fname='roc', tag='', rndGuess=False, bett
         ax_n_predicted_positive.tick_params(axis='y', colors=c_n_predicted_positive, which='major')
         ax_n_predicted_positive.tick_params(axis='y', colors=c_n_predicted_positive, which='minor')
 
+
+    plt.tight_layout()
+    if inline:
+        fig.show()
+    else:
+        os.makedirs(m_path, exist_ok=True)
+        if plot_png:
+            fig.savefig(f'{m_path}/{fname}{tag}.png', dpi=png_dpi)
+        fig.savefig(f'{m_path}/{fname}{tag}.pdf')
+        plt.close('all')
+
+########################################################
+# Create scree plot from sklearn pca object
+def plot_scree(pca, m_path='output', fname='scree', tag='', grid=False, plot_cumsum=False, plots_in_legend=False, reference_lines=False, x_axis_params=None, y_axis_params=None, inline=False):
+    eigenvalues = pca.explained_variance_
+    cumulative_explained_variance = 100*np.cumsum(pca.explained_variance_ratio_)
+    principle_components = np.arange(len(eigenvalues))+1
+
+    fig, ax = plt.subplots()
+    # fig.set_size_inches(aspect_ratio_single*vsize, vsize)
+    if plot_cumsum:
+        fig.subplots_adjust(right=0.7)
+        ax.spines['right'].set_visible(False)
+        ax.yaxis.set_ticks_position('left')
+        ax_cumsum = ax.twinx()
+        c_cumsum = 'C1'
+
+    leg_objects = []
+
+    p_eigenvalues, = ax.plot(principle_components, eigenvalues, marker='o', lw=2, c='C0', label='Eigenvalues')
+    if plots_in_legend:
+        leg_objects.append(p_eigenvalues)
+
+    if plot_cumsum:
+        p_cumsum, = ax_cumsum.plot(principle_components, cumulative_explained_variance, lw=2, c=c_cumsum, ls='--', label='Explained Variance [%]')
+        if plots_in_legend:
+            leg_objects.append(p_cumsum)
+
+    if reference_lines:
+        leg_objects.append(ax.axhline(y=1., c='C0', lw=0.8, ls=':', label='Kaiser Criterion'))
+        if plot_cumsum:
+            leg_objects.append(ax_cumsum.axhline(y=80., c=c_cumsum, lw=0.8, ls=':', label='80% Explained Variance'))
+
+    if grid:
+        ax.grid()
+
+    ax.set_zorder(10)
+    ax.patch.set_alpha(0.0)
+    if len(leg_objects) > 0:
+        loc_x='right';
+        loc_y='lower';
+        leg = ax.legend(leg_objects, [ob.get_label() for ob in leg_objects], loc=f'{loc_y} {loc_x}', ncol=1)
+        leg.get_frame().set_fill(True)
+        leg.set_zorder(11)
+        leg.get_frame().set_edgecolor('none')
+        leg.get_frame().set_facecolor('none')
+
+    ax.set_xlabel('Principal Component')
+    ax.set_ylabel('Eigenvalues')
+
+    if not isinstance(x_axis_params, dict):
+        x_axis_params = dict()
+    x_min_current, x_max_current = ax.get_xlim()
+    x_min = x_axis_params.get('min', x_min_current)
+    x_max = x_axis_params.get('max', x_max_current)
+    ax.set_xlim([x_min, x_max])
+
+    if not isinstance(y_axis_params, dict):
+        y_axis_params = {'min': 0}
+    y_min_current, y_max_current = ax.get_ylim()
+    y_min = y_axis_params.get('min', y_min_current)
+    y_max = y_axis_params.get('max', y_max_current)
+    ax.set_ylim([y_min, y_max])
+
+    if plot_cumsum:
+        ax_cumsum.set_ylim([0., 100.])
+        ax_cumsum.set_ylabel('Explained Variance [%]')
+        ax_cumsum.spines.right.set_color(c_cumsum)
+        ax_cumsum.yaxis.label.set_color(c_cumsum)
+        ax_cumsum.tick_params(axis='y', colors=c_cumsum, which='major')
+        ax_cumsum.tick_params(axis='y', colors=c_cumsum, which='minor')
 
     plt.tight_layout()
     if inline:
