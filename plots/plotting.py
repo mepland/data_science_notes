@@ -276,7 +276,7 @@ def plot_scree(pca, m_path='output', fname='scree', tag='', grid=False, plot_cum
         leg.get_frame().set_edgecolor('none')
         leg.get_frame().set_facecolor('none')
 
-    ax.set_xlabel('Principal Component')
+    ax.set_xlabel('Principle Component')
     ax.set_ylabel('Eigenvalues')
 
     if not isinstance(x_axis_params, dict):
