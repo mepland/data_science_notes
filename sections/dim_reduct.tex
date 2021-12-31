@@ -141,20 +141,28 @@ will need to be applied before feeding data to the model.
   \end{subfigure}
 \caption{
 On the left, an illustration of dimensionality reduction $m=3 \to k=2$ with PCA on genetics data \cite{Scholz2006}.
-On the right, an example Scree plot from a toy dataset.
-Based on these results we should consider reducing to $k=9$ or $13$ dimensions.
+On the right, an example scree plot from a toy dataset.
+Though there is no prominent elbow,
+based on the Kaiser criterion (percent explainable variance)
+we should consider reducing to $k=9$ ($k=13$) dimensions.
 \label{fig:dim_reduct:PCA}
 }
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Scree Plots}
-\label{dim_reduct:PCA:Scree}
-% TODO
+\label{dim_reduct:PCA:scree}
 
-% TODO Biplot?
-
-TODO \cref{fig:dim_reduct:PCA:scree}
+When working with PCA we can use a
+scree\footnote{Named after the similarly shaped geological feature, a rubble pile at the base of a cliff.} plot \cite{scree}
+of the eigenvalues, such as \cref{fig:dim_reduct:PCA:scree},
+to decide how many principle components to retain.
+While this is always a somewhat subjective decision,
+the Kaiser criterion is one potential guideline,
+keeping all principle components with $1 < \lambda_{i}$.
+We can also look for an elbow in the plot,
+or take the necessary principle components to reach
+\si{80}{\percent} or $\si{90}{\percent} \leq \sum_{i=1}^{k} \lambda_{i} / \sum_{j=1}^{n} \lambda_{j}$ of the explainable variance.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
