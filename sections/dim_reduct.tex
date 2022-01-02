@@ -60,8 +60,12 @@ the variance of the data along $\vu{u}_{i}$ will be
 \end{subequations}
 
 \noindent where $\mathbf{M}$ is
-the covariance matrix\footnote{$M_{ij} = \cov{\mathbf{X} \vu{e}_{i}}{\mathbf{X} \vu{e}_{j}}$,
-see \cref{stats:corr_covar:covar_matrix}.} of $\mathbf{X}$
+the covariance matrix\footnote{$M_{ij} = \cov{\mathbf{X} \vu{e}_{i}}{\mathbf{X} \vu{e}_{j}} = M_{ji}$,
+see \cref{stats:corr_covar:covar_matrix}.
+When the data is centered and $\expval{\vb{x}} = \va{0}$,
+$\mathbf{M} = \frac{1}{m} \mathbf{X} \mathbf{X}\transpose$.
+Note that $\mathbf{X}\transpose \mathbf{X} \propto \mathbf{M}$
+is commonly used in PCA derivations.} of $\mathbf{X}$
 and $\expval{\vb{x}} = \sum_{i=1}^{n} \expval{\mathbf{X} \vu{e}_{i}} \vu{e}_{i}$.
 We now wish to find a new orthonormal basis $\left\{\vu{u}_{i}\right\}$
 which maximizes $\variance{\mathbf{X} \vu{u}_{i}}$,
@@ -112,13 +116,21 @@ Scaling is handled by a separate transformation, as can be seen in
 \href{https://scikit-learn.org/stable/auto\_examples/preprocessing/plot\_scaling\_importance.html}{this demo}.},
 but it is not universal so check the appropriate documentation.
 
+The computational algorithms used today to efficiently preform PCA are
+frequently based on Singular Value Decomposition (SVD), see \cref{dim_reduct:SVD},
+rather than the eigendecomposition of the covariance matrix.
+Other related approaches include sparse PCA\footnote{Implemented
+in \sklearn as the \texttt{SparsePCA}
+\href{https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.SparsePCA.html}{function}.
+For more on this method, see the relevant \sklearn
+\href{https://scikit-learn.org/stable/modules/decomposition.html\#sparsepca}{user guide section}.},
+which incorporates a L1 regularization term to perform feature selection on the original $n$ dimensions,
+removing those which are not needed to generate the leading $k$ principle components.
+
 When modeling we should also take care to only run PCA on the training set,
 to avoid utilizing any information from the test set.
 Of course later while making predictions the same PCA transforms
 will need to be applied before feeding data to the model.
-
-% TODO many ways of actually doing the computation, including sparse PCA
-% TODO real estate example: show how PCA can merge fields like # rooms, # bathrooms, sq footage, zip code, distance to schools, etc down to two dimensions standing in for house size and location
 
 \begin{figure}[H]
   \centering
