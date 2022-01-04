@@ -37,7 +37,7 @@ thus we are solving \cref{eq:MLE} for $\vb*{\beta} = \hat{\vb*{\beta}}_{\text{ML
 \begin{subequations}\label{eq:MLE}
 \begin{align}
 0 &= \partial_{\vb*{\beta}} \, L\left(\vb*{\beta} \mid \vb{x}\right) \label{eq:MLE:L} \\
-\implies 0 &= \partial_{\vb*{\beta}} \log\left(L\left(\vb*{\beta} \mid \mathbf{X}\right)\right) = \partial_{\vb*{\beta}} \, \log\left(\prod_{i=1}^{m} \, P\left(\vb{x}_{i} \mid \vb*{\beta}\right)\right) \label{eq:MLE:log_L} \\
+\implies 0 &= \partial_{\vb*{\beta}} \log\left(L\left(\vb*{\beta} \mid \mb{X}\right)\right) = \partial_{\vb*{\beta}} \, \log\left(\prod_{i=1}^{m} \, P\left(\vb{x}_{i} \mid \vb*{\beta}\right)\right) \label{eq:MLE:log_L} \\
 &= \sum_{i=1}^{m} \, \partial_{\vb*{\beta}} \log\left(P\left(\vb{x}_{i} \mid \vb*{\beta}\right)\right) \label{eq:MLE:log_L_sum}
 \end{align}
 \end{subequations}

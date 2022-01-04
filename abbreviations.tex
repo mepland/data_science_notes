@@ -26,6 +26,9 @@
 % \newcommand*{\dif}{\ensuremath{d}} % from ATLAS def
 \newcommand{\realR}{\ensuremath{\mathbb{R}}\xspace}
 
+% make a copy of the \vb command from physics named i\mb for matrices. It's the exact same latex, but it makes reading the math in tex a bit clearer
+\newcommand{\mb}[1]{\vb{#1}}
+
 \DeclareMathOperator*{\sign}{sgn}
 
 \DeclareMathOperator*{\argmin}{arg\,min} % thin space, limits underneath in displays, https://tex.stackexchange.com/questions/5223/command-for-argmin-or-argmax

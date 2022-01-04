@@ -33,7 +33,7 @@ or equivalently\footnote{See
 for one proof.} maximizes the variance of the data in the new vector space.
 See \cref{fig:dim_reduct:PCA:illustration} for an illustration of PCA in action.
 
-To begin, we construct a $n \times m$ matrix $\mathbf{X}$
+To begin, we construct a $n \times m$ matrix $\mb{X}$
 from the $n$ features and $m$ data points in the original vector space
 with basis $\left\{\vu{e}_{i}\right\}$.
 If we project the $\vb{x}_{j}$ data point on to
@@ -43,7 +43,7 @@ the variance of the data along $\vu{u}_{i}$ will be
 
 \begin{subequations}\label{eq:PCA:variance}
 \begin{align}
-\variance{\mathbf{X} \vu{u}_{i}}
+\variance{\mb{X} \vu{u}_{i}}
 &= \frac{1}{m}\sum_{j=1}^{m} \left(
 \vu{u}_{i}\transpose \vb{x}_{j}
 -
@@ -55,20 +55,20 @@ the variance of the data along $\vu{u}_{i}$ will be
 \left(\vb{x}_{j} - \expval{\vb{x}}\right)
 \left(\vb{x}_{j} - \expval{\vb{x}}\right)\transpose
 \vu{u}_{i}
-= \vu{u}_{i}\transpose \mathbf{M} \vu{u}_{i}, \label{eq:PCA:variance:M}
+= \vu{u}_{i}\transpose \mb{M} \vu{u}_{i}, \label{eq:PCA:variance:M}
 \end{align}
 \end{subequations}
 
-\noindent where $\mathbf{M}$ is
-the covariance matrix\footnote{$M_{ij} = \cov{\mathbf{X} \vu{e}_{i}}{\mathbf{X} \vu{e}_{j}} = M_{ji}$,
+\noindent where $\mb{M}$ is
+the covariance matrix\footnote{$M_{ij} = \cov{\mb{X} \vu{e}_{i}}{\mb{X} \vu{e}_{j}} = M_{ji}$,
 see \cref{stats:corr_covar:covar_matrix}.
 When the data is centered and $\expval{\vb{x}} = \va{0}$,
-$\mathbf{M} = \frac{1}{m} \mathbf{X} \mathbf{X}\transpose$.
-Note that $\mathbf{X}\transpose \mathbf{X} \propto \mathbf{M}$
-is commonly used in PCA derivations.} of $\mathbf{X}$
-and $\expval{\vb{x}} = \sum_{i=1}^{n} \expval{\mathbf{X} \vu{e}_{i}} \vu{e}_{i}$.
+$\mb{M} = \frac{1}{m} \mb{X} \mb{X}\transpose$.
+Note that $\mb{X}\transpose \mb{X} \propto \mb{M}$
+is commonly used in PCA derivations.} of $\mb{X}$
+and $\expval{\vb{x}} = \sum_{i=1}^{n} \expval{\mb{X} \vu{e}_{i}} \vu{e}_{i}$.
 We now wish to find a new orthonormal basis $\left\{\vu{u}_{i}\right\}$
-which maximizes $\variance{\mathbf{X} \vu{u}_{i}}$,
+which maximizes $\variance{\mb{X} \vu{u}_{i}}$,
 subject to the constraint that $\abs{\vu{u}_{i}} = \vu{u}_{i}\transpose \vu{u}_{i} = 1$,
 \ie the classic Lagrange multiplier problem of \cref{opt:lagrange_mult}.
 
@@ -76,15 +76,15 @@ Taking matrix derivatives
 
 \begin{subequations}\label{eq:PCA:lagrange}
 \begin{align}
-0 &= \dv{\vu{u}_{i}} \left( \vu{u}_{i}\transpose \mathbf{M} \vu{u}_{i}
+0 &= \dv{\vu{u}_{i}} \left( \vu{u}_{i}\transpose \mb{M} \vu{u}_{i}
 + \lambda \left( 1 - \vu{u}_{i}\transpose \vu{u}_{i} \right) \right)
-= 2 \mathbf{M} \vu{u}_{i} - 2 \lambda \vu{u}_{i}, \label{eq:PCA:lagrange:setup} \\
-&\implies \mathbf{M}\vu{u}_{i} = \lambda \vu{u}_{i}, \label{eq:PCA:lagrange:eigen}
+= 2 \mb{M} \vu{u}_{i} - 2 \lambda \vu{u}_{i}, \label{eq:PCA:lagrange:setup} \\
+&\implies \mb{M}\vu{u}_{i} = \lambda \vu{u}_{i}, \label{eq:PCA:lagrange:eigen}
 \end{align}
 \end{subequations}
 
 \noindent we discover that $\left\{\vu{u}_{i}\right\}$
-is just the eigenbasis of $\mathbf{M}$ with eigenvalues $\lambda_{i}$.
+is just the eigenbasis of $\mb{M}$ with eigenvalues $\lambda_{i}$.
 If we left multiply \cref{eq:PCA:lagrange:eigen} by $\vu{u}_{i}\transpose$
 we see that the eigenvalues $\lambda_{i}$ are actually the variances along the eigenvectors $\vu{u}_{i}$.
 The eigenvector, $\vu{u}_{1}$, with the largest eigenvalue, $\lambda_{1}$, and thus largest variance
@@ -93,13 +93,13 @@ while the second largest variance $\lambda_{2}$ corresponds to $\vu{u}_{2}$,
 the second principle component (PC2)\ldots
 
 To actually perform the change of basis,
-we construct $\mathbf{U}$ whose columns are the $\vu{u}_{i}$ eigenvectors
-and then transform $\mathbf{X} \to\mathbf{U}\transpose \mathbf{X} = \widetilde{\mathbf{X}}$.
+we construct $\mb{U}$ whose columns are the $\vu{u}_{i}$ eigenvectors
+and then transform $\mb{X} \to\mb{U}\transpose \mb{X} = \widetilde{\mb{X}}$.
 As we are typically performing PCA to reduce the dimensionality of the data,
 we can select only the top $k$ principle components to keep, making
-$\mathbf{U}\transpose_{k \times n} \mathbf{X}_{n \times m} = \widetilde{\mathbf{X}}_{k \times m}$.
+$\mb{U}\transpose_{k \times n} \mb{X}_{n \times m} = \widetilde{\mb{X}}_{k \times m}$.
 Note that if there are few data points relative to the original dimensions, $m < n$,
-the eigendecomposition will still work, but some of the $\lambda_{i}$ may be $< 0$.
+the eigendecomposition of $\mb{M}_{n \times n}$ will still work, but some of the $\lambda_{i}$ may be $< 0$.
 These eigenvalues should be disregarded, leaving $k \leq \min\left(m,n\right)$ possible principle components.
 
 In practice, we should first center and rescale the data,
