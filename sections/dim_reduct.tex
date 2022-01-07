@@ -63,7 +63,7 @@ the variance of the data along $\vu{u}_{i}$ will be
 the covariance matrix\footnote{$M_{ij} = \cov{\mb{X} \vu{e}_{i}}{\mb{X} \vu{e}_{j}} = M_{ji}$,
 see \cref{stats:corr_covar:covar_matrix}.
 When the data is centered and $\expval{\vb{x}} = \va{0}$,
-$\mb{M} = \frac{1}{m} \mb{X} \mb{X}\transpose$.
+$\mb{M} = \frac{1}{m} \mb{X} \mb{X}\transpose = \frac{1}{m} \mb{X}\transpose \mb{X}$.
 Note that $\mb{X}\transpose \mb{X} \propto \mb{M}$
 is commonly used in PCA derivations.} of $\mb{X}$
 and $\expval{\vb{x}} = \sum_{i=1}^{n} \expval{\mb{X} \vu{e}_{i}} \vu{e}_{i}$.
@@ -117,8 +117,8 @@ Scaling is handled by a separate transformation, as can be seen in
 but it is not universal so check the appropriate documentation.
 
 The computational algorithms used today to efficiently preform PCA are
-frequently based on Singular Value Decomposition (SVD), see \cref{dim_reduct:SVD},
-rather than the eigendecomposition of the covariance matrix.
+frequently based on Singular Value Decomposition (SVD), see \cref{dim_reduct:SVD:PCA},
+rather than a straightforward eigendecomposition of the covariance matrix.
 Other related approaches include sparse PCA\footnote{Implemented
 in \sklearn as the \texttt{SparsePCA}
 \href{https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.SparsePCA.html}{function}.
@@ -180,7 +180,154 @@ or take the necessary principle components to reach
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Singular Value Decomposition (SVD)}
 \label{dim_reduct:SVD}
-% TODO
+% https://youtu.be/HAJey9-Q8js
+% https://www.youtube.com/watch?v=gXbThCXjZFM&list=PLMrJAkhIeNNSVjnsviglFoY2nXildDCcv
+
+Singular value decomposition (SVD) is a linear method like PCA,
+but it works directly on the data matrix $\mb{X}$,
+rather than the covariance matrix $\mb{M}$.
+We begin with the rectangular\footnote{Note that here we have constructed $\mb{X}$
+with data points as row vectors, as in \cref{regression:linear},
+while in \cref{dim_reduct:PCA} they were columns.
+Though inconsistent, these definitions of $\mb{X} \leftrightarrow \mb{X}\transpose$
+simplify the notation in each section.} $\mb{X}_{m \times n}$
+of $m$ data points in the original $n$ dimensional vector space.
+Let $\rank\left(\mb{X}\right) = r \leq \min\left(m,n\right)$.
+We can then decompose $\mb{X}$ into $r$ linearly independent
+rank 1 matrices $\vb{u} \vb{v}\transpose$ as
+
+\begin{subequations}\label{eq:SVD}
+\begin{align}
+\mb{X} &= \sum_{i=1}^{r} \sigma_{i} \vb{u}_{i} \vb{v}_{i}\transpose, \label{eq:SVD:sum} \\
+&= \begin{pmatrix}
+  \vb{u}_{1} & \vb{u}_{2} & \ldots & \vb{u}_{r}
+\end{pmatrix}
+\begin{pmatrix}
+  \sigma_{1} & 0          & \ldots & 0 \\
+  0          & \sigma_{2} & \ldots & 0 \\
+  \vdots     & \vdots     & \ddots & 0 \\
+  0          & 0          & 0      & \sigma_{r}
+\end{pmatrix}
+\begin{pmatrix}
+  \vb{v}_{1}\transpose \\
+  \vb{v}_{2}\transpose \\
+  \vdots \\
+  \vb{v}_{r}\transpose
+\end{pmatrix}\,, \label{eq:SVD:expanded} \\
+&= \mb{U} \mb{\Sigma} \mb{V}\transpose, \label{eq:SVD:matrix_form}
+\end{align}
+\end{subequations}
+
+\noindent where $\vb{u}_{m \times 1}$, $\vb{v}_{n \times 1}$,
+$\mb{U}_{m \times r}$, $\mb{\Sigma}_{r \times r}$, and $\mb{V}_{n \times r}$.
+
+As $\rank\left(\vb{u} \vb{v}\transpose\right) = 1$,
+this implies that the $\vb{u}_{i}$ vectors are linearly independent, as are $\vb{v}_{i}$,
+and thus\footnote{Here we are actually describing the ``compact'' form of SVD,
+where $\mb{U}$ and $\mb{V}$ are not square, and thus are only semi-orthogonal
+as $\mb{U} \mb{U}\transpose \neq \identity$, $\mb{V} \mb{V}\transpose \neq \identity$.
+In regular SVD where $\mb{U}_{m \times m}$, $\mb{\Sigma}_{m \times n}$, and $\mb{V}_{n \times n}$,
+$\mb{U}$ and $\mb{V}$ are orthogonal,
+but $\mb{\Sigma}$ is only rectangular diagonal and $m-r$ of the singular values
+are 0.} $\mb{U}\transpose \mb{U} = \mb{V}\transpose \mb{V} = \identity_{r \times r}$.
+If they were not linearly independent,
+we could not reconstruct $\mb{X}$ with $\rank\left(\mb{X}\right) = r$.
+Rearranging \cref{eq:SVD:matrix_form} as
+
+\begin{subequations}\label{eq:SVD:left_right}
+\begin{align}
+\mb{U}\transpose \mb{X} &= \mb{\Sigma} \mb{V}\transpose, \label{eq:SVD:left_right:left} \\
+\mb{X} \mb{V} &= \mb{U} \mb{\Sigma}, \label{eq:SVD:left_right:right}
+\end{align}
+\end{subequations}
+
+\noindent leads us to name the
+$\vb{u}_{i}$ left-singular vectors,
+$\vb{v}_{i}$ right-singular vectors,
+and $\sigma_{i}$ singular values.
+In this form, we see that SVD is a generalization of eigendecomposition to rectangular matrices.
+We can also think of SVD as a form of generalized Fourier transform, expanding $\mb{X}$ into its components.
+
+It can be shown\footnote{See the \href{https://en.wikipedia.org/wiki/Singular\_value\_decomposition\#Existence\_proofs}{SVD wikipedia page} for
+existence proofs, and note we can reorder $\sigma_{i}$ as we like.} that
+it is always possible construct a SVD of $\mb{X} \to \mb{U} \mb{\Sigma} \mb{V}\transpose$
+with monotonically decreasing singular values $\sigma_{i}$, $\sigma_{i} > \sigma_{i+1}$.
+We can thus approximate $\mb{X}$ by $\widetilde{\mb{X}}_{m \times n}$
+having a lower $\rank\left(\widetilde{\mb{X}}\right) = k < r$
+by setting $\widetilde{\sigma}_{i} = 0$ for $k < i$ in
+$\widetilde{\mb{X}} = \mb{U} \widetilde{\mb{\Sigma}} \mb{V}\transpose$.
+By the Eckart-Young theorem \cite{eckart1936}
+this truncated SVD is the best rank $k$ approximation to $\mb{X}$,
+minimizing the Frobenius norm\footnote{$\normF{\mb{X}}^{2} = \sum_{ij} \abs{x_{ij}}^{2} = \trace\left(\mb{X}^{\dagger} \mb{X}\right) = \sum_{i}^{r} \sigma_{i}^{2}$.} of
+the difference $\normF{\mb{X} - \widetilde{\mb{X}}}$.
+To actually reduce from $n$ dimensions to $k$ we only need to take the
+$\mb{U} \widetilde{\mb{\Sigma}} = \widetilde{\mb{X}}_{m \times k}$ portion.
+We omit the computational details here, leaving them to be implemented
+by standard software libraries, such as {\sklearn}'s \texttt{TruncatedSVD}
+\href{https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html}{function}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{PCA and SVD}
+\label{dim_reduct:SVD:PCA}
+
+We can explore the connection between PCA and SVD by considering
+the centered correlation matrix $\mb{M} = \frac{1}{m} \mb{X}\transpose \mb{X}$
+at the heart of PCA:
+
+\begin{subequations}\label{eq:SVD_PCA}
+\begin{align}
+m \mb{M} &= \mb{X}\transpose \mb{X}
+= \mb{V} \mb{\Sigma}\transpose \mb{U}\transpose \mb{U} \mb{\Sigma} \mb{V}\transpose
+= \mb{V} \mb{\Sigma} \identity \mb{\Sigma} \mb{V}\transpose, \label{eq:SVD_PCA:expand} \\
+&= \mb{V} \mb{\Sigma}^{2} \mb{V}\transpose, \label{eq:SVD_PCA:eigendecomp} \\
+\implies m \mb{M} \mb{V} &= \mb{V} \mb{\Sigma}^{2}. \label{eq:SVD_PCA:eigenvalues}
+\end{align}
+\end{subequations}
+
+Thus if we have the SVD of $\mb{X}$,
+the eigenvalues of $m \mb{M}$ are given by $\mb{\Sigma}^{2}$ and eigenvectors by $\mb{V}$.
+Note that \cref{eq:SVD_PCA:eigendecomp} is just the eigendecomposition of $m \mb{M}$.
+In practice, the eigendecomposition in PCA is actually performed via SVD in this way,
+as it is more computationally efficient to first
+run SVD and then use \cref{eq:SVD_PCA} to produce the PCA results.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Pseudoinverse Matrices and SVD}
+\label{dim_reduct:SVD:pseudoinverse}
+
+SVD can also be used to find the Moore-Penrose pseudoinverse \cite{moore1920,penrose1955} $\mb{X}^{+}$
+of a rectangular matrix $\mb{X}_{m \times n}$:
+
+\begin{subequations}\label{eq:SVD_pseudoinverse}
+\begin{align}
+\mb{X} &= \mb{U} \mb{\Sigma} \mb{V}\transpose \implies \label{eq:SVD_pseudoinverse:SVD} \\
+\mb{X}^{+} &= \mb{V} \mb{\Sigma}^{-1} \mb{U}\transpose
+= \mb{V}
+\begin{pmatrix}
+  \frac{1}{\sigma_{1}} & 0                    & \ldots & 0 \\
+  0                    & \frac{1}{\sigma_{2}} & \ldots & 0 \\
+  \vdots               & \vdots               & \ddots & 0 \\
+  0                    & 0                    & 0      & \frac{1}{\sigma_{r}}
+\end{pmatrix}
+\mb{U}\transpose. \label{eq:SVD_pseudoinverse:def}
+\end{align}
+\end{subequations}
+
+The pseudoinverse\footnote{More specifically, we are working with the left pseudoinverse here and in \cref{eq:SVD_pseudoinverse:def}.} is
+particularly useful in data science
+for obtaining least square solutions to a linear system of equations \cref{eq:pseudoinverse_least_squares:linear},
+even if $\mb{A}_{m \times n}$ is not invertible:
+
+\begin{subequations}\label{eq:pseudoinverse_least_squares}
+\begin{align}
+\mb{A} \vb{x} &= \vb{b}, \label{eq:pseudoinverse_least_squares:linear} \\
+\implies \vb{x} &= \mb{A}^{+} \vb{b} + \left(\identity - \mb{A}^{+}\mb{A}\right) \vb{w}, \label{eq:pseudoinverse_least_squares:solution}
+\end{align}
+\end{subequations}
+
+\noindent where $\vb{w}$ is an arbitrary vector.
+\cref{eq:pseudoinverse_least_squares:solution} then gives all possible solutions, if any exist.
+Such least square solutions will exist if and only if $\mb{A} \mb{A}^{+} \vb{b} = \vb{b}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
