@@ -166,89 +166,6 @@ If the errors really are non-normal, a generalized linear model (GLM) could be e
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Goodness of Fit}
-\label{regression:linear:goodness_of_fit}
-
-\subsubsection{Coefficient of Determination ($R^{2}$)}
-\label{regression:linear:goodness_of_fit:R2}
-
-The coefficient of determination\footnote{For additional details see
-\href{https://economictheoryblog.com/2014/11/05/the-coefficient-of-determination-latex-r2/}{here},
-\href{https://economictheoryblog.com/2014/11/05/proof/}{here}, and
-\href{http://people.duke.edu/~rnau/rsquared.htm}{here}.}, $R^{2}$,
-measures how much of $\vb{y}$'s variance is explained by the fitted model $\hat{\vb{y}}$,
-versus by random errors $\vb*{\epsilon}$ or other unknown sources,
-as $\vb{y} = \hat{\vb{y}} + \vb*{\epsilon}$.
-$R^{2} \approx 1$ is ideal and, depending on the particular definition,
-it can take values outside the typical $0 \leq R^{2} \leq 1$ range.
-
-\begin{equation}\label{eq:regression:linear:goodness_of_fit:R2}
-R^{2} = \frac{
-\sum_{i=1}^{m} \left(\yhat_{i} - \expval{\yhat}\right)^{2}
-}{
-\sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}
-} = 1 - \frac{
-\sum_{i=1}^{m} \hat{\epsilon}_{i}^{\,2}
-}{
-\sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}
-} = \rho_{y,\yhat}^{2}
-\end{equation}
-
-The adjusted $R^{2}$, $R^{2}_{\text{adj}}$, accounts for the degrees of freedom in the
-fitted sample, $m-1$, and in the model, $m-n-1$, and is thus a better metric.
-
-\begin{equation}\label{eq:regression:linear:goodness_of_fit:R2_adj}
-R^{2}_{\text{adj}} = 1 - \frac{
-\left(\sum_{i=1}^{m} \hat{\epsilon}_{i}^{\,2}\right)/\left(m-n-1\right)
-}{
-\left(\sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}\right)/\left(m-1\right)
-}
-= 1 - \left(1-R^{2}\right)\frac{m-1}{m-n-1}
-\end{equation}
-
-\subsubsection{Standard Error of the Regression and $\chi_{\nu}^{2}$}
-\label{regression:linear:goodness_of_fit:reduced_chi2}
-
-The standard error of the regression, $s$,
-and reduced \chiSqstat, $\chi_{\nu}^{2}$,
-are additional ways of quantifying goodness of fit.
-$s$ is a measure of the typical residual, in the units of $y$.
-$\chi_{\nu}^{2}$ is a convenient way of reporting this spread in a dimensionless manner,
-particularly in more sophisticated regressions where each $y_{i}$ has an \apriori estimated uncertainty, $\sigma_{i}$.
-
-\begin{subequations}\label{eq:regression:linear:goodness_of_fit:s_red_chi2}
-\begin{align}
-s^{2} &= \frac{\norm{\hat{\vb*{\epsilon}}}^{2}}{m-n} = \frac{1}{m-n} \sum_{i=1}^{m} \left(\yhat_{i} - y_{i}\right)^{2} \label{eq:regression:linear:goodness_of_fit:s} \\
-\chi_{\nu}^{2} &= \frac{1}{m-n} \sum_{i=1}^{m} \frac{\left(\yhat_{i} - y_{i}\right)^{2}}{\sigma_{i}^{2}} \label{eq:regression:linear:goodness_of_fit:red_chi2}
-\end{align}
-\end{subequations}
-
-$\chi_{\nu}^{2}$ can be interpreted as follows:
-
-\begin{table}[H]
-  \centering
-  \begin{tabular}{c | p{8cm}}
-$\chi_{\nu}^{2} \gg 1$ & The true model may be different than the fitted model. \\
-$\chi_{\nu}^{2} > 1$ & Fit doesn't fully explain data (underfitting), or the \apriori $\sigma_{i}$ are underestimated. \\
-$\chi_{\nu}^{2} \approx 1$ & Good fit! \\
-$\chi_{\nu}^{2} < 1$ & Fit overexplains data (overfitting), or the \apriori $\sigma_{i}$ are overestimated. \\
-$\chi_{\nu}^{2} \ll 1$ & Extreme overfitting or overestimated $\sigma_{i}$.
-  \end{tabular}
-%  \caption{}
-  \label{table:red_chi2_interp}
-\end{table}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Coefficient Significance}
-\label{regression:linear:coeff_significance}
-% TODO what is the significance of any particular \beta_{i} coefficient, via \ttest, \chiSqtest, \Ftest?? Should be able to get distribution of any \beta_{i} analytically for OLS, but can use bootstrap sampling for more complex models.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Variance Inflation Factor (VIF)}
-\label{regression:linear:VIF}
-% TODO
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Ridge Regression (L2, or Tikhonov)}
 \label{regression:linear:ridge}
 
@@ -317,8 +234,99 @@ it does a better job when only some of the $n$ input features infuence \yhat,
 while ridge does better if most of the features have similar importances.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Coefficient Significance}
+\label{regression:linear:coeff_significance}
+% TODO what is the significance of any particular \beta_{i} coefficient, via \ttest, \chiSqtest, \Ftest?? Should be able to get distribution of any \beta_{i} analytically for OLS, but can use bootstrap sampling for more complex models.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Variance Inflation Factor (VIF)}
+\label{regression:linear:VIF}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{OLS Example}
 \label{regression:linear:example}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Goodness of Fit}
+\label{regression:goodness_of_fit}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Coefficient of Determination ($R^{2}$)}
+\label{regression:goodness_of_fit:R2}
+
+The coefficient of determination\footnote{For additional details see
+\href{https://economictheoryblog.com/2014/11/05/the-coefficient-of-determination-latex-r2/}{here},
+\href{https://economictheoryblog.com/2014/11/05/proof/}{here}, and
+\href{http://people.duke.edu/~rnau/rsquared.htm}{here}.}, $R^{2}$,
+measures how much of $\vb{y}$'s variance is explained by the fitted model $\hat{\vb{y}}$,
+versus by random errors $\vb*{\epsilon}$ or other unknown sources,
+as $\vb{y} = \hat{\vb{y}} + \vb*{\epsilon}$.
+$R^{2} \approx 1$ is ideal and, depending on the particular definition,
+it can take values outside the typical $0 \leq R^{2} \leq 1$ range.
+
+\begin{equation}\label{eq:regression:goodness_of_fit:R2}
+R^{2} = \frac{
+\sum_{i=1}^{m} \left(\yhat_{i} - \expval{\yhat}\right)^{2}
+}{
+\sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}
+} = 1 - \frac{
+\sum_{i=1}^{m} \hat{\epsilon}_{i}^{\,2}
+}{
+\sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}
+} = \rho_{y,\yhat}^{2}
+\end{equation}
+
+The adjusted $R^{2}$, $R^{2}_{\text{adj}}$, accounts for the degrees of freedom in the
+fitted sample, $m-1$, and in the model, $m-n-1$, and is thus a better metric.
+
+\begin{equation}\label{eq:regression:goodness_of_fit:R2_adj}
+R^{2}_{\text{adj}} = 1 - \frac{
+\left(\sum_{i=1}^{m} \hat{\epsilon}_{i}^{\,2}\right)/\left(m-n-1\right)
+}{
+\left(\sum_{i=1}^{m} \left(y_{i} - \expval{y}\right)^{2}\right)/\left(m-1\right)
+}
+= 1 - \left(1-R^{2}\right)\frac{m-1}{m-n-1}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Standard Error of the Regression and $\chi_{\nu}^{2}$}
+\label{regression:goodness_of_fit:reduced_chi2}
+
+The standard error of the regression, $s$,
+and reduced \chiSqstat, $\chi_{\nu}^{2}$,
+are additional ways of quantifying goodness of fit.
+$s$ is a measure of the typical residual, in the units of $y$.
+$\chi_{\nu}^{2}$ is a convenient way of reporting this spread in a dimensionless manner,
+particularly in more sophisticated regressions where each $y_{i}$ has an \apriori estimated uncertainty, $\sigma_{i}$.
+
+\begin{subequations}\label{eq:regression:goodness_of_fit:s_red_chi2}
+\begin{align}
+s^{2} &= \frac{\norm{\hat{\vb*{\epsilon}}}^{2}}{m-n} = \frac{1}{m-n} \sum_{i=1}^{m} \left(\yhat_{i} - y_{i}\right)^{2} \label{eq:regression:goodness_of_fit:s} \\
+\chi_{\nu}^{2} &= \frac{1}{m-n} \sum_{i=1}^{m} \frac{\left(\yhat_{i} - y_{i}\right)^{2}}{\sigma_{i}^{2}} \label{eq:regression:goodness_of_fit:red_chi2}
+\end{align}
+\end{subequations}
+
+$\chi_{\nu}^{2}$ can be interpreted as follows:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{c | p{8cm}}
+$\chi_{\nu}^{2} \gg 1$ & The true model may be different than the fitted model. \\
+$\chi_{\nu}^{2} > 1$ & Fit doesn't fully explain data (underfitting), or the \apriori $\sigma_{i}$ are underestimated. \\
+$\chi_{\nu}^{2} \approx 1$ & Good fit! \\
+$\chi_{\nu}^{2} < 1$ & Fit overexplains data (overfitting), or the \apriori $\sigma_{i}$ are overestimated. \\
+$\chi_{\nu}^{2} \ll 1$ & Extreme overfitting or overestimated $\sigma_{i}$.
+  \end{tabular}
+%  \caption{}
+  \label{table:red_chi2_interp}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texorpdfstring{$F$}{F}-Test of Lack-of-Fit Sum of Squares}
+\label{regression:goodness_of_fit:F_test_fit}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
