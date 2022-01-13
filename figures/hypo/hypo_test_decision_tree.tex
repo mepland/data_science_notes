@@ -1,0 +1,70 @@
+\tikzset{
+  leaf/.style      = {shape=rectangle, rounded corners, draw, align=center},
+  leafLabel/.style = {shape=rectangle, rounded corners, fill=white},
+  dummy/.style     = {circle, draw}
+}
+
+\begin{tikzpicture}
+[
+grow'                   = right,
+edge from parent/.style = {draw, -latex, above},
+every node/.style       = {font=\footnotesize},
+sloped
+]
+
+\tikzstyle{level 1}=[level distance=26mm, sibling distance=53mm]
+\tikzstyle{level 2}=[level distance=26mm, sibling distance=47mm]
+\tikzstyle{level 3}=[level distance=26mm, sibling distance=23mm]
+\tikzstyle{level 4}=[level distance=48mm, sibling distance=11.8mm]
+
+\node [dummy] {}
+  child { node [dummy] {}
+    child { node [dummy] {}
+      child { node [dummy] {}
+        child { node [leaf] {$Z$-Test\\\cref{hypo:Z_test}} edge from parent node {Exact or CLT} }
+        child { node [leaf] {$t$-Test\\\cref{hypo:t_test}} edge from parent [centered] node [leafLabel] {$n \lesssim 30$} }
+        child { node [leaf] {ANOVA\\\cref{hypo:ANOVA}} edge from parent [below] node {$3\leq$ Samples} }
+        edge from parent node {Mean}
+      }
+      child { node [dummy] {}
+        child { node [leaf] {$F$-Test\\\cref{hypo:F_test_var}} edge from parent node {} }
+        edge from parent [below] node {Variances}
+      }
+      edge from parent node {Normal}
+    }
+    child { node [dummy] {}
+      child { node [dummy] {}
+        child { node [leaf] {Wilcoxon Signed-Rank\\\cref{hypo:wilcoxon_test}} edge from parent node {1 Sample} }
+        child { node [leaf] {Mann-Whitney $U$\\\cref{hypo:mann_whitney_U_test}} edge from parent [centered, pos=0.63] node [leafLabel] {2 Sample} }
+        child { node [leaf] {Kruskal-Wallis $H$\\\cref{hypo:kruskal_wallis_H_test}} edge from parent [below] node {$3\leq$ Samples} }
+        edge from parent node {Median}
+      }
+      child { node [dummy] {}
+        child { node [leaf] {Kolmogorov-Smirnov\\\cref{hypo:KS_test}} edge from parent [below] node {} }
+        edge from parent [below] node {Distribution}
+      }
+      edge from parent [below] node {Non-Normal}
+    }
+    edge from parent node {Continuous}
+  }
+  child { node [dummy] {}
+    child { node [dummy] {}
+      child { node [dummy] {}
+        child { node [leaf] {$\chi^{2}$-Test\\\cref{hypo:chi2_test}} edge from parent node {} }
+        child { node [leaf] {Binomial Proportion\\\cref{hypo:binomial_test}} edge from parent node {} }
+        edge from parent node {Frequencies}
+      }
+      edge from parent node {Non-Normal}
+    }
+    edge from parent [below] node {Discrete}
+  }
+;
+\end{tikzpicture}
+
+% Leave subsections out
+%\cref{hypo:t_test:one}
+%\cref{hypo:t_test:two:unpaired}
+%\cref{hypo:t_test:two:paired}
+%\cref{hypo:binomial_test:exact}
+%\cref{hypo:binomial_test:one}
+%\cref{hypo:binomial_test:two}
