@@ -23,7 +23,7 @@ FUNCTION {string.pages} {"p.~"}
 FUNCTION {string.chapter} {"ch.~"}
 FUNCTION {string.techrep} {"Tech. Rep."}
 FUNCTION {string.mastersthesis} {"Master's thesis"}
-FUNCTION {string.phdthesis} {"PhD thesis"}
+FUNCTION {string.phdthesis} {"Ph.D.\ thesis"}
 
 MACRO {jan} {"Jan."}
 MACRO {feb} {"Feb."}
