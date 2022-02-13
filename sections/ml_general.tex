@@ -467,15 +467,72 @@ $\hat{f}\left(\vb{x}\right)$, we expand the MSE:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Bootstrap Aggregation, \texorpdfstring{\ie}{ie} Bagging}
 \label{ml_general:bagging}
-% TODO
 
+Bootstrap aggregation, more commonly known as bagging\footnote{As in
+\textbf{b}ootstrap \textbf{agg}regat\textbf{ing},
+and the bags of data utilized by the method.} \cite{Breiman1996},
+is an application of bootstrapping, see \cref{stats:bootstrapping}, to machine learning.
+When bagging, we construct an ensemble model from multiple component models,
+each trained in parallel on a different bootstrapped sample of the training dataset.
+The outputs of the component models are then aggregated into one ensemble result,
+taking the mode predicted class (mean value) when working with classification (regression) models.
+\cref{fig:bagging_and_boosting:bagging} provides an overview of the method,
+while Random Forests, described in \cref{class:RF}, are one implementation.
+By repeatedly sampling the training data we reduce the chance of overfitting,
+and thus bagging is one method of lowering a model's variance
+at the cost of increased computation in training and inference.
+
+\begin{figure}[H]
+\centering
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/ml/bagging}
+  \vspace{0.1cm}
+  \caption{Bagging}
+  \label{fig:bagging_and_boosting:bagging}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[c]{0.48\textwidth}\centering
+  \includegraphics[width=\textwidth]{figures/ml/boosting}
+  \vspace{0.1cm}
+  \caption{Boosting}
+  \label{fig:bagging_and_boosting:boosting}
+  \end{subfigure}
+\caption{
+Illustrations of the bagging and boosting ensemble methods,
+by \href{https://en.wikipedia.org/wiki/File:Ensemble_Bagging.svg}{Sirakorn}
+and \href{https://en.wikipedia.org/wiki/File:Ensemble_Boosting.svg}{Sirakorn}.
+Note that bagging tends to reduce variance,
+while boosting can reduce bias and variance.
+}
+\label{fig:bagging_and_boosting}
+\end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Boosting}
 \label{ml_general:boosting}
-% TODO
 
-% TODO link to \cref{class:BDT}
+Boosting \cite{10.5555/3091696.3091715,FREUND1997119,Breiman1996BiasV,friedman2000}
+is an ensemble method similar in concept to bagging.
+However instead of simply taking multiple random bootstrap samples in parallel,
+when boosting we train a series of models iteratively,
+as shown in \cref{fig:bagging_and_boosting:boosting}.
+At each iteration $i$, data points poorly predicted
+by the ensemble of the previous $i-1$ models are upsampled\footnote{In practice,
+this can be done with a literal upsampling of points in the training set,
+or by the application of training weights,
+provided model and software library support them.} giving them
+greater weight when computing the loss function for model $i$.
+In this way, we can create an ensemble model with a lower bias than any of
+the component models\footnote{Boosting thus works best when applied to high bias, low variance component models,
+while bagging works best for low bias, high variance models.
+Note that in either case the component models are typically decision trees,
+but in general can be a heterogeneous mix of different model types.},
+while also reducing variance\footnote{The adaptive resampling component of the boosting algorithm
+can lead to a reduction in variance in much the same way as the resampling performed in bagging \cite{Breiman1996BiasV}.
+Note that the term arcing, \ie \textbf{a}daptive \textbf{r}esampling and \textbf{c}ombin\textbf{ing}, used in \cite{Breiman1996BiasV}
+is an early name for boosting.}.
+A prime example of boosting's ability to improve the performance weak models via ensembling
+can be seen in Boosted Decision Trees (BDT) as described in \cref{class:BDT}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
