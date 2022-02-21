@@ -446,7 +446,7 @@ $\hat{f}\left(\vb{x}\right)$, we expand the MSE:
 
 \begin{subequations} \label{eq:bias_variance_tradeoff:decop}
 \begin{align}
-\text{MSE} &= \expval{\left(y-\hat{f}\right)^{2}} \\
+\text{MSE} &= \expval{\left(y-\hat{f}\right)^{2}}\,, \\
 &= \expval{\left(f + \epsilon - \hat{f} + \big[\expval{\hat{f}}-\expval{\hat{f}}\big]\right)^{2}}\,, \\
 &= \expval{\left(\big[f - \expval{\hat{f}}\big] + \epsilon - \big[\hat{f} - \expval{\hat{f}}\big]\right)^{2}}\,, \\
 &= \expval{\left(f-\expval{\hat{f}}\right)^{2}}
@@ -605,7 +605,7 @@ while L2 is rotationally symmetric and has no such tendencies.
 \subsection{L1 -- LASSO}
 \label{ml_general:reg:L1}
 
-L1, or LASSO\footnote{Least absolute shrinkage and selection operator.},
+L1, or LASSO\footnote{Least Absolute Shrinkage and Selection Operator.},
 regularization uses the norm $\norm{\vb*{\beta}}$ \cref{eq:L1}, or taxi cab distance.
 As its geometric constraints on $\vb*{\beta}$ are hypercubes,
 it tends to set some model parameters to 0, creating sparsity,
