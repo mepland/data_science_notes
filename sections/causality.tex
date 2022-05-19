@@ -1,0 +1,99 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Causal Inference}
+\label{chap:causal_inference}
+
+Causal inference is the application of prior knowledge, logic, and statistics
+to estimate the causal effect of some intervention, action, treatment, variable, \etc, on a larger system;
+moving beyond simple statements of correlation\footnote{``Everyone who confuses correlation with causation eventually ends up dead'' -- unknown}.
+Causal effect is defined to be the difference between
+the factual state of the world, where some intervention $D$ actually occurred,
+and a counterfactual state of the world, where $D$ did not occur.
+Using the notation of \cite{CausalMixtape}, which forms the basis of this chapter unless otherwise noted,
+we can write out the causal effect $\delta$, \ie the unit-specific treatment effect, as
+
+\begin{equation}\label{eq:causal_effect_delta}
+\delta_{i} = Y_{i}^{1} - Y_{i}^{0}\,,
+\end{equation}
+
+\noindent where $i$ represents a particular individual,
+and $Y^{D}$ is the observed outcome\footnote{We can represent
+$Y_{i}$ under either $D_{i}=0,1$ with the switching equation,
+$Y_{i} = D_{i} Y_{i}^{1} + \left(1-D_{i}\right) Y_{i}^{0}$.},
+both with $D=1$, and without $D=0$, the intervention.
+This leads us to the fundamental problem of causal inference:
+there will always be part of the data which can not be observed,
+\ie one path of $D_{i}$ will always be counterfactual\footnote{For example,
+in medicine a patient can be treated, or not, but not both.}.
+As we can not observe real data for both outcomes,
+it is necessary to make assumptions for any and all measurements of causal effects.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Measures of Causal Effect}
+\label{causal_inference:Measures}
+TODO
+
+average treatment effect (ATE),
+average treatment effect on the treated (ATT),
+and the
+average treatment effect on the untreated (ATU)
+
+\begin{subequations} \label{eq:causal_measures}
+\begin{align}
+ATE &= \expvalE{\delta_{i}} = \expvalE{Y_{i}^{1} - Y_{i}^{0}} = \expvalE{Y_{i}^{1}} - \expvalE{Y_{i}^{0}} \label{eq:causal_measures:ATE} \\
+ATT &= \expvalE{\delta_{i} \mid D_{i} = 1} = \expvalE{Y_{i}^{1} \mid D_{i} = 1} - \expvalE{Y_{i}^{0} \mid D_{i} = 1} \label{eq:causal_measures:ATT} \\
+ATU &= \expvalE{\delta_{i} \mid D_{i} = 0} = \expvalE{Y_{i}^{1} \mid D_{i} = 0} - \expvalE{Y_{i}^{0} \mid D_{i} = 0} \label{eq:causal_measures:ATU}
+\end{align}
+\end{subequations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Directed Acyclic Graphs (DAG)}
+\label{causal_inference:DAG}
+TODO
+
+% TODo flesh this out more
+Unless we are in the trivial case with only a single input feature,
+we must make at least one assumption\footnote{This
+dovetails nicely with the introductory statement that
+``it is necessary to make assumptions for any and all measurements of causal effects''.} about
+the structure of the DAG to keep it acyclic.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Difference in Differences (DID)}
+\label{causal_inference:DID}
+
+\begin{subequations} \label{eq:DID:2x2}
+\begin{align}
+\hat{\delta}_{kU}^{2 \times 2} &= \left( \expvalE{Y_{k} \mid \text{Post}} - \expvalE{Y_{k} \mid \text{Pre}} \right)
+- \left( \expvalE{Y_{U} \mid \text{Post}} - \expvalE{Y_{U} \mid \text{Pre}} \right) \label{eq:DID:2x2:def} \\
+&= \left( \expvalE{Y_{k}^{1} \mid \text{Post}} - \expvalE{Y_{k}^{0} \mid \text{Pre}} \right)
+- \left( \expvalE{Y_{U}^{0} \mid \text{Post}} - \expvalE{Y_{U}^{0} \mid \text{Pre}} \right) \label{eq:DID:2x2:expand} \\
+&\hphantom{=} + \left( \expvalE{Y_{k}^{0} \mid \text{Post}} - \expvalE{Y_{k}^{0} \mid \text{Pre}} \right) \label{eq:DID:2x2:add_zero} \\
+&= \underbrace{\left( \expvalE{Y_{k}^{1} \mid \text{Post}} - \expvalE{Y_{k}^{0} \mid \text{Post}} \right)}_{\text{ATT}} \label{eq:DID:2x2:ATT} \\
+&\hphantom{=} + \underbrace{
+\left( \expvalE{Y_{k}^{0} \mid \text{Post}} - \expvalE{Y_{k}^{0} \mid \text{Pre}} \right)
+- \left( \expvalE{Y_{U}^{0} \mid \text{Post}} - \expvalE{Y_{U}^{0} \mid \text{Pre}} \right)
+}_{\text{Non-parallel trends bias in $2\times 2$ case}} \label{eq:DID:2x2:nonparallel_trends_bias}
+\end{align}
+\end{subequations}
+
+TODO
+
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.6\textwidth]{figures/TODO}
+%\caption{
+%}
+%\label{fig:TODO}
+%\end{figure}
+
+%\begin{subequations}\label{eq:causal_inference:TODO}
+%\begin{align}
+%y &= y_{t}, \label{eq:causal_inference:TODO:A} \\
+%\delta &= 1. \label{eq:causal_inference:TODO:B}
+%\end{align}
+%\end{subequations}
