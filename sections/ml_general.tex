@@ -260,10 +260,21 @@ both representing the probability that
 the model will rank a randomly chosen $y=1$ observation above a randomly chosen $y=0$ observation \cite{Hand2001,Fawcett2006861}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Impact of Class Priors}
+\label{ml_general:eval:class_priors}
+
+The true ratio of positive and negative classes in a dataset
+will affect the above performance metrics,
+making fair comparisons across datasets difficult;
+particularly when working with data that has a class imbalance, see \cref{class:imbalance}.
+One approach for handling these situations is to calibrate the metrics
+at a reference class ratio before comparison,
+as explained in \cite{1909.02827}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Multi-Class Extensions}
 \label{ml_general:eval:multi_class}
 % TODO Multi-Class ROC AUC extensions \cite{Hand2001}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Akaike Information Criterion (AIC)}
