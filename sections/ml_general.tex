@@ -167,6 +167,24 @@ F_{\beta} = \left(1+\beta^{2}\right) \frac{\text{precision} \times \text{recall}
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\sql Implementation}
+\label{ml_general:eval:sql}
+
+Below is an implementation of common performance metrics in \sql,
+operating on the four elements of the two class confusion matrix; TP, FP, FN, TN.
+It should be easy to translate to other languages as needed.
+
+\begin{lstlisting}[language=SQL]
+, IFF(0 < TP + FN, TP / (TP + FN), NULL) AS recall
+, IFF(0 < TN + FP, TN / (TN + FP), NULL) AS specificity
+, IFF(0 < TP + FP, TP / (TP + FP), NULL) AS precision
+, IFF(0 < TN + FN, TN / (TN + FN), NULL) AS NPV
+, IFF(0 < TP + TN + FP + FN, (TP + TN) / (TP + TN + FP + FN), NULL) AS accuracy
+, IFF(0 < precision + recall, 2*precision*recall / (precision + recall), NULL) AS f1
+, IFF(0 < (TP+FP)*(FP+TN)*(TP+FN)*(FN+TN), 2*(TP*TN - FP*FN) / ((TP+FP)*(FP+TN)*(TP+FN)*(FN+TN)), NULL) AS cohen_kappa
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Receiver Operating Characteristic (ROC) and Precision-Recall Curves}
 \label{ml_general:eval:ROC}
 
