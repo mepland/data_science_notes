@@ -1,0 +1,216 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Causal Inference}
+\label{chap:cause}
+
+Causal inference is the application of prior knowledge, logic, and statistics
+to estimate the causal effect of some intervention, action, treatment, variable, \etc, on a larger system;
+moving beyond simple statements of correlation\footnote{``Everyone who confuses correlation with causation eventually ends up dead'' -- unknown.}.
+Causal effect is defined to be the difference between
+the factual state of the world, where some intervention $D$ actually occurred,
+and a counterfactual state of the world, where $D$ did not occur.
+Using the notation of \cite{CausalMixtape}, which forms the basis of this chapter unless otherwise noted,
+we can write out the causal effect $\delta$, \ie the unit-specific treatment effect, as
+
+\begin{equation}\label{eq:cause:causal_effect_delta}
+\delta_{i} = Y_{i}^{1} - Y_{i}^{0}\,,
+\end{equation}
+
+\noindent where $i$ represents a particular individual,
+and $Y^{D}$ is the observed outcome\footnote{We can represent
+$Y_{i}$ under either $D_{i}=0,1$ with the switching equation,
+$Y_{i} = D_{i} Y_{i}^{1} + \left(1-D_{i}\right) Y_{i}^{0}$.},
+both with $D=1$, and without $D=0$, the intervention.
+This leads us to the fundamental problem of causal inference:
+there will always be part of the data which can not be observed,
+\ie one path of $D_{i}$ will always be counterfactual\footnote{For example,
+in medicine a patient can be treated, or not, but not both.}.
+As we can not observe real data for both outcomes,
+it is necessary to make assumptions for any and all measurements of causal effects. % TODO cite https://mixtape.scunning.com/references.html#ref-Wolpin2013
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Measures of Causal Effect}
+\label{cause:measures}
+TODO
+
+Average Treatment Effect (ATE),
+Average Treatment Effect on the Treated (ATT),
+and the
+Average Treatment Effect on the Untreated (ATU)\footnote{Also known as the Average Treatment Effect on the Control (ATC).}
+
+\begin{subequations} \label{eq:cause:causal_measures}
+\begin{align}
+ATE &= \expvalE{\delta_{i}} = \expvalE{Y_{i}^{1} - Y_{i}^{0}} = \expvalE{Y_{i}^{1}} - \expvalE{Y_{i}^{0}} \label{eq:cause:causal_measures:ATE} \\
+ATT &= \expvalE{\delta_{i} \mid D_{i} = 1} = \expvalE{Y_{i}^{1} \mid D_{i} = 1} - \expvalE{Y_{i}^{0} \mid D_{i} = 1} \label{eq:cause:causal_measures:ATT} \\
+ATU &= \expvalE{\delta_{i} \mid D_{i} = 0} = \expvalE{Y_{i}^{1} \mid D_{i} = 0} - \expvalE{Y_{i}^{0} \mid D_{i} = 0} \label{eq:cause:causal_measures:ATU} \\
+TODO &= \expvalE{\delta_{i} \mid X = x} = \expvalE{Y_{i}^{1} \mid X = x} - \expvalE{Y_{i}^{0} \mid X = x} \label{eq:cause:causal_measures:TODO}% Conditional
+% ATO &= Balancing Covarates via Propensity Score Weighting - \cite{Li_2017} TODO
+\end{align}
+\end{subequations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Directed Acyclic Graphs (DAG)}
+\label{cause:DAG}
+TODO
+
+Directed Acyclic Graphs (DAG) are a tool for
+explicitly laying out the assumed relationships between variables
+in a causal model, as popularized by Judea Pearl. % TODO cite https://mixtape.scunning.com/references.html#ref-Pearl2009
+True to their name, DAGs assume causal effects only run forward in time\footnote{This makes
+DAGs inappropriate for problems involving simultaneity or reverse causality.}, \ie they are acyclic,
+along the arrows connecting different nodes, each representing a covariate.
+Causal effects may be direct, $D \to Y$, or mediated by intermediate variables, $D \to X \to Y$.
+A well constructed DAG should incorporate all real relationships between variables,
+while highlighting non-relationships in the absence of connecting arrows.
+The \apriori assumptions\footnote{Unless we are in the trivial case of a singular input feature,
+we must make at least one assumption about the structure of the DAG to keep it acyclic. % TODO cite?
+This dovetails nicely with the introductory statement that
+``it is necessary to make assumptions for any and all measurements of causal effects''
+.} made when building a DAG represent our prior subject matter knowledge of the problem.
+
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.6\textwidth]{figures/TODO}
+%\caption{
+% Example DAG for TODO
+%}
+%\label{fig:cause:DAG_example}
+%\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Difference in Differences (DID)}
+\label{cause:DID}
+
+\begin{subequations} \label{eq:cause:DID:2x2}
+\begin{align}
+\hat{\delta}_{kU}^{2 \times 2} &= \left( \expvalE{Y_{k} \mid \text{Post}} - \expvalE{Y_{k} \mid \text{Pre}} \right)
+- \left( \expvalE{Y_{U} \mid \text{Post}} - \expvalE{Y_{U} \mid \text{Pre}} \right) \label{eq:cause:DID:2x2:def} \\
+&= \left( \expvalE{Y_{k}^{1} \mid \text{Post}} - \expvalE{Y_{k}^{0} \mid \text{Pre}} \right)
+- \left( \expvalE{Y_{U}^{0} \mid \text{Post}} - \expvalE{Y_{U}^{0} \mid \text{Pre}} \right) \label{eq:cause:DID:2x2:expand} \\
+&\hphantom{=} + \left( \expvalE{Y_{k}^{0} \mid \text{Post}} - \expvalE{Y_{k}^{0} \mid \text{Pre}} \right) \label{eq:cause:DID:2x2:add_zero} \\
+&= \underbrace{\left( \expvalE{Y_{k}^{1} \mid \text{Post}} - \expvalE{Y_{k}^{0} \mid \text{Post}} \right)}_{\text{ATT}} \label{eq:cause:DID:2x2:ATT} \\
+&\hphantom{=} + \underbrace{
+\left( \expvalE{Y_{k}^{0} \mid \text{Post}} - \expvalE{Y_{k}^{0} \mid \text{Pre}} \right)
+- \left( \expvalE{Y_{U}^{0} \mid \text{Post}} - \expvalE{Y_{U}^{0} \mid \text{Pre}} \right)
+}_{\text{Non-parallel trends bias in $2\times 2$ case}} \label{eq:cause:DID:2x2:nonparallel_trends_bias}
+\end{align}
+\end{subequations}
+
+TODO
+
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.6\textwidth]{figures/TODO}
+%\caption{
+%}
+%\label{fig:cause:TODO}
+%\end{figure}
+
+%\begin{subequations}\label{eq:cause:TODO}
+%\begin{align}
+%y &= y_{t}, \label{eq:cause:TODO:A} \\
+%\delta &= 1. \label{eq:cause:TODO:B}
+%\end{align}
+%\end{subequations}
+
+% TODO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ML \& Nonparametric - ACIC Workshop Notes}
+\label{cause:ml_nonparametric_ACIC}
+
+Causal vs statistical inference:
+Causal inference tells us what we should be estimating, not how to estimate it,
+\ie how to link the counterfactual world to the observable world and come up with a target parameter.
+After we identify the causal target parameter / bounds, then we can just do statistics as a functional estimation problem.
+
+With a parametric model we assume we know the functional form entirely, to some finite dimensional parameters.
+A semi-parametric model has an unknown infinite dimensional parameters, but we still can assume some of the structure,
+while a non-parametric model has no restrictions.
+
+The Cramer-Rao lower bound is a basic element of many statistics proofs. In short it is a derivative squared / variance of score function.
+
+Can use sample splitting, with $k=5$ to $10$ folds, to fit nuisance parameters and estimators on different splits of the data.
+Then we can take the mean over the folded estimators to produce a final model.
+See \texttt{npcausal} in \R, written by Kennedy.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Inverse Propensity Score Weights - ACIC Workshop Notes}
+\label{cause:inverse_propensity_score_weights_ACIC}
+
+Slides and \R code are available at \href{https://www.github.com/bvegetabile/ipw_acic2022}{bvegetabile/ipw\_acic2022}.
+
+\cite{Li_2017} is an important paper, especially Table 1:
+
+% TODO move/remove [HT]
+\begin{table}[H]
+  \centering
+  \begin{tabular}{c c c c}
+  \hline
+  Target Population & $h(x)$ & Estimand & Weight $(w_1, w_0)$ \\
+  \hline
+  \hline
+  Combined & 1 & ATE & $\left(\frac{1}{\psx},\, \frac{1}{1-e\left(x\right)}\right)$ [HT] \\
+  Treated & \ps & ATT & $\left(1,\, \frac{\psx}{1-\psx}\right)$ \\
+  Untreated & $1-\psx$ & ATU & $\left(\frac{1-\psx}{\psx},\, 1\right)$ \\
+  Overlap & $\psx(1-\psx)$ & ATO & $(1-\psx,\, \psx)$ \\
+  Truncated Combined & $\mathbf{1}(\alpha < \psx < 1-\alpha)$ & -- & $\left(\frac{\mathbf{1}(\alpha \, < \, \psx \, < \, 1-\alpha)}{\psx},\, \frac{\mathbf{1}(\alpha \, < \, \psx \, < \, 1-\alpha)}{1-\psx}\right)$ \\
+  Matching & $\min\left(\psx,\, 1-\psx\right)$ & -- & $\left(\frac{\min\left(\psx,\, 1-\psx\right)}{\psx},\, \frac{\min\left(\psx,\, 1-\psx\right)}{1-\psx}\right)$\\
+  \hline
+  \end{tabular}
+  \caption{TODO. Adapted from \cite{Li_2017}.}
+  \label{table:cause:ps_weights}
+\end{table}
+
+Selection bias is a key source of bias in observational studies.
+Occurs when exposure status / treatment is correlated with baseline covariates,
+\ie control and experimental groups look different on the covariates.
+
+Propensity score is one method of achieving covariate balance.
+A balance function measures balance, \eg the standardized method of means.
+Want the standardized method of means to be $< 0.1$ for good balance.
+Note that balance functions are metrics of distance, \ie the difference in the $X$ distributions,
+rather than a significance test on if the distributions are different.
+In addition to balancing means of $X$, we may also need to balance higher moments like variance, skew, \etc.
+
+Strong ignorability - Rosenbaum and Rubin 1983
+
+Propensity score $\psx = P\left(A=1 \mid X = x\right)$
+
+Propensity score weighting is similar to importance weighting in ML.
+
+If you can't get a balanced propensity score model working for something like ATE, you might be able to change estimand.
+Otherwise you will need to redesign the experiment.
+ATO will \emph{always} balance with GLM by design.
+
+We can also do regression in the balanced space, use \texttt{survey} package in \R for weighted regression in this case - not the usual regression package(s).
+
+All variables included in propensity score model \emph{must be measured prior} to treatment. See slide 82!
+
+Can I use the same data $X$ to train propensity scores, and then compute estimands, without splitting it?
+Yes, just \emph{don't look at outcomes $Y$} when deciding what covariates $X$ to include in the propensity score model.
+You will need to decide which $X$ variables to use \apriori with SMEs,
+or split the data and use part of it to hypothesize the important covariates and DAG.
+
+If I make propensity scores for one estimand like ATE, and then want to look at conditional ATE (CATE) can I reuse the same propensity scores?
+You may be able to, but you should first check that the covariates are still balanced for the $X = x$ subset of data. If they are not, new propensity scores will be needed.
+
+GBM is better than the usual logistic regression, see \texttt{twang} in \R, developed by RAND, which does GBM + PSM all in one package.
+
+Brian tends to balance means and variance (first 2 moments), and maybe skew (3rd moment), rather than using KS statistic - which is harder to theoretically connect to the bias.
+Don't use 1 and, don't use 10 moments, somewhere in between.
+
+Effective sample size $ESS = \left(\sum w\right)^2 / \sum w^2$, slide 119
+
+See slides around 170 for other methods (covariate balance, entropy balancing) vs propensity scores.
+Entropy balancing, \texttt{ebal} in \R from Brian.
+Propensity score and covariate balance should both be the same, if we have ignorability.
+
+See 214 for sensitivity analysis - Basic idea, is there some missing variable $u$ which would have changed our results?
+
+TODO independence symbol \indep
