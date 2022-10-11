@@ -213,7 +213,7 @@ $\yhat = 1 /\left(1+e^{-w}\right)$ within $0 < \yhat < 1$.
 \centering
 \includegraphics[width=0.4\textwidth]{figures/ml/tree7_g2000_n1200}
 \caption{
-Simple classification and regression tree (CART).
+Simple classification and regression tree (CART) on \num{2} variables.
 Signal-like (background-like) events receive positive (negative) weights in the leaves.
 }
 \label{class:CART:small_example_CART}
@@ -222,7 +222,7 @@ Signal-like (background-like) events receive positive (negative) weights in the 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gini Impurity}
 \label{class:CART:gini}
-% TODO
+% TODO explain how CART chooses from potential splits based on the maximum decrease in impurity
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -265,7 +265,7 @@ The \xgboost\footnote{\xgboost: eXtreme Gradient Boosting, \href{https://github.
 is a modern open source implementation of gradient boosted decision tree methods.
 Through various algorithmic and memory optimizations \xgboost demonstrates good performance\footnote{\xgboost has lost
 its lead in recent years to newer libraries such as LightGBM \cite{LightGBM}
-and CatBoost \cite{CatBoost}.}.
+and CatBoost \cite{CatBoost}, but is still a standard library.}.
 L1 and L2 regularization is incorporated via
 
 \begin{equation} \label{eq:bdt_omega_reg}
@@ -298,19 +298,51 @@ For reference $\eta=0.3$ and a maximum depth of 6 are the default values.
 \section{Fast Interpretable Greedy-Tree Sums (FIGS)}
 \label{class:FIGS}
 
-TODO \texttt{imodels} \cite{imodels,FIGS,G-FIGS}
+Fast Interpretable Greedy-Tree Sums (FIGS) \cite{FIGS,G-FIGS}
+is an extension of the basic CART structure introduced in \cref{class:CART}.
+Depending on the nature of the training data,
+a CART will tend to reproduce subsets of the tree along different branches.
+The resulting deep trees are not ideal as they contain many splits,
+increasing the chance of fitting to noise in the data,
+and because they have less data to work with at each subsequent split,
+increasing the variance of the tree's predictions.
 
+FIGS improves upon the CART iterative training process
+by considering adding the next split as the root of a new tree,
+in addition to adding the next split at the bottom of the existing tree as is done in CART.
+This reduces the number of splits when the data has an additive structure,
+as can be seen in \cref{class:FIGS:intro}, and increases interpretability.
+The resulting FIGS model is thus an ensemble of CART-like trees,
+similar to the BDT and RF models of \cref{class:BDT,class:RF}.
+However, FIGS can capture any additive structure present in the data,
+while the ensemble trees of the BDT (RF) model being trained sequentially (independently) can not.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/ml/figs_intro_fig.pdf}
 \caption{
-TODO
-\cite{FIGS}
+A comparison of CART and FIGS tree growth on the toy dataset
+$y = \identity_{x_{1} > 0} + \identity_{x_{2} > 0} \, \identity_{x_{3} > 0}$ \cite{FIGS}.
+At each training iteration FIGS considers adding a new split at the bottom of the existing tree(s) like CART,
+but also considers starting a new tree entirely.
+Notice that CART must repeat the $x_{2}, x_{3}$ subtree on each side of the $x_{1}$ split,
+while FIGS captures the additive structure of $y$ directly, thereby saving \num{2} splits.
 }
-\label{class:FIGS}
+\label{class:FIGS:intro}
 \end{figure}
 
+Rather than constraining the depth or number of trees separately like other tree-based models,
+FIGS can impose a limit on the total number of splits across all trees via the hyperparameter $\nu$.
+This makes the construction of small, interpretable, models much easier.
+Similar to CART, FIGS can also set a hyperparameter for the minimum decrease in impurity.
+With $\nu < 20$, readily interpretable FIGS models have been observed
+to have state-of-the-art performance on multiple datasets \cite{FIGS}.
+A \python implementation of the FIGS algorithm can be found in the \texttt{imodels} package \cite{imodels}.
+The FIGS training time goes as $\order{n \, \nu^{2} m^{2}}$ \cite{FIGS},
+where $n$ is the number of features and $m$ is the number of data points,
+which is quite fast on a modern machine for reasonable $m$, even when $n$ is large.
+
+% TODO add dtreeviz illustration
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
