@@ -17,6 +17,15 @@
 % TODO
 % TODO Entropy, significance of bits
 
+\begin{equation} \label{eq:info_entropy}
+H = -\sum_{k} p_{k} \ln\left(p_{k}\right)
+\end{equation}
+
+The choice of base for the logarithm sets the units of $H$.
+Using base $2$ will produce ``bits'', or ``shannons'' named for the concepts originator \cite{shannon1,shannon2},
+and thus $H$ with $\log_{2}$ is sometimes also referred to as the Shannon entropy.
+Using base $e$ as is done in $\cref{eq:info_entropy}$ gives $H$ in ``nat'' natural units.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Kernel Density Estimation (KDE)}

@@ -199,8 +199,8 @@ at least $\order{m^{2}}$, limiting $m \sim \num{e4}$.
 A basic classifier can be created from a tree of selections on $\mb{X}$ designed to
 separate the classes at each branch.
 Such a model is known as a classification and regression tree (CART) \cite{Breiman:2253780},
-and a simple example can be found in \cref{class:CART:small_example_CART}.
-As the splits are just inequality statements on the input variables,
+and a simple example can be found in \cref{fig:small_example_CART}.
+As the splits are just binary inequality statements on the input variables,
 they are --- somewhat --- possible to understand,
 and conveniently do not need any kind of feature scaling, unlike other methods.
 CART, as the name suggests,
@@ -218,7 +218,7 @@ Here signal-like (background-like) events receive positive (negative) weights in
 A logistic function is used to properly transform $w$ into a prediction
 $\yhat = 1 /\left(1+e^{-w}\right)$ within $0 < \yhat < 1$.
 }
-\label{class:CART:small_example_CART}
+\label{fig:small_example_CART}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -231,14 +231,15 @@ At each node the optimal split $x_{j} < \beta_{\text{threshold}}$
 over the available features is chosen according to a prespecified splitting criterion.
 For classification trees, common choices for the splitting criterion are
 the Gini impurity of \cref{class:CART:gini_impurity}
-and Shannon entropy of \cref{class:CART:shannon_entropy},
-while the MSE is used for regression trees.
+and information entropy of \cref{class:CART:info_entropy},
+while the $\text{MSE} = \expval{\left(y-\yhat\right)^{2}}$ is used for regression trees.
+In all three cases the optimal split maximizes the decrease, \ie the gain, of relevant metric.
 The tree is constructed in this manner,
 typically with recursive function calls,
 until no additional splits are possible or
-halting conditions set by hyperparameters are met such as
-the minimum decrease in splitting criterion,
-or the minimum number of training rows $\vb{x}_{i}$ at a node.
+halting conditions set by hyperparameters are met, such as
+a minimum decrease in splitting criterion,
+or a minimum number of training rows $\vb{x}_{i}$ at a leaf.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gini Impurity}
@@ -249,27 +250,85 @@ is the probability of incorrectly labeling a randomly selected element of set $S
 when the label is chosen randomly according to the distribution of labeled elements in $S$.
 Letting $p_{k}$ represent the proportion of elements labeled $k$ in $S$,
 the Gini impurity\footnote{In binary classification with $K=2$,
-\cref{eq:gini_impurity} $\to \, \text{Gini} = 2 p_{0} \left(1-p_{0}\right)$.} is then:
+$p_{0} = 1 - p_{1} \, \to \, \text{Gini} = 2 p_{1} \left(1-p_{1}\right)$.} is then:
 
 \begin{equation} \label{eq:gini_impurity}
 \text{Gini} = \sum_{k=0}^{K-1} p_{k}\left(1-p_{k}\right) = 1 - \sum_{k=0}^{K-1} p_{k}^{2}.
 \end{equation}
 
-When $S$ only contains a single label the Gini impurity obtains its minimum value of \num{0};
-any other `impure' $S$ will have $0 < \text{Gini}$.
-When used as the splitting criterion,
-the split at a node which maximizes the decrease in Gini impurity is selected.
+When $S$ only contains a single label, $K=1$,
+the Gini impurity obtains its minimum value of $0$;
+any other ``impure'' $S$ will have $0 < \text{Gini} < 1$.
+The maximum value of $\text{Gini} = 1-1/K$ occurs when $p_{k} = 1/K, \, \forall k$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Shannon Entropy}
-\label{class:CART:shannon_entropy}
-% TODO
+\subsection{Information Entropy}
+\label{class:CART:info_entropy}
 
-\begin{equation} \label{eq:shannon_entropy}
-H = -\sum_{k=0}^{K-1} p_{k} \log_{2}\left(p_{k}\right)
+The information entropy $H$ is a measure of the average
+information contained in a random variable's potential outcomes.
+In the context of using $H$ as an impurity measurement while growing a CART
+over $K$ possible classes we have
+
+\begin{equation} \label{eq:info_entropy_cart}
+H = -\sum_{k=0}^{K-1} p_{k} \ln\left(p_{k}\right) \, ,
 \end{equation}
 
-% TODO equivalent to minimizing the log loss
+\noindent where any ``empty'' classes with $p_{k}=0$
+at a given node are ignored in the sum over $k$.
+See \cref{misc:info_theory} for additional details on $H$.
+Like Gini impurity, the minimum $H = 0$ occurs when $K=1, \, p_{0}=1$, with $0 < H$ otherwise.
+It can be \href{https://scikit-learn.org/stable/modules/tree.html#classification-criteria}{shown} \cite{sklearn}
+that using $H$ while training a CART is equivalent to minimizing
+the binary logistic loss function of \cref{ml_general:loss_func:binary_logistic}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Gini Impurity vs Information Entropy}
+\label{class:CART:gini_vs_info_entropy}
+
+Using a Taylor expansion\footnote{$\ln\left(1-x\right) = -\sum_{n=1}^{\infty} \frac{x^{n}}{n}$,
+where $\abs{x} < 1$ and $x \to 1-p$.
+The expansion can be derived directly,
+or quickly shown by integrating \cref{eq:misc:math:geometric}.
+Note, $0 < p_{k} \leq 1$ in $H$ by construction.} we can rewrite $H$ as
+
+\begin{equation} \label{eq:info_entropy_expanded}
+\begin{aligned}
+H &= -\sum_{k=0}^{K-1} p_{k} \ln\left(p_{k}\right)\, , \\
+&= -\sum_{k=0}^{K-1} p_{k} \left(
+-\left(1-p_{k}\right)
+-\sum_{n=2}^{\infty} \frac{1}{n}\left(1-p_{k}\right)^{n} \right)\, , \\
+&= \text{Gini} + \sum_{k=0}^{K-1} \sum_{n=2}^{\infty} \frac{p_{k}}{n} \left(1-p_{k}\right)^{n}\, ,
+\end{aligned}
+\end{equation}
+
+\noindent to show that the Gini impurity is simply the lowest order term of the information entropy.
+As one would expect from this result,
+$\text{Gini}$ and $H$ are very similar functions,
+as shown in \cref{fig:gini_vs_info_entropy}
+and verified empirically in many CART applications.
+In a dedicated study, only \SI{2}{\percent} of optimal splits
+disagreed between the two split criteria \cite{Raileanu2004}.
+In practice, either criteria can be used without much concern\footnote{There
+are some \href{https://ekamperi.github.io/machine\%20learning/2021/04/13/gini-index-vs-entropy-decision-trees.html}{empirical suggestions} that
+$H$ may work better with imbalanced classes where $p_{1} \ll 1$ and $\text{Gini} < H$,
+see \cref{fig:gini_vs_info_entropy}.
+In these cases, just try both criteria.},
+however $H$ is slightly slower computationally
+as it involves a calculating a $\log$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/ml/gini_vs_info_entropy}
+\caption{
+Gini impurity $\text{Gini} \sim p\left(1-p\right)$ and
+information entropy $H \sim p \ln\left(p\right)$
+vs $p$, normalized to unit area.
+Both metrics are quite similar,
+with $H$ being slightly biased toward smaller $p$.
+}
+\label{fig:gini_vs_info_entropy}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{CART Predictions}
@@ -279,12 +338,12 @@ To make a prediction for row $\vb{x}_{i}$
 the tree and its branches are traversed
 until of the terminating leaf is reached.
 The prediction assigned by the leaf can be constructed in a few ways;
-a class label may be assigned based on the majority class in the leaf during training,
+a class label may be assigned directly based on the majority class in the leaf during training,
 a probability can be assigned based on the proportion of classes in the leaf,
 or a weight $w$ can be computed from the loss function and training data in a more complex manner, \eg \xgboost \cite{XGBoost}.
 Note that the leaf values can be trained separately from the tree structure
 using an independent fold of the training data.
-Tree models trained in this way are known as `honest' \cite{JMLR:v13:biau12a,pmlr-v32-denil14}.
+Tree models trained with this approach are known as ``honest'' \cite{JMLR:v13:biau12a,pmlr-v32-denil14}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -379,10 +438,11 @@ typically the Gini impurity of \cref{class:CART:gini_impurity}.
 Each tree is fit to the residuals remaining after summing the other tree's predictions,
 see \cref{class:FIGS:fit_algo} for an outline of the training algorithm.
 Predictions are made by summing the predicted leaf's value\footnote{TODO value is just $p_{1} = n_{1}/N$?} from each tree.
+% TODO value
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/ml/figs_intro_fig.pdf}
+\includegraphics[width=\textwidth]{figures/ml/figs_intro_fig}
 \caption{
 A comparison of CART and FIGS tree growth on the toy dataset
 $y = \identity_{x_{1} > 0} + \identity_{x_{2} > 0} \, \identity_{x_{3} > 0}$ \cite{FIGS}.

@@ -459,7 +459,8 @@ while the training error continues to decrease.
 \label{ml_general:bias_variance_tradeoff:decop}
 
 We can analytically decompose the mean square error (MSE) into explicit
-bias, variance, and irreducable error components.
+bias, variance, and irreducible error components\footnote{See
+\cite{pmlr-v151-shuo-tan22a} for a similar decomposition for decision trees.}.
 Let $y = f\left(\vb{x}\right) + \epsilon$ represent
 the observed data, $y_{i}$, $\vb{x}_{i}$,
 where $f\left(\vb{x}\right)$ is the true parent distribution\footnote{$\expval{f} = f$ is deterministic,
@@ -748,7 +749,9 @@ Ideally the curve should reach a clear asymptote before the maximum $m$ is used.
 In two class, positive $y=1$ and negative $y=0$, classification problems the binary logistic function is an appropriate choice of $L$:
 
 \begin{equation} \label{eq:binary_logistic}
-L = \sum_{j=1}^{m} \left[y_{j} \ln\left(1 + \exp(-\yhat_{j})\right) +\left(1-y_{j}\right) \ln\left(1 + \exp(\yhat_{j})\right)\right].
+L = -\frac{1}{m} \sum_{j=1}^{m} \big(y_{j} \ln\left(\yhat_{j}\right) +\left(1-y_{j}\right) \ln\left(1-\yhat_{j}\right)\big).
 \end{equation}
+% TODO \xgboost specific?
+% L = \sum_{j=1}^{m} \left[y_{j} \ln\left(1 + \exp(-\yhat_{j})\right) +\left(1-y_{j}\right) \ln\left(1 + \exp(\yhat_{j})\right)\right].
 
 % TODO add more on the information theory aspect
