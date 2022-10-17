@@ -25,6 +25,7 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage[TU,T1]{fontenc}
+\usepackage{indentfirst}
 \usepackage{textcomp} % needed to fix \mico \textmu from siunitx to work with microtype: https://tex.stackexchange.com/questions/74670/microtype-siunitx-and-micro-mysterious-warnings
 \usepackage[protrusion=true,expansion=true]{microtype} % make text flow nicely... might screw up duke dissertation template
 \usepackage{verbatim} % verbatim text and comment environment
@@ -44,6 +45,14 @@
 \usepackage{moresize}
 \usepackage{listings}
 \usepackage{fontawesome}
+
+% for algorithms
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage[noend]{algpseudocode}
+\algdef{SE}[DOWHILE]{Do}{doWhile}{\algorithmicdo}[1]{\algorithmicwhile\ #1}%
+\renewcommand\algorithmicdo{}
+\newcommand{\CommentInline}[1]{\STATE \textcolor{gray}{\# #1}}
 
 \usepackage[top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
 \usepackage{fancyhdr}
@@ -115,7 +124,7 @@
   % deletekeywords={...},            % if you want to delete keywords from the given language
   % escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
   extendedchars=true,                % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
-  firstnumber=1,                     % start line enumeration with line 1000
+  firstnumber=1,                     % start line enumeration with line 1
   frame=none,                        % adds a frame around the code
   keepspaces=true,                   % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
   keywordstyle=\color{blue},         % keyword style

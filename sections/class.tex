@@ -198,31 +198,93 @@ at least $\order{m^{2}}$, limiting $m \sim \num{e4}$.
 
 A basic classifier can be created from a tree of selections on $\mb{X}$ designed to
 separate the classes at each branch.
-Such a model is known as a classification and regression tree (CART) \cite{Breiman:2253780}
+Such a model is known as a classification and regression tree (CART) \cite{Breiman:2253780},
 and a simple example can be found in \cref{class:CART:small_example_CART}.
-As the splits are just selections on the input variables,
+As the splits are just inequality statements on the input variables,
 they are --- somewhat --- possible to understand,
 and conveniently do not need any kind of feature scaling, unlike other methods.
-To make a prediction for an event the tree and its branches are traversed
-until the event lands in one of the weighted leaves.
-The weight of the leaf $w$ is positive (negative) for signal-like (background-like) events.
-A logistic function is used to properly transform $w$ into an output score
-$\yhat = 1 /\left(1+e^{-w}\right)$ within $0 < \yhat < 1$.
+CART, as the name suggests,
+and the tree models of \cref{class:BDT,class:RF,class:FIGS} built on top of it,
+can also be used for regression with a suitable choice of splitting criterion,
+though we will focus on classification here for brevity.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.4\textwidth]{figures/ml/tree7_g2000_n1200}
 \caption{
-Simple classification and regression tree (CART) on \num{2} variables.
-Signal-like (background-like) events receive positive (negative) weights in the leaves.
+Simple classification and regression tree (CART) on \num{2} variables
+extracted from a \xgboost \cite{XGBoost} model.
+Here signal-like (background-like) events receive positive (negative) weights in the leaves.
+A logistic function is used to properly transform $w$ into a prediction
+$\yhat = 1 /\left(1+e^{-w}\right)$ within $0 < \yhat < 1$.
 }
 \label{class:CART:small_example_CART}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{CART Training}
+\label{class:CART:train}
+
+CART models are almost always trained with greedy, \ie local, optimizers
+that iteratively grow the tree from a root node.
+At each node the optimal split $x_{j} < \beta_{\text{threshold}}$
+over the available features is chosen according to a prespecified splitting criterion.
+For classification trees, common choices for the splitting criterion are
+the Gini impurity of \cref{class:CART:gini_impurity}
+and Shannon entropy of \cref{class:CART:shannon_entropy},
+while the MSE is used for regression trees.
+The tree is constructed in this manner,
+typically with recursive function calls,
+until no additional splits are possible or
+halting conditions set by hyperparameters are met such as
+the minimum decrease in splitting criterion,
+or the minimum number of training rows $\vb{x}_{i}$ at a node.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gini Impurity}
-\label{class:CART:gini}
-% TODO explain how CART chooses from potential splits based on the maximum decrease in impurity
+\label{class:CART:gini_impurity}
+
+The Gini impurity, or Gini index,
+is the probability of incorrectly labeling a randomly selected element of set $S$,
+when the label is chosen randomly according to the distribution of labeled elements in $S$.
+Letting $p_{k}$ represent the proportion of elements labeled $k$ in $S$,
+the Gini impurity\footnote{In binary classification with $K=2$,
+\cref{eq:gini_impurity} $\to \, \text{Gini} = 2 p_{0} \left(1-p_{0}\right)$.} is then:
+
+\begin{equation} \label{eq:gini_impurity}
+\text{Gini} = \sum_{k=0}^{K-1} p_{k}\left(1-p_{k}\right) = 1 - \sum_{k=0}^{K-1} p_{k}^{2}.
+\end{equation}
+
+When $S$ only contains a single label the Gini impurity obtains its minimum value of \num{0};
+any other `impure' $S$ will have $0 < \text{Gini}$.
+When used as the splitting criterion,
+the split at a node which maximizes the decrease in Gini impurity is selected.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Shannon Entropy}
+\label{class:CART:shannon_entropy}
+% TODO
+
+\begin{equation} \label{eq:shannon_entropy}
+H = -\sum_{k=0}^{K-1} p_{k} \log_{2}\left(p_{k}\right)
+\end{equation}
+
+% TODO equivalent to minimizing the log loss
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{CART Predictions}
+\label{class:CART:pred}
+
+To make a prediction for row $\vb{x}_{i}$
+the tree and its branches are traversed
+until of the terminating leaf is reached.
+The prediction assigned by the leaf can be constructed in a few ways;
+a class label may be assigned based on the majority class in the leaf during training,
+a probability can be assigned based on the proportion of classes in the leaf,
+or a weight $w$ can be computed from the loss function and training data in a more complex manner, \eg \xgboost \cite{XGBoost}.
+Note that the leaf values can be trained separately from the tree structure
+using an independent fold of the training data.
+Tree models trained in this way are known as `honest' \cite{JMLR:v13:biau12a,pmlr-v32-denil14}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -312,10 +374,11 @@ by considering adding the next split as the root of a new tree,
 in addition to adding the next split at the bottom of the existing tree as is done in CART.
 This reduces the number of splits when the data has an additive structure,
 as can be seen in \cref{class:FIGS:intro}, and increases interpretability.
-The resulting FIGS model is thus an ensemble of CART-like trees,
-similar to the BDT and RF models of \cref{class:BDT,class:RF}.
-However, FIGS can capture any additive structure present in the data,
-while the ensemble trees of the BDT (RF) model being trained sequentially (independently) can not.
+The splits are chosen greedily according to the splitting criterion,
+typically the Gini impurity of \cref{class:CART:gini_impurity}.
+Each tree is fit to the residuals remaining after summing the other tree's predictions,
+see \cref{class:FIGS:fit_algo} for an outline of the training algorithm.
+Predictions are made by summing the predicted leaf's value\footnote{TODO value is just $p_{1} = n_{1}/N$?} from each tree.
 
 \begin{figure}[H]
 \centering
@@ -331,12 +394,42 @@ while FIGS captures the additive structure of $y$ directly, thereby saving \num{
 \label{class:FIGS:intro}
 \end{figure}
 
+\begin{algorithm}[h]
+  \caption{FIGS fitting algorithm, adapted from \cite{FIGS}.}
+  \label{class:FIGS:fit_algo}
+  \small
+\begin{algorithmic}
+  \State {FIGS}(X: features, y: outcomes, $\nu$: max\_splits)
+  \State trees = []
+  \While{count\_total\_splits(trees) $< \nu$:}
+    \State all\_trees = join(trees, build\_new\_tree()) \textcolor{codegreen}{\# add new tree}
+    \State potential\_splits = []
+    \For{}\hspace{-3pt}tree in all\_trees:
+        \State y\_residuals = y $-$ predict(all\_trees except tree)
+        \For{}\hspace{-3pt}leaf in tree:
+            \State potential\_split = split(X, y\_residuals, leaf)
+            \State potential\_splits.append(potential\_split)
+        \EndFor
+    \EndFor
+    \State best\_split = split\_with\_min\_impurity(potential\_splits)
+    \State trees.insert(best\_split)
+  \EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+The resulting FIGS model is thus an ensemble of CART-like trees,
+similar to the BDT and RF models of \cref{class:BDT,class:RF}.
+However, FIGS can capture any additive structure present in the data,
+while the ensemble trees of the BDT (RF) model being trained sequentially (independently) can not.
 Rather than constraining the depth or number of trees separately like other tree-based models,
 FIGS can impose a limit on the total number of splits across all trees via the hyperparameter $\nu$.
 This makes the construction of small, interpretable, models much easier.
-Similar to CART, FIGS can also set a hyperparameter for the minimum decrease in impurity.
+Similar to CART, FIGS can also set hyperparameters for
+the minimum decrease in impurity and
+number of features to consider at each split.
 With $\nu < 20$, readily interpretable FIGS models have been observed
 to have state-of-the-art performance on multiple datasets \cite{FIGS}.
+
 A \python implementation of the FIGS algorithm can be found in the \texttt{imodels} package \cite{imodels}.
 The FIGS training time goes as $\order{n \, \nu^{2} m^{2}}$ \cite{FIGS},
 where $n$ is the number of features and $m$ is the number of data points,
