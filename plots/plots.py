@@ -1,13 +1,23 @@
-#!/usr/bin/env python
-# coding: utf-8
+# ---
+# jupyter:
+#   jupytext:
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.14.1
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
 
+# %% [markdown]
 # ## Setup
 
-# In[1]:
-
-
-get_ipython().run_line_magic('load_ext', 'autoreload')
-get_ipython().run_line_magic('autoreload', '2')
+# %%
+# %load_ext autoreload
+# %autoreload 2
 
 ########################################################
 # python
@@ -32,7 +42,7 @@ from sklearn.preprocessing import scale
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.transforms
-get_ipython().run_line_magic('matplotlib', 'inline')
+# %matplotlib inline
 
 import warnings
 warnings.filterwarnings('ignore', message='Matplotlib is currently using module://matplotlib_inline.backend_inline, which is a non-GUI backend, so cannot show the figure.')
@@ -42,63 +52,46 @@ warnings.filterwarnings('ignore', message='Matplotlib is currently using module:
 rnd_seed = 42
 np.random.seed(rnd_seed)
 
-
-# In[2]:
-
-
+# %%
 from plotting import * # load plotting code
 
-
-# In[3]:
-
-
+# %%
 inline=True # plot inline or to pdf
 output = './output' # output dir
 
-
+# %% [markdown] tags=[]
 # ***
 # # ROC Curve Demo
 # A demonstration of TPR vs FPR and Precision vs Recall ROC curves on a synthetic dataset with XGBoost
 
+# %% [markdown] tags=[]
 # ## Generate Random Data
 
-# In[4]:
-
-
+# %%
 X, y = make_classification(n_samples=int(1e5), n_features=50, n_informative=20, n_redundant=10, n_repeated=2,
                            n_classes=2, n_clusters_per_class=5, weights=[0.7], flip_y=0.2, class_sep=0.9,
                            hypercube=True, shift=0.0, scale=1.0, shuffle=True, random_state=rnd_seed)
 
-
+# %% [markdown]
 # Make Train, Validation, and Holdout Sets
 
-# In[5]:
-
-
+# %%
 X_trainVal, X_holdout, y_trainVal, y_holdout = train_test_split(X, y, test_size=0.33, random_state=rnd_seed, stratify=y)
 del X; del y;
 
 X_train, X_val, y_train, y_val = train_test_split(X_trainVal, y_trainVal, test_size=0.2, random_state=rnd_seed, stratify=y_trainVal)
 del X_trainVal; del y_trainVal;
 
-
+# %% [markdown]
 # #### Set hyperparameters
 
-# In[6]:
-
-
+# %%
 params_default = {'max_depth': 6, 'learning_rate': 0.3, 'gamma': 0.0, 'reg_alpha': 0.0, 'reg_lambda': 1.0}
 
-
-# In[7]:
-
-
+# %%
 params_bad = {'max_depth': 2, 'learning_rate': 1.0, 'gamma': 0.0, 'reg_alpha': 0.0, 'reg_lambda': 0.0}
 
-
-# In[8]:
-
-
+# %%
 fixed_setup_params = {
     'max_num_boost_rounds': 500, # maximum number of boosting rounds to run / trees to create
     'xgb_objective': 'binary:logistic', # objective function for binary classification
@@ -106,10 +99,7 @@ fixed_setup_params = {
     'xgb_n_jobs': -1, # Number of parallel threads used to run XGBoost. -1 makes use of all cores in your system
 }
 
-
-# In[9]:
-
-
+# %%
 fixed_fit_params = {
     'early_stopping_rounds': 10, # must see improvement over last num_early_stopping_rounds or will halt
     'eval_set': [(X_val, y_val)], # data sets to use for early stopping evaluation
@@ -117,25 +107,21 @@ fixed_fit_params = {
     'verbose': False, # even more verbosity control
 }
 
-
+# %% [markdown]
 # ## Setup XGBClassifiers
 # #### Run with initial hyperparameters as a baseline
 
-# In[10]:
-
-
+# %%
 model_default = xgb.XGBClassifier(n_estimators=fixed_setup_params['max_num_boost_rounds'],
                                   objective=fixed_setup_params['xgb_objective'],
                                   verbosity=fixed_setup_params['xgb_verbosity'],
                                   random_state=rnd_seed+3, **params_default, use_label_encoder=False)
 model_default.fit(X_train, y_train, **fixed_fit_params);
 
-
+# %% [markdown]
 # #### Run with bad hyperparameters to compare
 
-# In[11]:
-
-
+# %%
 model_bad = xgb.XGBClassifier(n_estimators=round(0.25*fixed_setup_params['max_num_boost_rounds']),
                                   objective=fixed_setup_params['xgb_objective'],
                                   verbosity=fixed_setup_params['xgb_verbosity'],
@@ -143,11 +129,10 @@ model_bad = xgb.XGBClassifier(n_estimators=round(0.25*fixed_setup_params['max_nu
 model_bad.fit(X_train, y_train, **fixed_fit_params);
 
 
+# %% [markdown]
 # ## Evaluate
 
-# In[12]:
-
-
+# %%
 def eval_model(model, X, y):
     y_pred = model.predict_proba(X, iteration_range=(0, model.best_iteration+1))[:,1]
     y_pred_sorted = sorted(y_pred)
@@ -166,99 +151,74 @@ def eval_model(model, X, y):
     return {'dfp_eval_fpr_tpr': dfp_eval_fpr_tpr, 'dfp_eval_precision_recall': dfp_eval_precision_recall}
 
 
-# In[13]:
-
-
+# %%
 models_for_roc= [
     {**{'name': 'model_1', 'nname': 'Model 1', 'c': 'C2', 'ls': '-'}, **eval_model(model_default, X_holdout, y_holdout)},
     {**{'name': 'model_2', 'nname': 'Model 2', 'c': 'black', 'ls': '--'}, **eval_model(model_bad, X_holdout, y_holdout)},
 ]
 
-
-# In[14]:
-
-
+# %%
 pop_PPV = len(np.where(y_holdout == 1)[0]) / len(y_holdout) # P / (P + N)
 
-
+# %% [markdown] tags=[]
 # ### Standard TPR vs FPR ROC
 
-# In[15]:
-
-
+# %%
 plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=True, inverse_log=False, inline=inline)
 
-
+# %% [markdown]
 # #### Inverse Log TPR vs FPR ROC
 
-# In[16]:
-
-
+# %%
 plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=True, inverse_log=True,
     x_axis_params={'max': 0.6}, y_axis_params={'min': 1e0, 'max': 1e1}, inline=inline)
 
-
+# %% [markdown]
 # ### Precision vs Recall ROC
 
-# In[17]:
-
-
+# %%
 plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=True, inverse_log=False, precision_recall=True,
     pop_PPV=pop_PPV, y_axis_params={'min': -0.05}, inline=inline)
 
-
+# %% [markdown]
 # #### Inverse Log Precision vs Recall ROC
 
-# In[18]:
-
-
+# %%
 plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=False, inverse_log=True, precision_recall=True, pop_PPV=pop_PPV, inline=inline)
 
-
+# %% [markdown]
 # ### Precision vs Recall ROC with Additional Plots
 
-# In[19]:
-
-
+# %%
 plot_rocs(models_for_roc[:1], m_path=f'{output}/roc_curves', tag='_f1', rndGuess=True, inverse_log=False, precision_recall=True, pop_PPV=pop_PPV,
     y_axis_params={'min': -0.05}, inline=inline, better_ann=False,
     plot_f1=True, plot_n_predicted_positive=False)
 
-
-# In[20]:
-
-
+# %%
 plot_rocs(models_for_roc[:1], m_path=f'{output}/roc_curves', tag='_n_pos', rndGuess=True, inverse_log=False, precision_recall=True, pop_PPV=pop_PPV,
     y_axis_params={'min': -0.05}, inline=inline, better_ann=False,
     plot_f1=False, plot_n_predicted_positive=True)
 
-
-# In[21]:
-
-
+# %%
 plot_rocs(models_for_roc[:1], m_path=f'{output}/roc_curves', tag='_f1_n_pos', rndGuess=True, inverse_log=False, precision_recall=True, pop_PPV=pop_PPV,
     y_axis_params={'min': -0.05}, inline=inline, better_ann=False,
     plot_f1=True, plot_n_predicted_positive=True)
 
-
+# %% [markdown]
 # ***
 # # Hypothesis Testing Power Example
 
-# In[22]:
-
-
+# %%
 Z_a = norm.ppf(1-0.05) + np.sqrt(100)*(10-10.5)/2
 print(f'Z_a = {Z_a:.4f}')
 print(f'Power = 1-beta = {1-norm.cdf(Z_a):.4f}')
 
-
+# %% [markdown]
 # ***
 # # inverse_transform_sampling_normal_dist
 # Adapted from https://commons.wikimedia.org/wiki/File:Inverse_transform_sampling.png
 
-# In[23]:
-
-
+# %%
 norm = scipy.stats.norm
 x = np.linspace(-2, 2, 100)
 
@@ -301,14 +261,12 @@ else:
     fig.savefig(f'{output}/inverse_transform_sampling_normal_dist.pdf')
     plt.close('all')
 
-
+# %% [markdown] tags=[]
 # ***
 # # rejection_sampling
 # Adapted from https://www.data-blogger.com/2016/01/24/the-mathematics-behind-rejection-sampling/
 
-# In[24]:
-
-
+# %%
 # The multiplication constant to make our probability estimation fit
 M = 3
 # Number of samples to draw from the probability estimation function
@@ -330,10 +288,7 @@ u = np.random.uniform(0, 1, (N, ))
 # Now examine all the samples and only use the samples found by rejection sampling
 samples = [(x_samples[i], u[i] * M * g(x_samples[i])) for i in range(N) if u[i] < f(x_samples[i]) / (M * g(x_samples[i]))]
 
-
-# In[25]:
-
-
+# %%
 fig, ax = plt.subplots()
 
 ax.set_xlim([0.,1.])
@@ -367,14 +322,12 @@ else:
     fig.savefig(f'{output}/rejection_sampling.pdf')
     plt.close('all')
 
-
+# %% [markdown] tags=[]
 # ***
 # # Hypergeometric PMF
 # Adapted from https://en.wikipedia.org/wiki/File:HypergeometricPDF.png and https://en.wikipedia.org/wiki/File:Geometric_pmf.svg
 
-# In[26]:
-
-
+# %%
 fig, ax = plt.subplots()
 
 ax.tick_params(
@@ -419,14 +372,12 @@ else:
     fig.savefig(f'{output}/hypergeometric_pmf.pdf')
     plt.close('all')
 
-
+# %% [markdown] tags=[]
 # ***
 # # Spearman Correlation
 # Adapted from https://en.wikipedia.org/wiki/File:Spearman_fig1.svg and https://en.wikipedia.org/wiki/File:Spearman_fig3.svg
 
-# In[27]:
-
-
+# %%
 fig, ax = plt.subplots()
 
 ax.tick_params(
@@ -466,10 +417,7 @@ else:
     fig.savefig(f'{output}/spearman_corr_non_para.pdf')
     plt.close('all')
 
-
-# In[28]:
-
-
+# %%
 fig, ax = plt.subplots()
 
 ax.tick_params(
@@ -513,22 +461,56 @@ else:
     fig.savefig(f'{output}/spearman_corr_outliers.pdf')
     plt.close('all')
 
-
+# %% [markdown] tags=[]
 # ***
 # # PCA Scree Plot
 
-# In[29]:
-
-
+# %%
 n_dimensions = 20
 n_observations = 100
 X = np.random.randn(n_observations, n_dimensions)
 pca = PCA()
 pca.fit(scale(X));
 
-
-# In[30]:
-
-
+# %%
 plot_scree(pca, m_path=output, plot_cumsum=True, reference_lines=True, inline=inline)
 
+# %% [markdown] tags=[]
+# ***
+# # Gini Impurity vs Information Entropy
+
+# %%
+fig, ax = plt.subplots()
+
+ax.tick_params(
+    axis='both',
+    which='minor',
+    bottom=False,
+    top=False,
+    left=False,
+    right=False,
+    labelleft=True,
+    labelbottom=True)
+
+xs = np.linspace(0, 1, 100)
+gini = [6*x*(1-x) for x in xs]
+H = [-4*x*np.log(x) if x != 0. else 0. for x in xs]
+
+ax.plot(xs, gini, '-', c='C0', lw=1, label='Gini Impurity')
+ax.plot(xs, H, '--', c='C1', lw=1, label='Information Entropy $H$')
+
+ax.xaxis.set_ticks(np.linspace(0, 1, 5))
+ax.yaxis.set_ticks(np.linspace(0, 2, 5))
+ax.set_xlabel('$p$', labelpad=7)
+ax.set_ylabel('Normalized Impurity', labelpad=7)
+
+leg = ax.legend(loc='upper right',frameon=False)
+leg.get_frame().set_facecolor('none')
+
+plt.tight_layout()
+if inline:
+    fig.show()
+else:
+    os.makedirs(output, exist_ok=True)
+    fig.savefig(f'{output}/gini_vs_info_entropy.pdf')
+    plt.close('all')
