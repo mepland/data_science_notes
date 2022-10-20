@@ -134,7 +134,7 @@ they are the points really fixing the hyperplane and margin.
 
 To gain better performance still, we can recast the problem in
 a new higher dimensional space where the classes may be easier to separate with a hyperplane.
-Fortunately, we don't even need to fully specify the new space,
+Fortunately, we do not even need to fully specify the new space,
 just a non-linear kernel function\footnote{Common kernel choices include
 polynomials of the inner product,
 the Gaussian radial basis function,
@@ -213,7 +213,7 @@ though we will focus on classification here for brevity.
 \includegraphics[width=0.4\textwidth]{figures/ml/tree7_g2000_n1200}
 \caption{
 Simple classification and regression tree (CART) on \num{2} variables
-extracted from a \xgboost \cite{XGBoost} model.
+extracted from a \xgboost \cite{XGBoost} model in \cite{mepland_dissertation}.
 Here signal-like (background-like) events receive positive (negative) weights in the leaves.
 A logistic function is used to properly transform $w$ into a prediction
 $\yhat = 1 /\left(1+e^{-w}\right)$ within $0 < \yhat < 1$.
@@ -228,18 +228,16 @@ $\yhat = 1 /\left(1+e^{-w}\right)$ within $0 < \yhat < 1$.
 CART models are almost always trained with greedy, \ie local, optimizers
 that iteratively grow the tree from a root node.
 At each node the optimal split $x_{j} < \beta_{\text{threshold}}$
-over the available features is chosen according to a prespecified splitting criterion.
+over the $n$ available features is chosen according to a prespecified splitting criterion.
 For classification trees, common choices for the splitting criterion are
 the Gini impurity of \cref{class:CART:gini_impurity}
 and information entropy of \cref{class:CART:info_entropy},
 while the $\text{MSE} = \expval{\left(y-\yhat\right)^{2}}$ is used for regression trees.
-In all three cases the optimal split maximizes the decrease, \ie the gain, of relevant metric.
-The tree is constructed in this manner,
-typically with recursive function calls,
-until no additional splits are possible or
+In all three cases the optimal split maximizes the decrease, \ie the gain, of the relevant metric.
+The tree is constructed in this manner until no additional splits are possible or
 halting conditions set by hyperparameters are met, such as
 a minimum decrease in splitting criterion,
-or a minimum number of training rows $\vb{x}_{i}$ at a leaf.
+or a minimum number of training points $\vb{x}_{i}$ in a leaf.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gini Impurity}
@@ -249,11 +247,12 @@ The Gini impurity, or Gini index,
 is the probability of incorrectly labeling a randomly selected element of set $S$,
 when the label is chosen randomly according to the distribution of labeled elements in $S$.
 Letting $p_{k}$ represent the proportion of elements labeled $k$ in $S$,
+and $K$ represent the total number of distinct labels in $S$,
 the Gini impurity\footnote{In binary classification with $K=2$,
 $p_{0} = 1 - p_{1} \, \to \, \text{Gini} = 2 p_{1} \left(1-p_{1}\right)$.} is then:
 
 \begin{equation} \label{eq:gini_impurity}
-\text{Gini} = \sum_{k=0}^{K-1} p_{k}\left(1-p_{k}\right) = 1 - \sum_{k=0}^{K-1} p_{k}^{2}.
+\text{Gini} = \sum_{k=0}^{K-1} p_{k}\left(1-p_{k}\right) = 1 - \sum_{k=0}^{K-1} p_{k}^{2}\,.
 \end{equation}
 
 When $S$ only contains a single label, $K=1$,
@@ -277,7 +276,7 @@ H = -\sum_{k=0}^{K-1} p_{k} \ln\left(p_{k}\right) \, ,
 \noindent where any ``empty'' classes with $p_{k}=0$
 at a given node are ignored in the sum over $k$.
 See \cref{misc:info_theory} for additional details on $H$.
-Like Gini impurity, the minimum $H = 0$ occurs when $K=1, \, p_{0}=1$, with $0 < H$ otherwise.
+Like Gini impurity, the minimum $H = 0$ occurs when $K=1$, with $0 < H$ otherwise.
 It can be \href{https://scikit-learn.org/stable/modules/tree.html#classification-criteria}{shown} \cite{sklearn}
 that using $H$ while training a CART is equivalent to minimizing
 the binary logistic loss function of \cref{ml_general:loss_func:binary_logistic}.
@@ -315,7 +314,7 @@ $H$ may work better with imbalanced classes where $p_{1} \ll 1$ and $\text{Gini}
 see \cref{fig:gini_vs_info_entropy}.
 In these cases, just try both criteria.},
 however $H$ is slightly slower computationally
-as it involves a calculating a $\log$.
+as it involves a calculating a $\log$ function.
 
 \begin{figure}[H]
 \centering
@@ -334,30 +333,29 @@ with $H$ being slightly biased toward smaller $p$.
 \subsection{CART Predictions}
 \label{class:CART:pred}
 
-To make a prediction for row $\vb{x}_{i}$
-the tree and its branches are traversed
-until of the terminating leaf is reached.
+To make a prediction for data point $\vb{x}_{i}$
+the tree and its branches are traversed until a leaf is reached.
 The prediction assigned by the leaf can be constructed in a few ways;
 a class label may be assigned directly based on the majority class in the leaf during training,
 a probability can be assigned based on the proportion of classes in the leaf,
-or a weight $w$ can be computed from the loss function and training data in a more complex manner, \eg \xgboost \cite{XGBoost}.
-Note that the leaf values can be trained separately from the tree structure
+or a weight $w$ can be computed from the loss function and training data in a more complex manner,
+\eg \cref{class:BDT:xgboost,class:FIGS}.
+Note that the leaf weights can be trained separately from the tree structure
 using an independent fold of the training data.
 Tree models trained with this approach are known as ``honest'' \cite{JMLR:v13:biau12a,pmlr-v32-denil14}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Boosted Decision Trees (BDT)}
+\section{Boosted Decision Tree (BDT)}
 \label{class:BDT}
 
 Individual CARTs are rather poor and limited models
 in terms of the behaviors they can successfully predict.
 However, by taking an ensemble of $K$ complementary trees,
 \ie boosting \cite{10.5555/3091696.3091715,FREUND1997119,Breiman1996BiasV,friedman2000} as described in \cref{ml_general:boosting},
-and summing each CART's individual weight $w_{k}$ a much more flexible BDT\footnote{As the leaf weights
-are reals rather than integer classes this approach may be better described as a boosted regression tree,
-and can indeed handle regression problems without the logistic function.} is formed.
-The component trees of a BDT are generated by iteratively adding new trees $f_{k}\left(x_{i}\right)$ to those which came before \cite{XGBoost},
+and combining each CART's individual predicted weight $w_{k}$
+a much more flexible boosted decision tree (BDT) is formed.
+The component trees of a BDT are generated by iteratively adding new trees $f_{k}\left(\vb{x}_{i}\right)$ to those which came before \cite{XGBoost},
 
 \begin{equation} \label{eq:boosting}
 \begin{aligned}
@@ -369,18 +367,20 @@ The component trees of a BDT are generated by iteratively adding new trees $f_{k
 \end{aligned}
 \end{equation}
 
-\noindent where each tree $f_{k}$ is grown from zero branches while minimizing $S\left(\beta\right)$.
+\noindent where each tree $f_{k}$ is grown from zero branches while minimizing the objective function $S\left(\beta\right)$.
 Through the ingenious use of a second order Taylor expansion this process can
 be recast as a form of gradient descent\footnote{See \cite{NIPS1999_96a93ba8} for a different explanation.}, and thus is known as
 stochastic gradient boosting \cite{10.2307/2699986,FRIEDMAN2002367}.
-The number of boosting rounds, and thus trees, $K$ can be chosen in advance
+The number of boosting rounds, and thus trees, $K$ can be chosen in advance,
 but is better optimized during the training process via early stopping.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\xgboost}% would rather have the \textsc caps than italics
 \label{class:BDT:xgboost}
 % TODO see https://towardsdatascience.com/boosting-algorithm-xgboost-4d9ec0207d
-% TODO how does the Hessian come into play
+% TODO how does the Hessian come into play?
+% TODO how are leaf weights $w$ are computed in each tree?
+% TODO provide \order for training
 
 The \xgboost\footnote{\xgboost: eXtreme Gradient Boosting, \href{https://github.com/dmlc/xgboost}{github.com/dmlc/xgboost}.} library \cite{XGBoost}
 is a modern open source implementation of gradient boosted decision tree methods.
@@ -390,11 +390,11 @@ and CatBoost \cite{CatBoost}, but is still a standard library.}.
 L1 and L2 regularization is incorporated via
 
 \begin{equation} \label{eq:bdt_omega_reg}
-\Omega\left(f\right) = \alpha T + \frac{1}{2}\lambda \sum_{j=1}^T w_j^2\,,
+\Omega\left(f\right) = \alpha T + \frac{1}{2}\lambda \sum_{j=1}^T w_{j}^{2}\,,
 \end{equation}
 
 \noindent where $T$ is the number of leaves in a tree and $w_{j}$ are the leaf weights;
-however, the default hyperparameters $\alpha=0$ and $\lambda=1$ only enable L2 regularization.
+however, the default hyperparameters of $\alpha=0$ and $\lambda=1$ only enable L2 regularization.
 Other important hyperparameters in \xgboost include the
 learning rate $\eta$, which scales the corrections added by each new tree,
 maximum tree depth, which sets a limit on the complexity of any tree via its depth,
@@ -428,17 +428,34 @@ increasing the chance of fitting to noise in the data,
 and because they have less data to work with at each subsequent split,
 increasing the variance of the tree's predictions.
 
-FIGS improves upon the CART iterative training process
-by considering adding the next split as the root of a new tree,
+FIGS improves upon the iterative training process of CART
+by considering adding the next split as the root of a new tree $f_{t}$,
 in addition to adding the next split at the bottom of the existing tree as is done in CART.
 This reduces the number of splits when the data has an additive structure,
-as can be seen in \cref{class:FIGS:intro}, and increases interpretability.
-The splits are chosen greedily according to the splitting criterion,
-typically the Gini impurity of \cref{class:CART:gini_impurity}.
-Each tree is fit to the residuals remaining after summing the other tree's predictions,
-see \cref{class:FIGS:fit_algo} for an outline of the training algorithm.
-Predictions are made by summing the predicted leaf's value\footnote{TODO value is just $p_{1} = n_{1}/N$?} from each tree.
-% TODO value
+as can be seen in \cref{class:FIGS:intro}, thereby also increasing the interpretability.
+The splits are chosen greedily according to the usual splitting criteria;
+typically the Gini impurity of \cref{class:CART:gini_impurity} is used for classification.
+
+During training, each tree $k$ is fit to the residuals remaining after summing the other tree's predictions,
+$r_{i}^{\left(-k\right)}$ \cref{eq:FIGS:FIGS_eqs:r}.
+The predicted weight $w_{l,\,k}$ \cref{eq:FIGS:FIGS_eqs:weight} at each leaf $l$ of tree $k$
+are found by taking the mean of the $r_{i}^{\left(-k\right)}$ residuals, from the other trees,
+over the $\vb{x}_{i}$ data points $\left\{l\right\}$ that reach the leaf.
+Note that when there are no other trees,
+\eg when growing the first tree or if the data is non-additive,
+the sum $\sum_{t \neq k} f_{t}$ will be zero and $r_{i}^{\left(-k\right)} = y_{i}$.
+In this case, the leaf weights are simply $w_{l} = n_{l,\,1}/n_{l}$,
+\ie the proportion of positive $y_{i} = 1$ data points in $l$.
+Finally, the predictions for the trained model are made by
+summing the relevant leaf weight $w_{l,k}\left(\vb{x}_{i}\right)$ from each tree.
+See \cref{class:FIGS:fit_algo} for an outline of the training algorithm.
+
+\begin{subequations}\label{eq:FIGS_eqs}
+\begin{align}
+r_{i}^{\left(-k\right)} &= y_{i} - \sum_{t \neq k} f_{t}\left(\vb{x}_{i}\right) \label{eq:FIGS:FIGS_eqs:r} \\
+w_{l,\,k} &= \frac{1}{\abs{\left\{l\right\}}} \sum_{i \in \left\{l\right\}} r_{i}^{\left(-k\right)} \label{eq:FIGS:FIGS_eqs:weight}
+\end{align}
+\end{subequations}
 
 \begin{figure}[H]
 \centering
@@ -479,7 +496,7 @@ while FIGS captures the additive structure of $y$ directly, thereby saving \num{
 
 The resulting FIGS model is thus an ensemble of CART-like trees,
 similar to the BDT and RF models of \cref{class:BDT,class:RF}.
-However, FIGS can capture any additive structure present in the data,
+However, FIGS can explicitly capture any additive structure present in the data,
 while the ensemble trees of the BDT (RF) model being trained sequentially (independently) can not.
 Rather than constraining the depth or number of trees separately like other tree-based models,
 FIGS can impose a limit on the total number of splits across all trees via the hyperparameter $\nu$.
