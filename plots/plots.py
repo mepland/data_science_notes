@@ -48,7 +48,7 @@ import warnings
 warnings.filterwarnings('ignore', message='Matplotlib is currently using module://matplotlib_inline.backend_inline, which is a non-GUI backend, so cannot show the figure.')
 
 ########################################################
-# set global rnd_seed for reproducability
+# set global rnd_seed for reproducibility
 rnd_seed = 42
 np.random.seed(rnd_seed)
 
@@ -97,13 +97,13 @@ fixed_setup_params = {
     'xgb_objective': 'binary:logistic', # objective function for binary classification
     'xgb_verbosity': 0, #  The degree of verbosity. Valid values are 0 (silent) - 3 (debug).
     'xgb_n_jobs': -1, # Number of parallel threads used to run XGBoost. -1 makes use of all cores in your system
+    'eval_metric': 'auc', # evaluation metric for early stopping
+    'early_stopping_rounds': 10, # must see improvement over last num_early_stopping_rounds or will halt
 }
 
 # %%
 fixed_fit_params = {
-    'early_stopping_rounds': 10, # must see improvement over last num_early_stopping_rounds or will halt
     'eval_set': [(X_val, y_val)], # data sets to use for early stopping evaluation
-    'eval_metric': 'auc', # evaluation metric for early stopping
     'verbose': False, # even more verbosity control
 }
 
