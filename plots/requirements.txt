@@ -7,6 +7,8 @@ xgboost
 scikit-learn
 imodels
 # dtreeviz # must follow the package README!
+wand
+svglib
 skompiler
 sqlalchemy
 astor
