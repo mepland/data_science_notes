@@ -1,7 +1,12 @@
 jupyterlab
+jupytext
 pandas
 numpy
 matplotlib
 xgboost
 scikit-learn
-bisect
+imodels
+# dtreeviz # must follow the package README!
+skompiler
+sqlalchemy
+astor
