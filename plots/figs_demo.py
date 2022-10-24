@@ -12,7 +12,7 @@
 #     name: python3
 # ---
 
-# %% [markdown] tags=[]
+# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # ## Setup
 
 # %%
@@ -26,6 +26,7 @@ sys.path.append(os.path.expanduser('~/dtreeviz'))
 
 ########################################################
 # python
+
 import os
 import time
 import pandas as pd
@@ -33,9 +34,13 @@ import numpy as np
 import scipy.stats
 norm = scipy.stats.norm
 import bisect
+import warnings
+# not working
+# warnings.filterwarnings('ignore', category=DeprecationWarning) # , message='the load_module() method is deprecated and slated for removal in Python 3.12; use exec_module() instead')
 
 ########################################################
 # figs (imodels), xgboost, sklearn
+
 import imodels
 from imodels import FIGSClassifier
 
@@ -54,6 +59,7 @@ from sklearn.inspection import permutation_importance
 from dtreeviz import trees
 from dtreeviz.models.sklearn_decision_trees import ShadowSKDTree
 from imodels.tree.viz_utils import extract_sklearn_tree_from_figs
+from dtreeviz.colors import mpl_colors
 
 from wand.image import Image
 from svglib.svglib import svg2rlg
@@ -61,20 +67,22 @@ from reportlab.graphics import renderPDF
 
 ########################################################
 # skompiler
+
 from skompiler import skompile
 
 ########################################################
 # plotting
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.transforms
 # %matplotlib inline
 
-import warnings
 warnings.filterwarnings('ignore', message='Matplotlib is currently using module://matplotlib_inline.backend_inline, which is a non-GUI backend, so cannot show the figure.')
 
 ########################################################
 # set global rnd_seed for reproducibility
+
 rnd_seed = 42
 np.random.seed(rnd_seed)
 
@@ -90,7 +98,10 @@ os.makedirs(output, exist_ok=True)
 
 
 # %%
-def save_dtreeviz(viz, m_path, fname, tag=''):
+def save_dtreeviz(viz, m_path, fname, tag='', inline=inline):
+    if inline:
+        return
+
     os.makedirs(m_path, exist_ok=True)
     full_path = f'{m_path}/{fname}{tag}'
 
@@ -109,7 +120,18 @@ def save_dtreeviz(viz, m_path, fname, tag=''):
     os.remove(full_path)
 
 
-# %% [markdown] tags=[]
+# %%
+def save_plt(m_path, fname, tag='', inline=inline):
+    plt.tight_layout()
+    if inline:
+        plt.show()
+    else:
+        os.makedirs(m_path, exist_ok=True)
+        plt.savefig(f'{m_path}/{fname}{tag}.pdf')
+        plt.close('all')
+
+
+# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # ***
 # # Generate Random Data
 # Include additive structure that FIGS does well on
@@ -154,7 +176,7 @@ del X; del y;
 X_train, X_val, y_train, y_val = train_test_split(X_trainVal, y_trainVal, test_size=0.2, random_state=rnd_seed, stratify=y_trainVal)
 # del X_trainVal; del y_trainVal;
 
-# %% [markdown] tags=[]
+# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # ***
 # # FIGS
 # Note we are not using early stopping with FIGS, so use `X_trainVal` during training to take advantage of all rows.
@@ -199,7 +221,7 @@ print(model_figs.print_tree(X_train, y_train))
 # %%
 model_figs.plot(fig_size=7)
 
-# %% [markdown] tags=[]
+# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # ***
 # # XGBoost
 
@@ -242,7 +264,7 @@ n_splits_xgboost = sum([tree.count('"split"') for tree in model_xgboost.get_boos
 # %%
 print(f'XGBoost used {model_xgboost.best_ntree_limit} trees and {n_splits_xgboost:,} splits')
 
-# %% [markdown] tags=[]
+# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # ***
 # # Evaluate
 
@@ -416,7 +438,7 @@ print('XGBoost Feature Importances')
 _dfp = model_metrics_xgboost['dfp_importance']
 display(_dfp.loc[0 < _dfp['importance_permutation_holdout_mean']])
 
-# %% [markdown] tags=[]
+# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # ***
 # # TODO
 
@@ -443,6 +465,19 @@ display(_dfp.loc[0 < _dfp['importance_permutation_holdout_mean']])
 # ***
 # # Tree Plots
 
+# %%
+from dtreeviz import trees
+
+# %%
+color_params = {'colors': {'classes': mpl_colors, 'hist_bar': 'C0', 'legend_edge': None}}
+dtreeviz_params = {'colors': color_params['colors'], 'leaf_plot_type': 'barh', 'all_axis_spines': False, 'label_fontsize': 10}
+
+# %%
+x_example = X_train[13]
+
+# %%
+pd.DataFrame([{col: value for col,value in zip(feat_names,x_example)}])
+
 # %% [markdown] tags=[]
 # ## FIGS
 
@@ -453,23 +488,139 @@ sk_figs_0 = ShadowSKDTree(dt_figs_0, X_train, y_train, feat_names, 'y', [0, 1])
 dt_figs_1 = extract_sklearn_tree_from_figs(model_figs, tree_num=1, n_classes=2)
 sk_figs_1 = ShadowSKDTree(dt_figs_1, X_train, y_train, feat_names, 'y', [0, 1])
 
-# %%
-from dtreeviz.colors import color_blind_friendly_colors # mpl_colors # TODO
+# %% [markdown] tags=[]
+# ### Trees
+
+# %% [markdown] tags=[]
+# #### Split Hists
 
 # %%
-viz = trees.dtreeviz(sk_figs_0)
+from dtreeviz import trees # TODO remove once dev is done
+viz = trees.dtreeviz(sk_figs_0, **dtreeviz_params)
+
+# %%
+viz
 
 # %%
 save_dtreeviz(viz, output, 'dtreeviz_figs_0')
 
 # %%
-viz = trees.dtreeviz(sk_figs_1)
+viz = trees.dtreeviz(sk_figs_1, **dtreeviz_params)
 
 # %%
-viz = trees.ctreeviz_leaf_samples(sk_figs_0)
+viz
 
 # %%
-viz = trees.ctreeviz_leaf_samples(sk_figs_1)
+save_dtreeviz(viz, output, 'dtreeviz_figs_1')
+
+# %% [markdown] tags=[]
+# #### Text
+
+# %%
+viz = trees.dtreeviz(sk_figs_0, **dtreeviz_params, fancy=False, show_node_labels=True)
+
+# %%
+viz
+
+# %%
+save_dtreeviz(viz, output, 'dtreeviz_text_figs_0')
+
+# %%
+viz = trees.dtreeviz(sk_figs_1, **dtreeviz_params, fancy=False, show_node_labels=True)
+
+# %%
+viz
+
+# %%
+save_dtreeviz(viz, output, 'dtreeviz_text_figs_1')
+
+# %% [markdown] tags=[]
+# ### Prediction Path
+
+# %%
+print(trees.explain_prediction_path(sk_figs_0, x=x_example, explanation_type='plain_english'))
+
+# %%
+viz = trees.dtreeviz(sk_figs_0, **dtreeviz_params, X=x_example)
+
+# %%
+viz
+
+# %%
+save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_0')
+
+# %%
+print(trees.explain_prediction_path(sk_figs_1, x=x_example, explanation_type='plain_english'))
+
+# %%
+viz = trees.dtreeviz(sk_figs_1, **dtreeviz_params, X=x_example)
+
+# %%
+viz
+
+# %%
+save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_1')
+
+# %% [markdown] tags=[]
+# ### Leaf Samples
+
+# %%
+trees.ctreeviz_leaf_samples(sk_figs_0, **color_params)
+save_plt(output, 'ctreeviz_leaf_samples_figs_0')
+
+# %%
+trees.ctreeviz_leaf_samples(sk_figs_1, **color_params)
+save_plt(output, 'ctreeviz_leaf_samples_figs_1')
+
+# %% [markdown] tags=[]
+# ### Leaf Criterion
+
+# %%
+trees.viz_leaf_criterion(sk_figs_0, display_type='text', **color_params)
+
+# %%
+trees.viz_leaf_criterion(sk_figs_0, display_type='plot', **color_params)
+save_plt(output, 'viz_leaf_criterion_figs_0')
+
+# %%
+trees.viz_leaf_criterion(sk_figs_0, display_type='hist', **color_params)
+save_plt(output, 'viz_leaf_criterion_hist_figs_0')
+
+# %%
+trees.viz_leaf_criterion(sk_figs_1, display_type='text', **color_params)
+
+# %%
+trees.viz_leaf_criterion(sk_figs_1, display_type='plot', **color_params)
+save_plt(output, 'viz_leaf_criterion_figs_1')
+
+# %%
+trees.viz_leaf_criterion(sk_figs_1, display_type='hist', **color_params)
+save_plt(output, 'viz_leaf_criterion_hist_figs_1')
+
+# %% [markdown] tags=[]
+# ### Feature Space
+
+# %%
+trees.ctreeviz_bivar(sk_figs_0, feature_names=['x_1_0', 'x_2_0'], show={'legend', 'splits'}, **color_params)
+
+# %% [markdown] tags=[]
+# ### Node Sample
+
+# %%
+trees.describe_node_sample(sk_figs_0, 18)
+
+# %% [markdown] tags=[]
+# ## XGBoost
+# Tree 0 only
+
+# %%
+
+# %% [markdown] tags=[]
+# ***
+# # Tree Functions
+
+# %% [markdown] tags=[]
+# ## FIGS
 
 # %%
 expr_figs_0 = skompile(dt_figs_0.predict_proba, feat_names)
