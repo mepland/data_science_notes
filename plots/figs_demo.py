@@ -1,18 +1,4 @@
-# ---
-# jupyter:
-#   jupytext:
-#     text_representation:
-#       extension: .py
-#       format_name: percent
-#       format_version: '1.3'
-#       jupytext_version: 1.14.1
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# ---
-
-# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
+# %% [markdown]
 # ## Setup
 
 # %%
@@ -58,6 +44,7 @@ from sklearn.inspection import permutation_importance
 
 from dtreeviz import trees
 from dtreeviz.models.sklearn_decision_trees import ShadowSKDTree
+from dtreeviz.models.xgb_decision_tree import ShadowXGBDTree
 from imodels.tree.viz_utils import extract_sklearn_tree_from_figs
 from dtreeviz.colors import mpl_colors
 
@@ -79,6 +66,7 @@ import matplotlib.transforms
 # %matplotlib inline
 
 warnings.filterwarnings('ignore', message='Matplotlib is currently using module://matplotlib_inline.backend_inline, which is a non-GUI backend, so cannot show the figure.')
+warnings.filterwarnings('ignore', message="urllib3 (1.26.12) or chardet (None)/charset_normalizer (3.0.0) doesn't match a supported version!")
 
 ########################################################
 # set global rnd_seed for reproducibility
@@ -92,32 +80,41 @@ datasets = ['train', 'holdout']
 from plotting import * # load plotting code
 
 # %%
-inline=True # plot inline or to pdf
-output = './figs_demo_output' # output dir
+inline=False # plot inline or to pdf
+output = './output_figs_demo' # output dir
 os.makedirs(output, exist_ok=True)
 
 
 # %%
-def save_dtreeviz(viz, m_path, fname, tag='', inline=inline):
+def save_dtreeviz(viz, m_path, fname, tag='', inline=inline, svg=False, png=False, pdf=True):
     if inline:
-        return
+        display(viz)
+    else:
+        if not (svg or png or pdf):
+            warnings.warn('Not saving anything!')
 
-    os.makedirs(m_path, exist_ok=True)
-    full_path = f'{m_path}/{fname}{tag}'
+        os.makedirs(m_path, exist_ok=True)
+        full_path = f'{m_path}/{fname}{tag}'
 
-    # svg
-    viz.save(f'{full_path}.svg')
+        # svg
+        viz.save(f'{full_path}.svg')
 
-    # pdf via svglib
-    renderPDF.drawToFile(svg2rlg(f'{full_path}.svg'), f'{full_path}.pdf')
+        # pdf via svglib
+        if pdf:
+            renderPDF.drawToFile(svg2rlg(f'{full_path}.svg'), f'{full_path}.pdf')
 
-    # png via wand / ImageMagick
-    img = Image(filename=f'{full_path}.svg', resolution=500)
-    img.format = 'png'
-    img.save(filename=f'{full_path}.png')
+        # png via wand / ImageMagick
+        if png:
+            img = Image(filename=f'{full_path}.svg', resolution=500)
+            img.format = 'png'
+            img.save(filename=f'{full_path}.png')
 
-    # clean up graphviz dot file (no extension)
-    os.remove(full_path)
+        if not svg:
+            # clean up svg
+            os.remove(f'{full_path}.svg')
+
+        # clean up graphviz dot file (no extension)
+        os.remove(full_path)
 
 
 # %%
@@ -131,7 +128,7 @@ def save_plt(m_path, fname, tag='', inline=inline):
         plt.close('all')
 
 
-# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
+# %% [markdown]
 # ***
 # # Generate Random Data
 # Include additive structure that FIGS does well on
@@ -176,7 +173,7 @@ del X; del y;
 X_train, X_val, y_train, y_val = train_test_split(X_trainVal, y_trainVal, test_size=0.2, random_state=rnd_seed, stratify=y_trainVal)
 # del X_trainVal; del y_trainVal;
 
-# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
+# %% [markdown]
 # ***
 # # FIGS
 # Note we are not using early stopping with FIGS, so use `X_trainVal` during training to take advantage of all rows.
@@ -221,7 +218,7 @@ print(model_figs.print_tree(X_train, y_train))
 # %%
 model_figs.plot(fig_size=7)
 
-# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
+# %% [markdown]
 # ***
 # # XGBoost
 
@@ -250,7 +247,7 @@ model_xgboost = xgb.XGBClassifier(n_estimators=fixed_setup_params['max_num_boost
                                   verbosity=fixed_setup_params['xgb_verbosity'],
                                   eval_metric=fixed_setup_params['eval_metric'],
                                   early_stopping_rounds=fixed_setup_params['early_stopping_rounds'],
-                                  random_state=rnd_seed+3, **params_default, use_label_encoder=False)
+                                  random_state=rnd_seed+3, **params_default)
 
 # %%
 time_xgboost_start = time.time()
@@ -264,18 +261,17 @@ n_splits_xgboost = sum([tree.count('"split"') for tree in model_xgboost.get_boos
 # %%
 print(f'XGBoost used {model_xgboost.best_ntree_limit} trees and {n_splits_xgboost:,} splits')
 
-# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
+
+# %% [markdown]
 # ***
 # # Evaluate
 
-# %%
-print(f'XGBoost used {n_splits_xgboost:,} splits vs FIGS {n_splits_figs:,}')
-print(f'That is {n_splits_xgboost-n_splits_figs:,}, or {(n_splits_xgboost-n_splits_figs)/n_splits_figs:,.0%}, more splits!')
-
+# %% [markdown]
+# ## Setup
 
 # %%
-def classifier_metrics(model, X_train, y_train, X_holdout, y_holdout, feature_names, do_permutation_importance=True, print_classification_report=False):
-    model_metrics = {}
+def classifier_metrics(model, model_nname, X_train, y_train, X_holdout, y_holdout, feature_names, do_permutation_importance=True, print_classification_report=False):
+    model_metrics = {'nname': model_nname}
     dfp_importance = pd.DataFrame({'feature': feature_names})
     dfp_importance['icolX'] = dfp_importance.index
 
@@ -341,6 +337,20 @@ def classifier_metrics(model, X_train, y_train, X_holdout, y_holdout, feature_na
 
         model_metrics[dataset]['dfp_eval_fpr_tpr'] = dfp_eval_fpr_tpr
         model_metrics[dataset]['dfp_eval_precision_recall'] = dfp_eval_precision_recall
+
+        roc_entry = {'name': f'{model_nname.lower()}_{dataset}',
+                     'nname': f'{model_nname} ({dataset.title()})',
+                     'dfp_eval_fpr_tpr': dfp_eval_fpr_tpr,
+                     'dfp_eval_precision_recall': dfp_eval_precision_recall
+                    }
+        if dataset == 'holdout':
+            roc_entry['c'] = 'C2'
+            roc_entry['ls'] = '-'
+        else:
+            roc_entry['c'] = 'black'
+            roc_entry['ls'] = ':'
+
+        model_metrics[dataset]['roc_entry'] = roc_entry
 
         if do_permutation_importance:
             # print('Start do_permutation_importance func')
@@ -411,22 +421,41 @@ def classifier_metrics(model, X_train, y_train, X_holdout, y_holdout, feature_na
     return model_metrics
 
 
+# %% [markdown]
+# ## Metrics
+
 # %%
-model_metrics_figs = classifier_metrics(model_figs, X_trainVal, y_trainVal, X_holdout, y_holdout, feat_names)
-model_metrics_xgboost = classifier_metrics(model_xgboost, X_train, y_train, X_holdout, y_holdout, feat_names)
+model_metrics_figs = classifier_metrics(model_figs, 'FIGS', X_trainVal, y_trainVal, X_holdout, y_holdout, feat_names)
+model_metrics_xgboost = classifier_metrics(model_xgboost, 'XGBoost', X_train, y_train, X_holdout, y_holdout, feat_names)
 
 metric_rows = []
-for model, name, model_metrics in [(model_figs, 'FIGS', model_metrics_figs), (model_xgboost, 'XGBoost', model_metrics_xgboost)]:
-    for dataset in datasets[::-1]:
-        dataset_metrics = {'model': name, 'dataset': dataset}
+for model_metrics in [model_metrics_figs, model_metrics_xgboost]:
+    roc_entries = []
+    for idataset,dataset in enumerate(datasets[::-1]):
+        dataset_metrics = {'model': model_metrics['nname'], 'dataset': dataset}
         for k,v in model_metrics[dataset].items():
-            if k not in ['confusion_matrix', 'dfp_eval_fpr_tpr', 'dfp_eval_precision_recall', 'dfp_y']:
+            if k == 'roc_entry':
+                if 0 < len(roc_entries):
+                    v['name'] = dataset
+                roc_entries.append(v)
+            elif k not in ['confusion_matrix', 'dfp_eval_fpr_tpr', 'dfp_eval_precision_recall', 'dfp_y']:
                 dataset_metrics[k] = v
         metric_rows.append(dataset_metrics)
+
+    plot_rocs(roc_entries, m_path=f'{output}/roc_curves', rndGuess=False, inverse_log=False, inline=False)
+    plot_rocs(roc_entries, m_path=f'{output}/roc_curves', rndGuess=False, inverse_log=False, precision_recall=True,
+              pop_PPV=model_metrics['holdout']['pop_PPV'], y_axis_params={'min': -0.05}, inline=False)
 
 dfp_metrics = pd.DataFrame(metric_rows)
 dfp_metrics = dfp_metrics.sort_values(by=['model', 'dataset'], ascending=[True, True]).reset_index(drop=True)
 display(dfp_metrics)
+
+# %%
+print(f'XGBoost used {n_splits_xgboost:,} splits vs FIGS {n_splits_figs:,}')
+print(f'That is {n_splits_xgboost-n_splits_figs:,}, or {(n_splits_xgboost-n_splits_figs)/n_splits_figs:,.0%}, more splits!')
+
+# %% [markdown]
+# ## Feature Importances
 
 # %%
 print('FIGS Feature Importances')
@@ -438,188 +467,202 @@ print('XGBoost Feature Importances')
 _dfp = model_metrics_xgboost['dfp_importance']
 display(_dfp.loc[0 < _dfp['importance_permutation_holdout_mean']])
 
-# %% [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
-# ***
-# # TODO
+# %% [markdown]
+# ## ROC Curves
 
 # %%
-# models_for_roc_dict = {
-#     {**{'name': 'FIGS_train', 'nname': 'FIGS (Train)', 'c': 'C2', 'ls': '-'}, **roc_},
-#     {**{'name': 'XGBoost', 'nname': 'XGBoost', 'c': 'black', 'ls': '--'}, **roc_},
-# }
+for dataset in datasets[::-1]:
+    roc_entry_figs = model_metrics_figs[dataset]['roc_entry']
+    roc_entry_figs['c'] = 'C0'
+    roc_entry_figs['ls'] = '--'
+    roc_entry_xgboost = model_metrics_xgboost[dataset]['roc_entry']
+    roc_entry_xgboost['c'] = 'C1'
+    roc_entry_xgboost['ls'] = ':'
 
-# %% [markdown] tags=[]
-# ### Standard TPR vs FPR ROC
+    models_for_roc = [roc_entry_figs, roc_entry_xgboost]
+    plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=False, inverse_log=False, inline=False)
+    plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=False, inverse_log=False, precision_recall=True,
+              pop_PPV=model_metrics_figs[dataset]['pop_PPV'], y_axis_params={'min': -0.05}, inline=False)
 
-# %%
-# plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=False, inverse_log=False, inline=inline)
+if inline:
+    for fname in ['roc_figs_holdout_xgboost_holdout', 'roc_figs_holdout_train', 'roc_xgboost_holdout_train']:
+        img = Image(filename=f'{output}/roc_curves/{fname}.pdf')
+        display(img)
 
-# %% [markdown] tags=[]
-# ### Precision vs Recall ROC
-
-# %%
-# plot_rocs(models_for_roc, m_path=f'{output}/roc_curves', rndGuess=False, inverse_log=False, precision_recall=True,
-#     pop_PPV=model_metrics[dataset]['pop_PPV'], y_axis_params={'min': -0.05}, inline=inline)
-
-# %% [markdown] tags=[]
+# %% [markdown]
 # ***
 # # Tree Plots
 
 # %%
-from dtreeviz import trees
-
-# %%
-color_params = {'colors': {'classes': mpl_colors, 'hist_bar': 'C0', 'legend_edge': None}}
+color_params_tmp = {'classes': mpl_colors, 'hist_bar': 'C0', 'tick_label': 'black', 'legend_edge': None}
+for _ in ['axis_label', 'title', 'legend_title', 'text', 'arrow', 'node_label', 'tick_label', 'leaf_label', 'wedge', 'text_wedge']:
+    color_params_tmp[_] = 'black'
+color_params = {'colors': color_params_tmp}
 dtreeviz_params = {'colors': color_params['colors'], 'leaf_plot_type': 'barh', 'all_axis_spines': False, 'label_fontsize': 10}
 
 # %%
 x_example = X_train[13]
 
 # %%
-pd.DataFrame([{col: value for col,value in zip(feat_names,x_example)}])
+pd.DataFrame([{col: value for col,value in zip(feat_names, x_example)}])
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # ## FIGS
 
 # %%
 dt_figs_0 = extract_sklearn_tree_from_figs(model_figs, tree_num=0, n_classes=2)
-sk_figs_0 = ShadowSKDTree(dt_figs_0, X_train, y_train, feat_names, 'y', [0, 1])
+shadow_figs_0 = ShadowSKDTree(dt_figs_0, X_train, y_train, feat_names, 'y', [0, 1])
 
 dt_figs_1 = extract_sklearn_tree_from_figs(model_figs, tree_num=1, n_classes=2)
-sk_figs_1 = ShadowSKDTree(dt_figs_1, X_train, y_train, feat_names, 'y', [0, 1])
+shadow_figs_1 = ShadowSKDTree(dt_figs_1, X_train, y_train, feat_names, 'y', [0, 1])
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # ### Trees
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # #### Split Hists
 
 # %%
-from dtreeviz import trees # TODO remove once dev is done
-viz = trees.dtreeviz(sk_figs_0, **dtreeviz_params)
-
-# %%
-viz
-
-# %%
+viz = trees.dtreeviz(shadow_figs_0, **dtreeviz_params)
 save_dtreeviz(viz, output, 'dtreeviz_figs_0')
 
 # %%
-viz = trees.dtreeviz(sk_figs_1, **dtreeviz_params)
-
-# %%
-viz
-
-# %%
+viz = trees.dtreeviz(shadow_figs_1, **dtreeviz_params)
 save_dtreeviz(viz, output, 'dtreeviz_figs_1')
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # #### Text
 
 # %%
-viz = trees.dtreeviz(sk_figs_0, **dtreeviz_params, fancy=False, show_node_labels=True)
-
-# %%
-viz
-
-# %%
+viz = trees.dtreeviz(shadow_figs_0, **dtreeviz_params, fancy=False, show_node_labels=True)
 save_dtreeviz(viz, output, 'dtreeviz_text_figs_0')
 
 # %%
-viz = trees.dtreeviz(sk_figs_1, **dtreeviz_params, fancy=False, show_node_labels=True)
-
-# %%
-viz
-
-# %%
+viz = trees.dtreeviz(shadow_figs_1, **dtreeviz_params, fancy=False, show_node_labels=True)
 save_dtreeviz(viz, output, 'dtreeviz_text_figs_1')
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # ### Prediction Path
 
 # %%
-print(trees.explain_prediction_path(sk_figs_0, x=x_example, explanation_type='plain_english'))
+print(trees.explain_prediction_path(shadow_figs_0, x=x_example, explanation_type='plain_english'))
 
 # %%
-viz = trees.dtreeviz(sk_figs_0, **dtreeviz_params, X=x_example)
-
-# %%
-viz
-
-# %%
+viz = trees.dtreeviz(shadow_figs_0, **dtreeviz_params, X=x_example)
 save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_0')
 
 # %%
-print(trees.explain_prediction_path(sk_figs_1, x=x_example, explanation_type='plain_english'))
+print(trees.explain_prediction_path(shadow_figs_1, x=x_example, explanation_type='plain_english'))
 
 # %%
-viz = trees.dtreeviz(sk_figs_1, **dtreeviz_params, X=x_example)
-
-# %%
-viz
-
-# %%
+viz = trees.dtreeviz(shadow_figs_1, **dtreeviz_params, X=x_example)
 save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_1')
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # ### Leaf Samples
 
 # %%
-trees.ctreeviz_leaf_samples(sk_figs_0, **color_params)
+trees.ctreeviz_leaf_samples(shadow_figs_0, **color_params)
 save_plt(output, 'ctreeviz_leaf_samples_figs_0')
 
 # %%
-trees.ctreeviz_leaf_samples(sk_figs_1, **color_params)
+trees.ctreeviz_leaf_samples(shadow_figs_1, **color_params)
 save_plt(output, 'ctreeviz_leaf_samples_figs_1')
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # ### Leaf Criterion
 
 # %%
-trees.viz_leaf_criterion(sk_figs_0, display_type='text', **color_params)
-
-# %%
-trees.viz_leaf_criterion(sk_figs_0, display_type='plot', **color_params)
+trees.viz_leaf_criterion(shadow_figs_0, display_type='plot', **color_params)
 save_plt(output, 'viz_leaf_criterion_figs_0')
 
 # %%
-trees.viz_leaf_criterion(sk_figs_0, display_type='hist', **color_params)
+trees.viz_leaf_criterion(shadow_figs_0, display_type='hist', **color_params)
 save_plt(output, 'viz_leaf_criterion_hist_figs_0')
 
 # %%
-trees.viz_leaf_criterion(sk_figs_1, display_type='text', **color_params)
-
-# %%
-trees.viz_leaf_criterion(sk_figs_1, display_type='plot', **color_params)
+trees.viz_leaf_criterion(shadow_figs_1, display_type='plot', **color_params)
 save_plt(output, 'viz_leaf_criterion_figs_1')
 
 # %%
-trees.viz_leaf_criterion(sk_figs_1, display_type='hist', **color_params)
+trees.viz_leaf_criterion(shadow_figs_1, display_type='hist', **color_params)
 save_plt(output, 'viz_leaf_criterion_hist_figs_1')
 
-# %% [markdown] tags=[]
-# ### Feature Space
+# %% [markdown]
+# ### Splits in Feature Space
 
 # %%
-trees.ctreeviz_bivar(sk_figs_0, feature_names=['x_1_0', 'x_2_0'], show={'legend', 'splits'}, **color_params)
+trees.ctreeviz_univar(shadow_figs_0, feature_name='x_1_1', **color_params, gtype = 'barstacked', show={'legend', 'splits', 'axis'})
+save_plt(output, 'ctreeviz_univar_figs_0')
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # ### Node Sample
 
 # %%
-trees.describe_node_sample(sk_figs_0, 18)
+trees.describe_node_sample(shadow_figs_0, 18)
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # ## XGBoost
 # Tree 0 only
 
 # %%
+shadow_xgboost_0 = ShadowXGBDTree(model_xgboost, 0, X_train, y_train, feat_names, 'y', [0, 1])
 
-# %% [markdown] tags=[]
+# %% [markdown]
+# ### Trees
+
+# %% [markdown]
+# #### Split Hists
+
+# %%
+viz = trees.dtreeviz(shadow_xgboost_0, **dtreeviz_params)
+save_dtreeviz(viz, output, 'dtreeviz_xgboost_0')
+
+# %% [markdown]
+# #### Text
+
+# %%
+viz = trees.dtreeviz(shadow_xgboost_0, **dtreeviz_params, fancy=False, show_node_labels=True)
+save_dtreeviz(viz, output, 'dtreeviz_text_xgboost_0')
+
+# %% [markdown]
+# ### Prediction Path
+
+# %%
+print(trees.explain_prediction_path(shadow_xgboost_0, x=x_example, explanation_type='plain_english'))
+
+# %%
+viz = trees.dtreeviz(shadow_xgboost_0, **dtreeviz_params, X=x_example)
+save_dtreeviz(viz, output, 'dtreeviz_pred_path_xgboost_0')
+
+# %% [markdown]
+# ### Leaf Samples
+
+# %%
+trees.ctreeviz_leaf_samples(shadow_xgboost_0, **color_params, label_all_leafs=False)
+save_plt(output, 'ctreeviz_leaf_samples_xgboost_0')
+
+# %% [markdown]
+# Leaf Criterion is not supported for `XGBoost`
+
+# %% [markdown]
+# ### Splits in Feature Space
+
+# %%
+trees.ctreeviz_univar(shadow_xgboost_0, feature_name='x_1_1', **color_params, gtype = 'barstacked', show={'legend', 'splits', 'axis'})
+save_plt(output, 'ctreeviz_univar_xgboost_0')
+
+# %% [markdown]
+# ### Node Sample
+
+# %%
+trees.describe_node_sample(shadow_xgboost_0, 42)
+
+# %% [markdown]
 # ***
 # # Tree Functions
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # ## FIGS
 
 # %%
@@ -628,7 +671,7 @@ expr_figs_0 = skompile(dt_figs_0.predict_proba, feat_names)
 # %%
 print(expr_figs_0.to('sqlalchemy/sqlite', component=1, assign_to='tree_0'))
 
-# %% tags=[]
+# %%
 print(expr_figs_0.to('python/code'))
 
 # %%
@@ -637,11 +680,12 @@ expr_figs_1 = skompile(dt_figs_1.predict_proba, feat_names)
 # %%
 print(expr_figs_1.to('sqlalchemy/sqlite', component=1, assign_to='tree_1'))
 
-# %% tags=[]
+# %%
 print(expr_figs_1.to('python/code'))
 
-# %% [markdown] tags=[]
+# %% [markdown]
 # ## XGBoost
-# Tree 0 only
+# Text of Tree 0 only, consider using [xgb2sql](https://github.com/Chryzanthemum/xgb2sql) if SQL is needed.
 
 # %%
+print(model_xgboost.get_booster()[0].get_dump(dump_format='text')[0])
