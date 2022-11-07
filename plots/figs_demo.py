@@ -21,14 +21,13 @@ import scipy.stats
 norm = scipy.stats.norm
 import bisect
 import warnings
-# not working
-# warnings.filterwarnings('ignore', category=DeprecationWarning) # , message='the load_module() method is deprecated and slated for removal in Python 3.12; use exec_module() instead')
 
 ########################################################
 # figs (imodels), xgboost, sklearn
 
 import imodels
 from imodels import FIGSClassifier
+from imodels.tree.viz_utils import extract_sklearn_tree_from_figs
 
 import xgboost as xgb
 
@@ -45,7 +44,6 @@ from sklearn.inspection import permutation_importance
 from dtreeviz import trees
 from dtreeviz.models.sklearn_decision_trees import ShadowSKDTree
 from dtreeviz.models.xgb_decision_tree import ShadowXGBDTree
-from imodels.tree.viz_utils import extract_sklearn_tree_from_figs
 from dtreeviz.colors import mpl_colors
 
 from wand.image import Image
@@ -65,8 +63,7 @@ import matplotlib.pyplot as plt
 import matplotlib.transforms
 # %matplotlib inline
 
-warnings.filterwarnings('ignore', message='Matplotlib is currently using module://matplotlib_inline.backend_inline, which is a non-GUI backend, so cannot show the figure.')
-warnings.filterwarnings('ignore', message="urllib3 (1.26.12) or chardet (None)/charset_normalizer (3.0.0) doesn't match a supported version!")
+from plotting import *
 
 ########################################################
 # set global rnd_seed for reproducibility
@@ -77,10 +74,7 @@ np.random.seed(rnd_seed)
 datasets = ['train', 'holdout']
 
 # %%
-from plotting import * # load plotting code
-
-# %%
-inline=False # plot inline or to pdf
+inline=True # plot inline or to pdf
 output = './output_figs_demo' # output dir
 os.makedirs(output, exist_ok=True)
 
@@ -216,7 +210,8 @@ print(model_figs)
 print(model_figs.print_tree(X_train, y_train))
 
 # %%
-model_figs.plot(fig_size=7)
+if inline:
+    model_figs.plot(fig_size=7)
 
 # %% [markdown]
 # ***
@@ -252,6 +247,7 @@ model_xgboost = xgb.XGBClassifier(n_estimators=fixed_setup_params['max_num_boost
 # %%
 time_xgboost_start = time.time()
 model_xgboost.fit(X_train, y_train, **fixed_fit_params);
+model_xgboost.get_booster().feature_names = feat_names
 time_xgboost_end = time.time()
 print(f'XGBoost ran in {time_xgboost_end-time_xgboost_start:.0f} seconds')
 
@@ -435,6 +431,7 @@ for model_metrics in [model_metrics_figs, model_metrics_xgboost]:
         dataset_metrics = {'model': model_metrics['nname'], 'dataset': dataset}
         for k,v in model_metrics[dataset].items():
             if k == 'roc_entry':
+                v = v.copy()
                 if 0 < len(roc_entries):
                     v['name'] = dataset
                 roc_entries.append(v)
@@ -502,6 +499,7 @@ dtreeviz_params = {'colors': color_params['colors'], 'leaf_plot_type': 'barh', '
 
 # %%
 x_example = X_train[13]
+feature_to_look_at_in_detail = 'x_1_1'
 
 # %%
 pd.DataFrame([{col: value for col,value in zip(feat_names, x_example)}])
@@ -592,7 +590,7 @@ save_plt(output, 'viz_leaf_criterion_hist_figs_1')
 # ### Splits in Feature Space
 
 # %%
-trees.ctreeviz_univar(shadow_figs_0, feature_name='x_1_1', **color_params, gtype = 'barstacked', show={'legend', 'splits', 'axis'})
+trees.ctreeviz_univar(shadow_figs_0, feature_name=feature_to_look_at_in_detail, **color_params, gtype = 'barstacked', show={'legend', 'splits', 'axis'})
 save_plt(output, 'ctreeviz_univar_figs_0')
 
 # %% [markdown]
@@ -649,7 +647,7 @@ save_plt(output, 'ctreeviz_leaf_samples_xgboost_0')
 # ### Splits in Feature Space
 
 # %%
-trees.ctreeviz_univar(shadow_xgboost_0, feature_name='x_1_1', **color_params, gtype = 'barstacked', show={'legend', 'splits', 'axis'})
+trees.ctreeviz_univar(shadow_xgboost_0, feature_name=feature_to_look_at_in_detail, **color_params, gtype = 'barstacked', show={'legend', 'splits', 'axis'})
 save_plt(output, 'ctreeviz_univar_xgboost_0')
 
 # %% [markdown]
