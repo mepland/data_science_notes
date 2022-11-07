@@ -491,11 +491,11 @@ if inline:
 # # Tree Plots
 
 # %%
-color_params_tmp = {'classes': mpl_colors, 'hist_bar': 'C0', 'tick_label': 'black', 'legend_edge': None}
+color_params = {'classes': mpl_colors, 'hist_bar': 'C0', 'legend_edge': None}
 for _ in ['axis_label', 'title', 'legend_title', 'text', 'arrow', 'node_label', 'tick_label', 'leaf_label', 'wedge', 'text_wedge']:
-    color_params_tmp[_] = 'black'
-color_params = {'colors': color_params_tmp}
-dtreeviz_params = {'colors': color_params['colors'], 'leaf_plot_type': 'barh', 'all_axis_spines': False, 'label_fontsize': 10}
+    color_params[_] = 'black'
+dtv_params_gen = {'colors': color_params, 'fontname': 'Arial'} # 'fontname': 'Helvetica'
+dtv_params = {'leaf_plot_type': 'barh', 'all_axes_spines': False, 'label_fontsize': 10, 'colors': dtv_params_gen['colors'], 'fontname': dtv_params_gen['fontname']}
 
 # %%
 x_example = X_train[13]
@@ -521,22 +521,22 @@ shadow_figs_1 = ShadowSKDTree(dt_figs_1, X_train, y_train, feat_names, 'y', [0, 
 # #### Split Hists
 
 # %%
-viz = trees.dtreeviz(shadow_figs_0, **dtreeviz_params)
+viz = trees.dtreeviz(shadow_figs_0, **dtv_params)
 save_dtreeviz(viz, output, 'dtreeviz_figs_0')
 
 # %%
-viz = trees.dtreeviz(shadow_figs_1, **dtreeviz_params)
+viz = trees.dtreeviz(shadow_figs_1, **dtv_params)
 save_dtreeviz(viz, output, 'dtreeviz_figs_1')
 
 # %% [markdown]
 # #### Text
 
 # %%
-viz = trees.dtreeviz(shadow_figs_0, **dtreeviz_params, fancy=False, show_node_labels=True)
+viz = trees.dtreeviz(shadow_figs_0, **dtv_params, fancy=False, show_node_labels=True)
 save_dtreeviz(viz, output, 'dtreeviz_text_figs_0')
 
 # %%
-viz = trees.dtreeviz(shadow_figs_1, **dtreeviz_params, fancy=False, show_node_labels=True)
+viz = trees.dtreeviz(shadow_figs_1, **dtv_params, fancy=False, show_node_labels=True)
 save_dtreeviz(viz, output, 'dtreeviz_text_figs_1')
 
 # %% [markdown]
@@ -546,51 +546,51 @@ save_dtreeviz(viz, output, 'dtreeviz_text_figs_1')
 print(trees.explain_prediction_path(shadow_figs_0, x=x_example, explanation_type='plain_english'))
 
 # %%
-viz = trees.dtreeviz(shadow_figs_0, **dtreeviz_params, X=x_example)
+viz = trees.dtreeviz(shadow_figs_0, **dtv_params, X=x_example)
 save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_0')
 
 # %%
 print(trees.explain_prediction_path(shadow_figs_1, x=x_example, explanation_type='plain_english'))
 
 # %%
-viz = trees.dtreeviz(shadow_figs_1, **dtreeviz_params, X=x_example)
+viz = trees.dtreeviz(shadow_figs_1, **dtv_params, X=x_example)
 save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_1')
 
 # %% [markdown]
 # ### Leaf Samples
 
 # %%
-trees.ctreeviz_leaf_samples(shadow_figs_0, **color_params)
+trees.ctreeviz_leaf_samples(shadow_figs_0, **dtv_params_gen)
 save_plt(output, 'ctreeviz_leaf_samples_figs_0')
 
 # %%
-trees.ctreeviz_leaf_samples(shadow_figs_1, **color_params)
+trees.ctreeviz_leaf_samples(shadow_figs_1, **dtv_params_gen)
 save_plt(output, 'ctreeviz_leaf_samples_figs_1')
 
 # %% [markdown]
 # ### Leaf Criterion
 
 # %%
-trees.viz_leaf_criterion(shadow_figs_0, display_type='plot', **color_params)
+trees.viz_leaf_criterion(shadow_figs_0, display_type='plot', **dtv_params_gen)
 save_plt(output, 'viz_leaf_criterion_figs_0')
 
 # %%
-trees.viz_leaf_criterion(shadow_figs_0, display_type='hist', **color_params)
+trees.viz_leaf_criterion(shadow_figs_0, display_type='hist', **dtv_params_gen)
 save_plt(output, 'viz_leaf_criterion_hist_figs_0')
 
 # %%
-trees.viz_leaf_criterion(shadow_figs_1, display_type='plot', **color_params)
+trees.viz_leaf_criterion(shadow_figs_1, display_type='plot', **dtv_params_gen)
 save_plt(output, 'viz_leaf_criterion_figs_1')
 
 # %%
-trees.viz_leaf_criterion(shadow_figs_1, display_type='hist', **color_params)
+trees.viz_leaf_criterion(shadow_figs_1, display_type='hist', **dtv_params_gen)
 save_plt(output, 'viz_leaf_criterion_hist_figs_1')
 
 # %% [markdown]
 # ### Splits in Feature Space
 
 # %%
-trees.ctreeviz_univar(shadow_figs_0, feature_name=feature_to_look_at_in_detail, **color_params, gtype = 'barstacked', show={'legend', 'splits', 'axis'})
+trees.ctreeviz_univar(shadow_figs_0, feature_name=feature_to_look_at_in_detail, **dtv_params_gen, gtype = 'barstacked', show={'legend', 'splits', 'axis'})
 save_plt(output, 'ctreeviz_univar_figs_0')
 
 # %% [markdown]
@@ -613,14 +613,14 @@ shadow_xgboost_0 = ShadowXGBDTree(model_xgboost, 0, X_train, y_train, feat_names
 # #### Split Hists
 
 # %%
-viz = trees.dtreeviz(shadow_xgboost_0, **dtreeviz_params)
+viz = trees.dtreeviz(shadow_xgboost_0, **dtv_params)
 save_dtreeviz(viz, output, 'dtreeviz_xgboost_0')
 
 # %% [markdown]
 # #### Text
 
 # %%
-viz = trees.dtreeviz(shadow_xgboost_0, **dtreeviz_params, fancy=False, show_node_labels=True)
+viz = trees.dtreeviz(shadow_xgboost_0, **dtv_params, fancy=False, show_node_labels=True)
 save_dtreeviz(viz, output, 'dtreeviz_text_xgboost_0')
 
 # %% [markdown]
@@ -630,14 +630,14 @@ save_dtreeviz(viz, output, 'dtreeviz_text_xgboost_0')
 print(trees.explain_prediction_path(shadow_xgboost_0, x=x_example, explanation_type='plain_english'))
 
 # %%
-viz = trees.dtreeviz(shadow_xgboost_0, **dtreeviz_params, X=x_example)
+viz = trees.dtreeviz(shadow_xgboost_0, **dtv_params, X=x_example)
 save_dtreeviz(viz, output, 'dtreeviz_pred_path_xgboost_0')
 
 # %% [markdown]
 # ### Leaf Samples
 
 # %%
-trees.ctreeviz_leaf_samples(shadow_xgboost_0, **color_params, label_all_leafs=False)
+trees.ctreeviz_leaf_samples(shadow_xgboost_0, **dtv_params_gen, label_all_leafs=False)
 save_plt(output, 'ctreeviz_leaf_samples_xgboost_0')
 
 # %% [markdown]
@@ -647,7 +647,7 @@ save_plt(output, 'ctreeviz_leaf_samples_xgboost_0')
 # ### Splits in Feature Space
 
 # %%
-trees.ctreeviz_univar(shadow_xgboost_0, feature_name=feature_to_look_at_in_detail, **color_params, gtype = 'barstacked', show={'legend', 'splits', 'axis'})
+trees.ctreeviz_univar(shadow_xgboost_0, feature_name=feature_to_look_at_in_detail, **dtv_params_gen, gtype = 'barstacked', show={'legend', 'splits', 'axis'})
 save_plt(output, 'ctreeviz_univar_xgboost_0')
 
 # %% [markdown]
