@@ -57,7 +57,7 @@ info:
 #	-@vim -c "call CleanPreflight()" preflight.test
 
 open:
-	-@open $(DOCNAME).pdf </dev/null &>/dev/null &
+	@evince $(DOCNAME).pdf </dev/null &>/dev/null &
 
 help:
 	@echo ""
