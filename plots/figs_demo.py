@@ -5,7 +5,7 @@
 # %load_ext autoreload
 # %autoreload 2
 
-# TODO remove
+# TODo remove when packages are updated
 import sys,os
 sys.path.append(os.path.expanduser('~/imodels'))
 sys.path.append(os.path.expanduser('~/dtreeviz'))
@@ -71,7 +71,7 @@ from plotting import *
 rnd_seed = 42
 np.random.seed(rnd_seed)
 
-datasets = ['train', 'holdout']
+datasets = ['train', 'test']
 
 # %%
 inline=True # plot inline or to pdf
@@ -128,15 +128,11 @@ def save_plt(m_path, fname, tag='', inline=inline):
 # Include additive structure that FIGS does well on
 
 # %%
-mc_params_all = {'n_samples': int(1e5), 'n_classes': 2, 'shuffle': False, 'shift': 0.0, 'scale': 1.0, 'hypercube': True}
+mc_params_all = {'n_samples': int(2e4), 'n_classes': 2, 'shuffle': False, 'shift': 0.0, 'scale': 1.0, 'hypercube': True, 'weights': [0.46], 'n_repeated': 0, 'flip_y': 0.08}
 
 mc_params = [
-    {'n_features': 20, 'n_informative': 6, 'n_redundant': 4, 'n_repeated': 0,
-     'n_clusters_per_class': 5, 'weights': [0.5], 'flip_y': 0.05, 'class_sep': 0.9},
-    {'n_features': 10, 'n_informative': 4, 'n_redundant': 2, 'n_repeated': 0,
-     'n_clusters_per_class': 2, 'weights': [0.7], 'flip_y': 0.1, 'class_sep': 0.9},
-    {'n_features': 5, 'n_informative': 2, 'n_redundant': 2, 'n_repeated': 0,
-     'n_clusters_per_class': 2, 'weights': [0.6], 'flip_y': 0.04, 'class_sep': 0.9},
+    {'n_features': 15, 'n_informative': 10, 'n_redundant': 3, 'n_clusters_per_class': 2, 'class_sep': 0.4},
+    {'n_features': 15, 'n_informative': 5, 'n_redundant': 2, 'n_clusters_per_class': 2, 'class_sep': 0.3},
 ]
 
 X = None
@@ -157,11 +153,15 @@ for i_mc_param, mc_param in enumerate(mc_params):
     feat_names += [f'x_{i_mc_param}_{_}' for _ in range(X_i.shape[1])]
     del X_i; del y_i;
 
+n_neg = np.where(y == 0)[0].size
+n_pos = np.where(y == 1)[0].size
+print(f'Class Balance: {n_pos} positive, {n_neg} negative, ratio of {n_pos/n_neg:.3}')
+
 # %% [markdown]
-# Make Train, Validation, and Holdout Sets
+# Make Train, Validation, and Test Sets
 
 # %%
-X_trainVal, X_holdout, y_trainVal, y_holdout = train_test_split(X, y, test_size=0.15, random_state=rnd_seed, stratify=y)
+X_trainVal, X_test, y_trainVal, y_test = train_test_split(X, y, test_size=0.15, random_state=rnd_seed, stratify=y)
 del X; del y;
 
 X_train, X_val, y_train, y_val = train_test_split(X_trainVal, y_trainVal, test_size=0.2, random_state=rnd_seed, stratify=y_trainVal)
@@ -173,7 +173,7 @@ X_train, X_val, y_train, y_val = train_test_split(X_trainVal, y_trainVal, test_s
 # Note we are not using early stopping with FIGS, so use `X_trainVal` during training to take advantage of all rows.
 
 # %%
-model_figs = FIGSClassifier(max_rules=20)
+model_figs = FIGSClassifier(max_rules=30)
 
 # %%
 time_figs_start = time.time()
@@ -218,11 +218,11 @@ if inline:
 # # XGBoost
 
 # %%
-params_default = {'max_depth': 6, 'learning_rate': 0.3, 'gamma': 0.0, 'reg_alpha': 0.0, 'reg_lambda': 1.0}
+params_default = {'max_depth': 5, 'learning_rate': 0.3, 'gamma': 0.0, 'reg_alpha': 0.0, 'reg_lambda': 1.0}
 
 # %%
 fixed_setup_params = {
-    'max_num_boost_rounds': 500, # maximum number of boosting rounds to run / trees to create
+    'max_num_boost_rounds': 100, # maximum number of boosting rounds to run / trees to create
     'xgb_objective': 'binary:logistic', # objective function for binary classification
     'xgb_verbosity': 0, #  The degree of verbosity. Valid values are 0 (silent) - 3 (debug).
     'xgb_n_jobs': -1, # Number of parallel threads used to run XGBoost. -1 makes use of all cores in your system
@@ -266,15 +266,15 @@ print(f'XGBoost used {model_xgboost.best_ntree_limit} trees and {n_splits_xgboos
 # ## Setup
 
 # %%
-def classifier_metrics(model, model_nname, X_train, y_train, X_holdout, y_holdout, feature_names, do_permutation_importance=True, print_classification_report=False):
+def classifier_metrics(model, model_nname, X_train, y_train, X_test, y_test, feature_names, do_permutation_importance=True, print_classification_report=False):
     model_metrics = {'nname': model_nname}
     dfp_importance = pd.DataFrame({'feature': feature_names})
     dfp_importance['icolX'] = dfp_importance.index
 
     for dataset in datasets[::-1]:
-        if dataset == 'holdout':
-            X = X_holdout
-            y = y_holdout
+        if dataset == 'test':
+            X = X_test
+            y = y_test
         elif dataset == 'train':
             X = X_train
             y = y_train
@@ -339,7 +339,7 @@ def classifier_metrics(model, model_nname, X_train, y_train, X_holdout, y_holdou
                      'dfp_eval_fpr_tpr': dfp_eval_fpr_tpr,
                      'dfp_eval_precision_recall': dfp_eval_precision_recall
                     }
-        if dataset == 'holdout':
+        if dataset == 'test':
             roc_entry['c'] = 'C2'
             roc_entry['ls'] = '-'
         else:
@@ -386,9 +386,9 @@ def classifier_metrics(model, model_nname, X_train, y_train, X_holdout, y_holdou
     target_cols_importance = [
         'feature',
         # 'coefficients',
-        'importance_permutation_holdout_mean',
-        'importance_permutation_holdout_std',
-        'importance_permutation_holdout_pct',
+        'importance_permutation_test_mean',
+        'importance_permutation_test_std',
+        'importance_permutation_test_pct',
         'importance_permutation_train_mean',
         'importance_permutation_train_std',
         'importance_permutation_train_pct',
@@ -400,8 +400,8 @@ def classifier_metrics(model, model_nname, X_train, y_train, X_holdout, y_holdou
     ]
     _cols = [_col for _col in target_cols_importance if _col in dfp_importance.columns] + [_col for _col in dfp_importance.columns if _col not in target_cols_importance]
     dfp_importance = dfp_importance[_cols]
-    if 'importance_permutation_holdout_mean' in dfp_importance.columns:
-        sort_col = 'importance_permutation_holdout_mean'
+    if 'importance_permutation_test_mean' in dfp_importance.columns:
+        sort_col = 'importance_permutation_test_mean'
     elif 'importance_gini' in dfp_importance.columns:
         sort_col = 'importance_gini'
     else:
@@ -421,8 +421,8 @@ def classifier_metrics(model, model_nname, X_train, y_train, X_holdout, y_holdou
 # ## Metrics
 
 # %%
-model_metrics_figs = classifier_metrics(model_figs, 'FIGS', X_trainVal, y_trainVal, X_holdout, y_holdout, feat_names)
-model_metrics_xgboost = classifier_metrics(model_xgboost, 'XGBoost', X_train, y_train, X_holdout, y_holdout, feat_names)
+model_metrics_figs = classifier_metrics(model_figs, 'FIGS', X_trainVal, y_trainVal, X_test, y_test, feat_names)
+model_metrics_xgboost = classifier_metrics(model_xgboost, 'XGBoost', X_train, y_train, X_test, y_test, feat_names)
 
 metric_rows = []
 for model_metrics in [model_metrics_figs, model_metrics_xgboost]:
@@ -441,15 +441,17 @@ for model_metrics in [model_metrics_figs, model_metrics_xgboost]:
 
     plot_rocs(roc_entries, m_path=f'{output}/roc_curves', rndGuess=False, inverse_log=False, inline=False)
     plot_rocs(roc_entries, m_path=f'{output}/roc_curves', rndGuess=False, inverse_log=False, precision_recall=True,
-              pop_PPV=model_metrics['holdout']['pop_PPV'], y_axis_params={'min': -0.05}, inline=False)
+              pop_PPV=model_metrics['test']['pop_PPV'], y_axis_params={'min': -0.05}, inline=False)
 
 dfp_metrics = pd.DataFrame(metric_rows)
 dfp_metrics = dfp_metrics.sort_values(by=['model', 'dataset'], ascending=[True, True]).reset_index(drop=True)
 display(dfp_metrics)
 
 # %%
-print(f'XGBoost used {n_splits_xgboost:,} splits vs FIGS {n_splits_figs:,}')
-print(f'That is {n_splits_xgboost-n_splits_figs:,}, or {(n_splits_xgboost-n_splits_figs)/n_splits_figs:,.0%}, more splits!')
+roc_auc_score_figs = model_metrics_figs['test']['roc_auc_score']
+roc_auc_score_xgboost = model_metrics_xgboost['test']['roc_auc_score']
+print(f'ROC FIGS = {roc_auc_score_figs:.3}, XGBoost = {roc_auc_score_xgboost:.3}\nDiff = {roc_auc_score_figs-roc_auc_score_xgboost:.3}, Percent Diff = {(roc_auc_score_figs-roc_auc_score_xgboost)/roc_auc_score_xgboost:.1%}\n')
+print(f'XGBoost used {n_splits_xgboost:,} splits vs FIGS {n_splits_figs:,}\nThat is {n_splits_xgboost-n_splits_figs:,}, or {(n_splits_xgboost-n_splits_figs)/n_splits_figs:,.0%}, more splits!')
 
 # %% [markdown]
 # ## Feature Importances
@@ -457,12 +459,12 @@ print(f'That is {n_splits_xgboost-n_splits_figs:,}, or {(n_splits_xgboost-n_spli
 # %%
 print('FIGS Feature Importances')
 _dfp = model_metrics_figs['dfp_importance']
-display(_dfp.loc[0 < _dfp['importance_permutation_holdout_mean']])
+display(_dfp.loc[0 < _dfp['importance_permutation_test_mean']])
 
 # %%
 print('XGBoost Feature Importances')
 _dfp = model_metrics_xgboost['dfp_importance']
-display(_dfp.loc[0 < _dfp['importance_permutation_holdout_mean']])
+display(_dfp.loc[0 < _dfp['importance_permutation_test_mean']])
 
 # %% [markdown]
 # ## ROC Curves
@@ -482,7 +484,7 @@ for dataset in datasets[::-1]:
               pop_PPV=model_metrics_figs[dataset]['pop_PPV'], y_axis_params={'min': -0.05}, inline=False)
 
 if inline:
-    for fname in ['roc_figs_holdout_xgboost_holdout', 'roc_figs_holdout_train', 'roc_xgboost_holdout_train']:
+    for fname in ['roc_figs_test_xgboost_test', 'roc_figs_test_train', 'roc_xgboost_test_train']:
         img = Image(filename=f'{output}/roc_curves/{fname}.pdf')
         display(img)
 
@@ -499,7 +501,7 @@ dtv_params = {'leaf_plot_type': 'barh', 'all_axes_spines': False, 'label_fontsiz
 
 # %%
 x_example = X_train[13]
-feature_to_look_at_in_detail = 'x_1_1'
+feature_to_look_at_in_detail = 'x_1_5'
 
 # %%
 pd.DataFrame([{col: value for col,value in zip(feat_names, x_example)}])
@@ -513,6 +515,9 @@ shadow_figs_0 = ShadowSKDTree(dt_figs_0, X_train, y_train, feat_names, 'y', [0, 
 
 dt_figs_1 = extract_sklearn_tree_from_figs(model_figs, tree_num=1, n_classes=2)
 shadow_figs_1 = ShadowSKDTree(dt_figs_1, X_train, y_train, feat_names, 'y', [0, 1])
+
+dt_figs_2 = extract_sklearn_tree_from_figs(model_figs, tree_num=2, n_classes=2)
+shadow_figs_2 = ShadowSKDTree(dt_figs_2, X_train, y_train, feat_names, 'y', [0, 1])
 
 # %% [markdown]
 # ### Trees
@@ -528,6 +533,10 @@ save_dtreeviz(viz, output, 'dtreeviz_figs_0')
 viz = trees.dtreeviz(shadow_figs_1, **dtv_params)
 save_dtreeviz(viz, output, 'dtreeviz_figs_1')
 
+# %%
+viz = trees.dtreeviz(shadow_figs_2, **dtv_params)
+save_dtreeviz(viz, output, 'dtreeviz_figs_2')
+
 # %% [markdown]
 # #### Text
 
@@ -538,6 +547,10 @@ save_dtreeviz(viz, output, 'dtreeviz_text_figs_0')
 # %%
 viz = trees.dtreeviz(shadow_figs_1, **dtv_params, fancy=False, show_node_labels=True)
 save_dtreeviz(viz, output, 'dtreeviz_text_figs_1')
+
+# %%
+viz = trees.dtreeviz(shadow_figs_2, **dtv_params, fancy=False, show_node_labels=True)
+save_dtreeviz(viz, output, 'dtreeviz_text_figs_2')
 
 # %% [markdown]
 # ### Prediction Path
@@ -556,6 +569,13 @@ print(trees.explain_prediction_path(shadow_figs_1, x=x_example, explanation_type
 viz = trees.dtreeviz(shadow_figs_1, **dtv_params, X=x_example)
 save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_1')
 
+# %%
+print(trees.explain_prediction_path(shadow_figs_2, x=x_example, explanation_type='plain_english'))
+
+# %%
+viz = trees.dtreeviz(shadow_figs_2, **dtv_params, X=x_example)
+save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_2')
+
 # %% [markdown]
 # ### Leaf Samples
 
@@ -566,6 +586,10 @@ save_plt(output, 'ctreeviz_leaf_samples_figs_0')
 # %%
 trees.ctreeviz_leaf_samples(shadow_figs_1, **dtv_params_gen)
 save_plt(output, 'ctreeviz_leaf_samples_figs_1')
+
+# %%
+trees.ctreeviz_leaf_samples(shadow_figs_2, **dtv_params_gen)
+save_plt(output, 'ctreeviz_leaf_samples_figs_2')
 
 # %% [markdown]
 # ### Leaf Criterion
@@ -585,6 +609,14 @@ save_plt(output, 'viz_leaf_criterion_figs_1')
 # %%
 trees.viz_leaf_criterion(shadow_figs_1, display_type='hist', **dtv_params_gen)
 save_plt(output, 'viz_leaf_criterion_hist_figs_1')
+
+# %%
+trees.viz_leaf_criterion(shadow_figs_2, display_type='plot', **dtv_params_gen)
+save_plt(output, 'viz_leaf_criterion_figs_2')
+
+# %%
+trees.viz_leaf_criterion(shadow_figs_2, display_type='hist', **dtv_params_gen)
+save_plt(output, 'viz_leaf_criterion_hist_figs_2')
 
 # %% [markdown]
 # ### Splits in Feature Space
@@ -680,6 +712,15 @@ print(expr_figs_1.to('sqlalchemy/sqlite', component=1, assign_to='tree_1'))
 
 # %%
 print(expr_figs_1.to('python/code'))
+
+# %%
+expr_figs_2 = skompile(dt_figs_2.predict_proba, feat_names)
+
+# %%
+print(expr_figs_2.to('sqlalchemy/sqlite', component=1, assign_to='tree_2'))
+
+# %%
+print(expr_figs_2.to('python/code'))
 
 # %% [markdown]
 # ## XGBoost

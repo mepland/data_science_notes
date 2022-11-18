@@ -5,8 +5,9 @@ numpy
 matplotlib
 xgboost
 scikit-learn
-imodels
-# dtreeviz # must follow the package README!
+tqdm
+# imodels # Use fork
+# dtreeviz # Use fork, and must follow the package README install instructions!
 wand
 svglib
 skompiler
