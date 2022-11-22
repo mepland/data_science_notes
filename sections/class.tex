@@ -445,7 +445,7 @@ Note that when there are no other trees,
 \eg when growing the first tree or if the data is non-additive,
 the sum $\sum_{t \neq k} f_{t}$ will be zero and $r_{i}^{\left(-k\right)} = y_{i}$.
 In this case, the leaf weights are simply $w_{l} = n_{l,\,1}/n_{l}$,
-\ie the proportion of positive $y_{i} = 1$ data points in $l$.
+\ie the proportion of positive $y_{i} = 1$ data points in leaf $l$.
 Finally, the predictions for the trained model are made by
 summing the relevant leaf weight $w_{l,k}\left(\vb{x}_{i}\right)$ from each tree.
 See \cref{algo:FIGS:fit_algo} for an outline of the training algorithm.
@@ -529,7 +529,7 @@ Values that showed good separation were chosen here to illustrate
 the power of \figs on additive data,
 but further study is needed to quantify this behavior.},
 the \figs model was able to discern the additive structure,
-as can be seen by the general separation of the \texttt{x\_i\_j} features by $i$ in the \num{3} trees.
+as can be seen by the general separation of the \texttt{x\_i\_j} features by $i$ between the \num{3} trees.
 Lastly, with its constrained splits \figs is naturally more regularized than \xgboost,
 as can be seen in the ROC curves of \cref{fig:FIGS:demo_roc:figs},
 which should lead to less generalization error in production usage.
@@ -557,7 +557,7 @@ which should lead to less generalization error in production usage.
   \label{fig:FIGS:demo_trees:tree2}
   \end{subfigure}
 \caption{
-\figs model as trained on synthetic data in the
+The \figs model as trained on synthetic data in the
 \texttt{figs\_demo.ipynb} \href{https://github.com/mepland/data_science_notes/blob/main/plots/figs_demo.ipynb}{notebook}.
 Tree visualizations were created with the \texttt{dtreeviz} \href{https://github.com/parrt/dtreeviz}{package}.
 The relatively small number of splits, \num{30}, and trees, \num{3}, make the \figs model readily interpretable.
