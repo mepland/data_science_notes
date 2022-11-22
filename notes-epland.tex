@@ -70,6 +70,7 @@
 \usepackage{setspace} % needed to specify, https://ctan.org/pkg/setspace
 \usepackage[style=base,skip=2pt,width=\textwidth]{caption} % ,font={stretch=1.3}
 \usepackage[skip=1pt]{subcaption}
+\newcommand\mysubref[1]{(\subref{#1})} % create mysubfigure command to reference subfigures from within the main caption, without messing with the normal \cref formatting. Adapted from https://tex.stackexchange.com/a/131366
 \newsavebox{\largestimage} % see https://tex.stackexchange.com/questions/239128/subcaption-vertical-alignment-of-two-images-of-different-vertical-size
 
 %\renewcommand{\GenericWarning}[2]{\GenericError{#1}{#2}{}{This warning has been turned into a fatal error.}} % crash on warnings for debugging https://stackoverflow.com/a/3277465
