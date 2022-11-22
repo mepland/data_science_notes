@@ -430,7 +430,7 @@ increasing the variance of the tree's predictions.
 
 FIGS improves upon the iterative training process of CART
 by considering adding the next split as the root of a new tree $f_{t}$,
-in addition to adding the next split at the bottom of the existing tree as is done in CART.
+in addition to adding the next split at the bottom of an existing tree.
 This reduces the number of splits when the data has an additive structure,
 as can be seen in \cref{class:FIGS:intro}, thereby also increasing the interpretability.
 The splits are chosen greedily according to the usual splitting criteria;
