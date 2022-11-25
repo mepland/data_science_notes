@@ -34,7 +34,7 @@
 \usepackage{notoccite} % fixes citation numbering in captions with respect to lof & lot, see https://ctan.org/pkg/notoccite
 \usepackage[nocompress]{cite} % orders references numerically within one \cite{}, see https://tex.stackexchange.com/questions/69230/numbered-ordering-of-multiple-citations Also changes spacing after comma
 \usepackage{fnpct} % make multiple footnotes at one point look nice, https://tex.stackexchange.com/questions/28465/multiple-footnotes-at-one-point
-\usepackage[separate-uncertainty,multi-part-units=single,free-standing-units,product-units=repeat,use-xspace,binary-units]{siunitx} % units package, see https://www.ctan.org/pkg/siunitx
+\usepackage[separate-uncertainty,multi-part-units=single,free-standing-units,product-units=repeat,use-xspace]{siunitx} % units package, see https://www.ctan.org/pkg/siunitx
 \sisetup{range-phrase={\text{--}},range-units=single}
 \usepackage{physics}
 \usepackage{booktabs,array,multirow,diagbox}
@@ -65,6 +65,7 @@
 % https://ctan.org/pkg/caption
 % https://ctan.org/pkg/subcaption
 \usepackage{silence}
+\WarningFilter{caption}{Unknown document class}
 \WarningFilter{caption}{Unsupported document class}
 \WarningFilter{hyperref}{The PDF version number could not be set}
 \usepackage{setspace} % needed to specify, https://ctan.org/pkg/setspace
