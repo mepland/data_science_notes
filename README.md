@@ -1,29 +1,30 @@
 [![Build Status](https://travis-ci.org/mepland/data_science_notes.svg?branch=master)](https://travis-ci.org/mepland/data_science_notes)
 # Data Science Notes
 
-Matthew Epland, PhD  
+### Matthew Epland, PhD
 [![Linkedin](https://i.stack.imgur.com/gVE0j.png) LinkedIn](https://www.linkedin.com/in/matthew-epland/)
 &nbsp;
-[![GitHub](https://i.stack.imgur.com/tskMh.png) GitHub](https://github.com/mepland)  
+[![GitHub](https://i.stack.imgur.com/tskMh.png) GitHub](https://github.com/mepland)
 
-All rights reserved except, the rights granted by the Creative Commons Attribution 4.0 International Licence [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)  
+All rights reserved except, the rights granted by the Creative Commons Attribution 4.0 International Licence [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ## Latex Editing Tips
 
 
 ### Searching for formatting problems with grep
 ```bash
-grep -rIn ".  " . > tmp.txt
-grep -rIn '[[:blank:]]$' . > tmp.txt
-pcregrep -rInM '(\b[a-zA-Z]+)\s+\1\b' . > tmp.txt
-grep -rIn '.%' . > tmp.txt
-grep -rIn '([A-Z][A-Z]*)' . > tmp.txt
-grep -rIn '\\href{' . > tmp.txt
+grep -rIn ".  " *.tex > tmp.txt
+grep -rIn '[[:blank:]]$' *.tex > tmp.txt
+pcregrep -rInM '(\b[a-zA-Z]+)\s+\1\b' *.tex > tmp.txt
+grep -rIn '.%' *.tex > tmp.txt
+grep -rIn '([A-Z][A-Z]*)' *.tex > tmp.txt
+grep -rIn '\\href{' *.tex > tmp.txt
+grep -rIn ' $' *.tex > tmp.txt
 ```
 
-### Checking for spelling mistakes  
+### Checking for spelling mistakes
 ```bash
-for f in $(find . -type f -name '*.tex') ; do aspell list < $f ; done | sort | uniq > tmp.txt
+echo 'personal_ws-1.1 en 1' > dictionary.tmp | sed -e '/[^a-zA-Z]/d' ~/.vim/spell/en.utf-8.add >> dictionary.tmp | for f in $(find . -type f -name '*.tex') ; do aspell --home-dir=. --personal=dictionary.tmp --mode=tex list < $f ; done | sort | uniq > misspelled_words.txt && rm -rf dictionary.tmp
 ```
 
 ## Travis CI

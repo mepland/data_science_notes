@@ -57,7 +57,7 @@
 % \begin{equation}\label{eq:cartesian}
 % \end{equation}
 
-\subsubsection{Cosine Simularity}
+\subsubsection{Cosine Similarity}
 \label{cluster:kMean:metrics:cos}
 % TODO
 
@@ -113,7 +113,7 @@ If $\max\left(\Delta Q\right) = 0$ we leave $c_{i}$ unmerged.
 After all clusters have been merged and $Q$ is at a local maximum we enter the second phase.
 Here a new graph $G'$ is constructed by making each cluster $c_{i}$ into a node $n'_{i} \in G'$.
 The old weights of $G$ are summed to become the new weights $w'_{ij}$,
-with intra-cluster weights becoming self-loops $w'_{ii}$ in $G'$.
+with intracluster weights becoming self-loops $w'_{ii}$ in $G'$.
 We return to the first phase and repeat until $Q$ has been maximized.
 
 \begin{figure}
