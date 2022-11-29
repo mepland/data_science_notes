@@ -128,9 +128,9 @@ def save_plt(m_path, fname, tag='', inline=inline):
 # Include additive structure that FIGS does well on
 
 # %%
-mc_params_all = {'n_samples': int(2e4), 'n_classes': 2, 'shuffle': False, 'shift': 0.0, 'scale': 1.0, 'hypercube': True, 'weights': [0.46], 'n_repeated': 0, 'flip_y': 0.08}
+mc_generators_all = {'n_samples': int(2e4), 'n_classes': 2, 'shuffle': False, 'shift': 0.0, 'scale': 1.0, 'hypercube': True, 'weights': [0.46], 'n_repeated': 0, 'flip_y': 0.08}
 
-mc_params = [
+mc_generators = [
     {'n_features': 15, 'n_informative': 10, 'n_redundant': 3, 'n_clusters_per_class': 2, 'class_sep': 0.4},
     {'n_features': 15, 'n_informative': 5, 'n_redundant': 2, 'n_clusters_per_class': 2, 'class_sep': 0.3},
 ]
@@ -139,8 +139,8 @@ X = None
 y = None
 feat_names = []
 
-for i_mc_param, mc_param in enumerate(mc_params):
-    param = {**mc_params_all, **mc_param, 'random_state': rnd_seed+i_mc_param}
+for i_mc_generator, mc_generator in enumerate(mc_generators):
+    param = {**mc_generators_all, **mc_generator, 'random_state': rnd_seed+i_mc_generator}
     X_i, y_i = make_classification(**param)
     if X is None:
         X = X_i
@@ -150,7 +150,7 @@ for i_mc_param, mc_param in enumerate(mc_params):
         y = y_i
     else:
         y = np.logical_and(y, y_i).astype(int)
-    feat_names += [f'x_{i_mc_param}_{_}' for _ in range(X_i.shape[1])]
+    feat_names += [f'x_{i_mc_generator}_{_}' for _ in range(X_i.shape[1])]
     del X_i; del y_i;
 
 n_neg = np.where(y == 0)[0].size
@@ -198,10 +198,11 @@ def count_splits_figs(model):
         splits.append(next(node_counter)-1)
     return sum(splits)
 
+n_trees_figs = len(model_figs.trees_)
 n_splits_figs = count_splits_figs(model_figs)
 
 # %%
-print(f'FIGS used {len(model_figs.trees_)} trees and {n_splits_figs:,} splits')
+print(f'FIGS used {n_trees_figs} trees and {n_splits_figs:,} splits')
 
 # %%
 print(model_figs)
@@ -252,10 +253,11 @@ time_xgboost_end = time.time()
 print(f'XGBoost ran in {time_xgboost_end-time_xgboost_start:.0f} seconds')
 
 # %%
+n_trees_xgboost = model_xgboost.best_ntree_limit
 n_splits_xgboost = sum([tree.count('"split"') for tree in model_xgboost.get_booster().get_dump(dump_format='json')[0:model_xgboost.best_ntree_limit]])
 
 # %%
-print(f'XGBoost used {model_xgboost.best_ntree_limit} trees and {n_splits_xgboost:,} splits')
+print(f'XGBoost used {n_trees_xgboost} trees and {n_splits_xgboost:,} splits')
 
 
 # %% [markdown]
@@ -450,8 +452,9 @@ display(dfp_metrics)
 # %%
 roc_auc_score_figs = model_metrics_figs['test']['roc_auc_score']
 roc_auc_score_xgboost = model_metrics_xgboost['test']['roc_auc_score']
-print(f'ROC FIGS = {roc_auc_score_figs:.3}, XGBoost = {roc_auc_score_xgboost:.3}\nDiff = {roc_auc_score_figs-roc_auc_score_xgboost:.3}, Percent Diff = {(roc_auc_score_figs-roc_auc_score_xgboost)/roc_auc_score_xgboost:.1%}\n')
-print(f'XGBoost used {n_splits_xgboost:,} splits vs FIGS {n_splits_figs:,}\nThat is {n_splits_xgboost-n_splits_figs:,}, or {(n_splits_xgboost-n_splits_figs)/n_splits_figs:,.0%}, more splits!')
+print(f'ROC FIGS = {roc_auc_score_figs:.4}, XGBoost = {roc_auc_score_xgboost:.4}\nDiff = {roc_auc_score_figs-roc_auc_score_xgboost:.4}, Percent Diff = {(roc_auc_score_figs-roc_auc_score_xgboost)/roc_auc_score_xgboost:.1%}\n')
+print(f'XGBoost used {n_splits_xgboost:,} splits ({n_trees_xgboost:,} trees) versus {n_splits_figs:,} splits ({n_trees_figs:,} trees) for FIGS')
+print(f'That is {n_splits_xgboost-n_splits_figs:,}, or {(n_splits_xgboost-n_splits_figs)/n_splits_figs:,.0%}, more splits and {n_trees_xgboost-n_trees_figs:,}, or {(n_trees_xgboost-n_trees_figs)/n_trees_figs:,.0%}, more trees!')
 
 # %% [markdown]
 # ## Feature Importances
@@ -510,13 +513,13 @@ pd.DataFrame([{col: value for col,value in zip(feat_names, x_example)}])
 # ## FIGS
 
 # %%
-dt_figs_0 = extract_sklearn_tree_from_figs(model_figs, tree_num=0, n_classes=2)
+dt_figs_0, leaf_predictions_figs_0 = extract_sklearn_tree_from_figs(model_figs, tree_num=0, n_classes=2, with_leaf_predictions=True)
 shadow_figs_0 = ShadowSKDTree(dt_figs_0, X_train, y_train, feat_names, 'y', [0, 1])
 
-dt_figs_1 = extract_sklearn_tree_from_figs(model_figs, tree_num=1, n_classes=2)
+dt_figs_1, leaf_predictions_figs_1 = extract_sklearn_tree_from_figs(model_figs, tree_num=1, n_classes=2, with_leaf_predictions=True)
 shadow_figs_1 = ShadowSKDTree(dt_figs_1, X_train, y_train, feat_names, 'y', [0, 1])
 
-dt_figs_2 = extract_sklearn_tree_from_figs(model_figs, tree_num=2, n_classes=2)
+dt_figs_2, leaf_predictions_figs_2 = extract_sklearn_tree_from_figs(model_figs, tree_num=2, n_classes=2, with_leaf_predictions=True)
 shadow_figs_2 = ShadowSKDTree(dt_figs_2, X_train, y_train, feat_names, 'y', [0, 1])
 
 # %% [markdown]
@@ -526,30 +529,30 @@ shadow_figs_2 = ShadowSKDTree(dt_figs_2, X_train, y_train, feat_names, 'y', [0, 
 # #### Split Hists
 
 # %%
-viz = trees.dtreeviz(shadow_figs_0, **dtv_params)
+viz = trees.dtreeviz(shadow_figs_0, leaf_predictions=leaf_predictions_figs_0, **dtv_params)
 save_dtreeviz(viz, output, 'dtreeviz_figs_0')
 
 # %%
-viz = trees.dtreeviz(shadow_figs_1, **dtv_params)
+viz = trees.dtreeviz(shadow_figs_1, leaf_predictions=leaf_predictions_figs_1, **dtv_params)
 save_dtreeviz(viz, output, 'dtreeviz_figs_1')
 
 # %%
-viz = trees.dtreeviz(shadow_figs_2, **dtv_params)
+viz = trees.dtreeviz(shadow_figs_2, leaf_predictions=leaf_predictions_figs_2, **dtv_params)
 save_dtreeviz(viz, output, 'dtreeviz_figs_2')
 
 # %% [markdown]
 # #### Text
 
 # %%
-viz = trees.dtreeviz(shadow_figs_0, **dtv_params, fancy=False, show_node_labels=True)
+viz = trees.dtreeviz(shadow_figs_0, leaf_predictions=leaf_predictions_figs_0, **dtv_params, fancy=False, show_node_labels=True)
 save_dtreeviz(viz, output, 'dtreeviz_text_figs_0')
 
 # %%
-viz = trees.dtreeviz(shadow_figs_1, **dtv_params, fancy=False, show_node_labels=True)
+viz = trees.dtreeviz(shadow_figs_1, leaf_predictions=leaf_predictions_figs_1, **dtv_params, fancy=False, show_node_labels=True)
 save_dtreeviz(viz, output, 'dtreeviz_text_figs_1')
 
 # %%
-viz = trees.dtreeviz(shadow_figs_2, **dtv_params, fancy=False, show_node_labels=True)
+viz = trees.dtreeviz(shadow_figs_2, leaf_predictions=leaf_predictions_figs_2, **dtv_params, fancy=False, show_node_labels=True)
 save_dtreeviz(viz, output, 'dtreeviz_text_figs_2')
 
 # %% [markdown]
@@ -559,21 +562,21 @@ save_dtreeviz(viz, output, 'dtreeviz_text_figs_2')
 print(trees.explain_prediction_path(shadow_figs_0, x=x_example, explanation_type='plain_english'))
 
 # %%
-viz = trees.dtreeviz(shadow_figs_0, **dtv_params, X=x_example)
+viz = trees.dtreeviz(shadow_figs_0, leaf_predictions=leaf_predictions_figs_0, **dtv_params, X=x_example)
 save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_0')
 
 # %%
 print(trees.explain_prediction_path(shadow_figs_1, x=x_example, explanation_type='plain_english'))
 
 # %%
-viz = trees.dtreeviz(shadow_figs_1, **dtv_params, X=x_example)
+viz = trees.dtreeviz(shadow_figs_1, leaf_predictions=leaf_predictions_figs_1, **dtv_params, X=x_example)
 save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_1')
 
 # %%
 print(trees.explain_prediction_path(shadow_figs_2, x=x_example, explanation_type='plain_english'))
 
 # %%
-viz = trees.dtreeviz(shadow_figs_2, **dtv_params, X=x_example)
+viz = trees.dtreeviz(shadow_figs_2, leaf_predictions=leaf_predictions_figs_2, **dtv_params, X=x_example)
 save_dtreeviz(viz, output, 'dtreeviz_pred_path_figs_2')
 
 # %% [markdown]
@@ -638,6 +641,13 @@ trees.describe_node_sample(shadow_figs_0, 18)
 # %%
 shadow_xgboost_0 = ShadowXGBDTree(model_xgboost, 0, X_train, y_train, feat_names, 'y', [0, 1])
 
+# %%
+dfp_xgboost = model_xgboost.get_booster().trees_to_dataframe()
+dfp_xgboost_0 = dfp_xgboost.loc[( (dfp_xgboost['Tree'] == 0) & (dfp_xgboost['Feature'] == 'Leaf') )]
+leaf_predictions_xgboost_0 = {}
+for _ in dfp_xgboost_0.to_dict('records'):
+    leaf_predictions_xgboost_0[_['Node']] = _['Gain']
+
 # %% [markdown]
 # ### Trees
 
@@ -645,14 +655,14 @@ shadow_xgboost_0 = ShadowXGBDTree(model_xgboost, 0, X_train, y_train, feat_names
 # #### Split Hists
 
 # %%
-viz = trees.dtreeviz(shadow_xgboost_0, **dtv_params)
+viz = trees.dtreeviz(shadow_xgboost_0, leaf_predictions=leaf_predictions_xgboost_0, **dtv_params)
 save_dtreeviz(viz, output, 'dtreeviz_xgboost_0')
 
 # %% [markdown]
 # #### Text
 
 # %%
-viz = trees.dtreeviz(shadow_xgboost_0, **dtv_params, fancy=False, show_node_labels=True)
+viz = trees.dtreeviz(shadow_xgboost_0, leaf_predictions=leaf_predictions_xgboost_0, **dtv_params, fancy=False, show_node_labels=True)
 save_dtreeviz(viz, output, 'dtreeviz_text_xgboost_0')
 
 # %% [markdown]
@@ -662,14 +672,14 @@ save_dtreeviz(viz, output, 'dtreeviz_text_xgboost_0')
 print(trees.explain_prediction_path(shadow_xgboost_0, x=x_example, explanation_type='plain_english'))
 
 # %%
-viz = trees.dtreeviz(shadow_xgboost_0, **dtv_params, X=x_example)
+viz = trees.dtreeviz(shadow_xgboost_0, leaf_predictions=leaf_predictions_xgboost_0, **dtv_params, X=x_example)
 save_dtreeviz(viz, output, 'dtreeviz_pred_path_xgboost_0')
 
 # %% [markdown]
 # ### Leaf Samples
 
 # %%
-trees.ctreeviz_leaf_samples(shadow_xgboost_0, **dtv_params_gen, label_all_leafs=False)
+trees.ctreeviz_leaf_samples(shadow_xgboost_0, **dtv_params_gen, label_all_leaves=False)
 save_plt(output, 'ctreeviz_leaf_samples_xgboost_0')
 
 # %% [markdown]
