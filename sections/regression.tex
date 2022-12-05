@@ -31,9 +31,11 @@ non-linear functions of other input features.}, this is simply:
 \vb{y} = \mb{X} \vb*{\beta} + \vb*{\epsilon}\,,
 \end{equation}
 
-\noindent where we have set $X_{i0} =1$.
-Here $\mb{X}$ is $m \times n$,
-$\vb*{\beta}$ is $n \times 1$,
+\noindent where we have set $X_{i,0} = 1$.
+Here\footnote{$\mb{X}_{m \times \left(n+1\right)}$,
+with the added intercept term,
+is known as the regression design matrix.} $\mb{X}$ is $m \times \left(n+1\right)$,
+$\vb*{\beta}$ is $\left(n+1\right) \times 1$,
 and $\vb{y}$, $\vb*{\epsilon}$ are $m \times 1$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,7 +115,7 @@ the following assumptions hold\footnote{For additional details see
 
 \begin{enumerate}[noitemsep]
   \item The underlying relationship between $\vb{x}$ and $y$ is linear, and there are no major outliers.\label{item:regression:linear:linear}
-  \item The columns of $\mb{X}$, \ie features, are linearly independent, \ie $\rank\left(\mb{X}\right) = n$ (no multicollinearity). This allows $\mb{X}\transpose\mb{X}$ to be inverted.\label{item:regression:linear:multicollinearity}
+  \item The columns of $\mb{X}$, \ie features, are linearly independent, \ie full $\rank\left(\mb{X}\right) = n+1$ (no multicollinearity). This allows $\mb{X}\transpose\mb{X}$ to be inverted.\label{item:regression:linear:multicollinearity}
   \item The errors $\epsilon$ have conditional mean 0, $\expvalE{\epsilon \mid \mb{X}} = 0$ (exogeneity). The errors thus:\label{item:regression:linear:exogeneity}
   \begin{enumerate}[noitemsep]
     \item Have a mean of zero, $\expvalE{\epsilon} = 0$.
@@ -134,22 +136,25 @@ namely the model may be biased and or have a large or invalid estimated variance
   \item[\cref{item:regression:linear:linear}.] If you are fitting nonlinear data the predictions will have large errors,
 particularly when extrapolated beyond the range of the fitted data.
 This will show up as systematic errors in the residuals plot,
-or may be obvious when comparing observed vs predicted values.
+or may be obvious when comparing observed versus predicted values.
 Possible fixes include applying a nonlinear transformation to some of the features to linearize the data, \eg take the log,
 adding more combinations of features, \eg higher polynomial terms,
 or finding new independent features which may explain the nonlinearity.
 
   \item[\cref{item:regression:linear:multicollinearity}.] If some of the features are not linearly independent (multicollinearity),
-they can be biasing the model and should be removed in turn until linear independence is restored.
+they can bias the model and should be removed in turn until linear independence is restored.
 Multicollinearity can be spotted in the input feature correlation matrix,
-with the variance inflation factor of \cref{regression:linear:VIF},
+with the variance inflation factor (VIF) of \cref{regression:VIF},
 or if the residuals correlate to any of the features.
+Multicollinearity reduces the interpretability of a regression model's coefficients,
+as changes in any of the multicollinear features could be the reason for a change in the model's output,
+making it difficult to disentangle the effect of any particular feature.
 
   \item[\cref{item:regression:linear:exogeneity}.] If something is wrong with the errors
 such that they have a non-zero mean or correlate to the input features
 the OLS $\hat{\vb*{\beta}}$ is biased and inconsistent.
 This can happen if there are omitted variables or measurement errors.
-Furthermore, if $\expvalE{\epsilon \mid \mb{X}} = c$ only the $\beta_{0}$ intercept is affected.
+Furthermore, if $\expvalE{\epsilon \mid \mb{X}} = c$, only the $\beta_{0}$ intercept is affected.
 
   \item[\cref{item:regression:linear:spherical}.] If something is wrong with the errors
 such that they have a changing variance or correlate across observations\footnote{Thus the residuals correlate with row number, \ie autocorrelation.}
@@ -159,8 +164,8 @@ The OLS $\hat{\vb*{\beta}}$ remains unbiased and has consistent coefficients, bu
   \item[\cref{item:regression:linear:normality}.] If the errors are not normally distributed the confidence intervals are again suspect.
 This can be diagnosed by comparing the errors to the normal distribution with a normal probability plot, or normal quantile plot,
 or through a statistical method like the Anderson-Darling and Kolmogorov-Smirnov tests.
-Note that violating normality in the errors is not as much of an issue compared to the other assumptions
-since the fit will still give usable coefficients provided the assumed form of the model is correct.
+Note that violating normality in the errors is not as much of an issue compared to the other assumptions,
+as the fit will still give usable coefficients provided the assumed form of the model is correct.
 Problems of this kind can arise from nonlinear data or influential outliers.
 If the errors really are non-normal, a generalized linear model (GLM) could be employed to model them correctly.
 \end{itemize}
@@ -205,7 +210,7 @@ as the condition, $\norm{\vb*{\beta}} < t$ for some $t \geq 0$,
 is not differentiable, see the corners of \cref{fig:ml:l1l2:l1}, and must be dealt with carefully.
 In the special case that $\mb{X}$ is orthonormal, $\mb{X}\transpose \mb{X} = \identity$,
 a closed form solution \cref{eq:linear:lasso:betahat:1} can be derived on a case-by-case basis
-at the $\beta_{i}$ coordinate-level\footnote{See \href{https://stats.stackexchange.com/questions/17781/derivation-of-closed-form-lasso-solution}{here},
+at the $\beta_{j}$ coordinate-level\footnote{See \href{https://stats.stackexchange.com/questions/17781/derivation-of-closed-form-lasso-solution}{here},
 \href{https://en.wikipedia.org/wiki/Lasso_(statistics)\#Orthonormal_covariates}{here},
 and \href{https://xavierbourretsicotte.github.io/lasso_derivation.html}{here}.}.
 In the general case, more sophisticated methods can find numerical solutions.
@@ -222,26 +227,45 @@ In the general case, more sophisticated methods can find numerical solutions.
 \end{subequations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{LASSO vs Ridge Regression}
+\subsection{LASSO versus Ridge Regression}
 \label{regression:linear:lasso_vs_ridge}
 
 All the usual concepts from \cref{ml_general:reg} apply, but specifically for linear regression
 both LASSO and ridge allow us to relax the multicollinearity condition.
-Lasso tends to use one feature per group of correlated $\vb{x}_{j}$'s, setting the rest to $\approx 0$,
+LASSO tends to use one feature per group of correlated $\vb{x}_{j}$'s, setting the rest to $\approx 0$,
 while ridge will keep all of the associated $\beta_{j}$'s at a similar magnitude.
 As one may expect from LASSO shrinking $\beta_{j}$'s to zero,
-it does a better job when only some of the $n$ input features infuence \yhat,
+it does a better job when only some of the $n$ input features influence \yhat,
 while ridge does better if most of the features have similar importances.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Variance of Coefficients}
+\label{regression:linear:coeff_variance}
+
+The variance of the $\beta_{j}$ coefficient
+is the $j+1$, $j+1$ element of $s^{2}\left(\mb{X}\transpose \mb{X}\right)^{-1}$,
+where $\mb{X}$ is the regression design
+matrix\footnote{$X_{i,0} = 1$ for the intercept term, and $X_{i,j+1} = x_{i,j}$ otherwise, as in \cref{regression:linear}.} and
+$s$ is the standard error of the regression \cref{eq:regression:goodness_of_fit:s}.
+A simpler form\footnote{See \href{https://en.wikipedia.org/wiki/Variance_inflation_factor\#Definition}{here} for a derivation.} \cref{eq:regression:linear:coeff_variance}
+shows the dependence on
+$s$, \ie goodness of fit,
+sample size $m$,
+$\variance{x_{j}}$, \ie variance in the $\vb{x}_{j}$ feature,
+and the variance inflation factor (VIF) of \cref{regression:VIF}, \ie a measure of $\vb{x}_{j}$'s multicollinearity.
+Note that a larger $\variance{x_{j}}$ will actually decrease \variance{\beta_{j}},
+as the hyperplane is more constrained in $\vu{e}_{j}$ when the $x_{j}$ values are non-degenerate.
+
+\begin{equation}\label{eq:regression:linear:coeff_variance}
+\variance{\beta_{j}} = \frac{s^{2}}{\left(m-1\right)\variance{x_{j}}} \, \text{VIF}_{j}\,.
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Coefficient Significance}
 \label{regression:linear:coeff_significance}
-% TODO what is the significance of any particular \beta_{i} coefficient, via \ttest, \chiSqtest, \Ftest?? Should be able to get distribution of any \beta_{i} analytically for OLS, but can use bootstrap sampling for more complex models.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Variance Inflation Factor (VIF)}
-\label{regression:linear:VIF}
 % TODO
+% What is the significance of any particular $\beta_{j}$ coefficient, via a \ttest, \chiSqtest, \Ftest?
+% Should be able to get the distribution of any $\beta_{j}$ analytically for OLS, but can use bootstrap sampling for more complex models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{OLS Example}
@@ -328,6 +352,66 @@ $\chi_{\nu}^{2} \ll 1$ & Extreme overfitting or overestimated $\sigma_{i}$.
 \subsection{\texorpdfstring{$F$}{F}-Test of Lack-of-Fit Sum of Squares}
 \label{regression:goodness_of_fit:F_test_fit}
 % TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Variance Inflation Factor (VIF)}
+\label{regression:VIF}
+
+The variance inflation factor (VIF) is a metric for quantifying
+the degree of multicollinearity present in a given feature $\vb{x}_{j}$
+with respect to the other $n-1$ features of a dataset.
+The VIF is computed by regressing $\vb{x}_{j}$ against the other features,
+$x_{ij} = \beta_{0} + \sum_{j' \neq j}\, \beta_{j'} x_{ij'} + \epsilon_{i}$,
+then taking the resulting coefficient of determination $R^{2}_{j}$ \cref{eq:regression:goodness_of_fit:R2}
+and transforming it as:
+
+\begin{equation}\label{eq:regression:VIF}
+\text{VIF}_{j} = \frac{1}{1 - R_{j}^{2}}.
+\end{equation}
+
+\noindent Note, we need to perform a new regression for each $\vb{x}_{j}$;
+these regressions are entirely separate from the main regression against $\vb{y}$.
+The \texttt{variance\_inflation\_factor}
+\href{https://www.statsmodels.org/stable/generated/statsmodels.stats.outliers_influence.variance_inflation_factor.html}{function}
+of \texttt{statsmodels} in \python
+streamlines this process and returns $\text{VIF}_{j}$ for a given $\mb{X}$ and $j$.
+Some software packages may return the tolerance instead of the VIF,
+but this is just the inverse of the VIF.
+
+The $\text{VIF}_{j}$ can be interpreted as
+a multiplicative factor on the variance of $\beta_{j}$
+that would have been observed in the absence of multicollinearity,
+\ie $\variance{\beta_{j}} = \text{VIF}_{j} \, \variance{\beta_{j}}_{\text{no collinearity}}$.
+Commonly used guidelines for VIF values are:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{c | p{5cm}}
+$10 < \text{VIF}$ & Strong multicollinearity! \\
+$5 < \text{VIF}$ & Concerning multicollinearity \\
+$ 1 < \text{VIF} < 5$ & Moderate multicollinearity \\
+$\text{VIF} = 1$ & No multicollinearity present
+  \end{tabular}
+  \caption{Interpretation guidelines for VIF values \cite{Kutner2004,Sheather2009}.}
+  \label{table:VIF_guidelines}
+\end{table}
+
+If $\vb{x}_{j}$ has $5 \lesssim \text{VIF}_{j}$,
+the analyst should review $\mb{X}$ using any relevant subject matter knowledge
+to determine if a known, or suspected, collinearity, \ie correlation,
+maybe present between $\vb{x}_{j}$ and one or more features.
+Note, a high $\text{VIF}_{j}$ only indicates that $\vb{x}_{j}$ has a multicollinearity issue,
+not which of the other $n-1$ features are the problem.
+Indeed, there can be multiple disjoint sets of interrelated features all with high VIFs
+that need to be sorted out empirically.
+Probing $\text{VIF}_{j}$ while leaving some $\vb{x}_{j' \neq j}$ out of $\mb{X}$ can help here.
+Possible resolutions to multicollinearity issues include
+engineering new non-collinear features and feature removal.
+However, multicollinearity problems can be tolerated
+if the model coefficients $\beta_{j}$ do not need to be interpretable,
+as multicollinearity only affects the relative values of $\beta_{j}$
+and not the quality of the output \yhat.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
