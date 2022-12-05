@@ -22,7 +22,7 @@ ggsurvplot(km.model, xlab='Time', ylab='S(t)', size = 1, linetype = 'strata', pa
 pval = TRUE, # Add survdiff p-value
 risk.table = TRUE, # Absolute number at risk
 risk.table.y.text.col = FALSE, risk.table.col = "strata",
-ncensor.plot = TRUE, # plot censored patients vs time
+ncensor.plot = TRUE, # plot censored patients versus time
 surv.median.line = "h", # add horizontal median
 )
 dev.off()

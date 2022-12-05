@@ -83,7 +83,7 @@ as the partial auto-correlation function for $k$.
 Note that for each $k$, we need to do a new fit of \cref{eq:time_series:PACF},
 and after fitting should check that $\phi_{k,k}$ is statistically significant,
 \ie we reject $H_{0}$ that $\phi_{k,k}=0$, by looking at the coefficient's confidence interval from the fit.
-We can generate plots of ACF and PACF vs $k$ to explore a time series
+We can generate plots of ACF and PACF versus $k$ to explore a time series
 with the \texttt{plot\_acf} and \texttt{plot\_pacf}
 \href{https://www.statsmodels.org/stable/graphics.html\#time-series-plots}{functions}.
 
@@ -561,7 +561,7 @@ Now we test $H_{0}$ that $0 \leq \delta$ and the time series is
 non-stationary\footnote{As $\delta = 0 \implies \phi_{1} = 1$,
 \ie the time series has a unit root and is non-stationary.
 Note that it is possible to have a non-stationary time series without a unit root,
-thus the ADF test is not fully comprehensive.} vs
+thus the ADF test is not fully comprehensive.} versus
 the alternative hypothesis $H_{a}$ that $\delta < 0$, \ie time series is stationary.
 We fit the data and then perform the hypothesis testing with test statistic
 $t_{\hat{\delta}} = \hat{\delta} / \text{Standard Error}\left(\hat{\delta}\right)$
