@@ -390,6 +390,277 @@ for a final comparison on absolute performance.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model Calibration}
+\label{ml_general:calibration}
+
+Many classification models return \yhat values between \num{0} and \num{1}
+which can be interpreted as the predicted probability $\hat{p} = P\left(y=1 \mid \vb{x}\right)$.
+However, some model types, in particular
+support vector machines (SVM) of \cref{class:SVM},
+boosted models of \cref{ml_general:boosting},
+and \naive Bayes models of \cref{class:naive_bayes},
+have a tendency to produce distorted probability distributions\footnote{See
+the caption of \cref{fig:ml_general:calibration_curves} for
+a description of the miscalibration tendencies of these models.
+Essentially, all three model types listed here will experience
+sigmoidal distortions in their calibration curves,
+which is the reason for the effectiveness of Platt scaling.},
+as shown by a non-linear calibration curve.
+This is not an issue if we only need the ordinality of the predictions,
+\eg who are the top \SI{10}{\percent} patients at risk,
+but must be addressed if we want to use \yhat as an actual probability,
+or use a metric such as log loss, see \cref{ml_general:loss_func:log_loss},
+or the ROC curve\footnote{ROC curves, and thus ROC AUC,
+can be affected by miscalibration as they are created by measuring the performance of the model
+as the classification threshold is varied between \num{0} and \num{1}.
+If the model is miscalibrated this can lead to an uneven sampling of the model's performance,
+and thus a distorted ROC curve.},
+see \cref{ml_general:eval:ROC}, which depend on the probability.
+Methods for calibrating\footnote{Regression models can also be calibrated \cite{10.1093/aje/154.9.836,1806.07690},
+but are omitted here.} a model's output such that
+predictions of $\yhat = \hat{p}$ actually have $\hat{p} = P\left(y=1 \mid \vb{x}\right)$
+include\footnote{Other calibration methods include Bayesian binning into quantiles \cite{pmid25927013},
+and histogram binning \cite{10.5555/645530.655658}.} Platt scaling,
+isotonic regression,
+and beta calibration\footnote{The beta calibration paper \cite{beta_calib}
+is also a great review of Platt scaling and isotonic regression,
+and includes a hypothesis test for calibration.} \cite{10.1145/1102351.1102430,1706.04599,beta_calib,2112.10327}.
+
+When calibrating a classifier it is highly recommended to use cross validation
+to separate the data used for model training and calibration.
+\sklearn provides a convenient \texttt{CalibratedClassifierCV}
+\href{https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html}{class}
+to implement Platt and isotonic calibration with cross validation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Calibration Curves}
+\label{ml_general:calibration:calibration_curves}
+
+We can visualize the degree of a model's miscalibration with a calibration curve,
+also known as a reliability diagram,
+by plotting the observed fraction of true positives $p_{0}$ against
+the uncalibrated predicted fraction of positives $\hat{p}_{u}$,
+see \cref{fig:ml_general:calibration_curves} for examples.
+The points of the curve are created by taking
+the mean $p_{0}$ of data points binned in $\hat{p}_{u}$,
+typically either uniformly or by quantiles\footnote{Using quantiles,
+\ie each bin has the same number of events, is recommended.}.
+Deviation from the straight line $p_{0} = \hat{p}_{u}$ are evidence of miscalibration.
+As a reminder, it is vital to construct
+the calibration curve with a set of data distinct from the training set.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figures/ml/miscalibration_illustration.png}
+\caption{
+Example calibration curves for common types of miscalibration,
+from \href{https://towardsdatascience.com/pythons-predict-proba-doesn-t-actually-predict-probabilities-and-how-to-fix-it-f582c21d63fc}{Samuele Mazzanti}.
+SVM, and other maximum margin methods, as well as boosted trees tend to push \yhat away from \num{0} and \num{1},
+see the green `center' curve;
+while \naive Bayes models tend to push \yhat toward \num{0} and \num{1} \cite{10.1145/1102351.1102430},
+see the black `tails' curve.
+If a classifier is trained on an unbalanced dataset biased toward negative examples,
+the uncalibrated \yhat may be systemically biased toward \num{1},
+see the red `overestimation' curve.
+}
+\label{fig:ml_general:calibration_curves}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Calibration Metrics}
+\label{ml_general:calibration:calibration_metrics}
+
+We can quantify the degree of a classifiers calibration with the
+expected calibration error (ECE) and Brier score.
+
+\subsubsection{Expected Calibration Error (ECE)}
+\label{ml_general:calibration:ECE}
+
+The expected calibration error (ECE) \cite{pmid25927013} \cref{eq:calibration:ECE}
+is a weighted mean of the calibration error
+across the bins of the calibration curve.
+Note that $y=0,1$, $0 \leq \yhat \leq 1$,
+and that in $\expval{y}, \expval{\yhat}$ we are taking the mean over all points in bin $b$.
+The choice of binning can affect the ECE,
+see \href{https://towardsdatascience.com/pythons-predict-proba-doesn-t-actually-predict-probabilities-and-how-to-fix-it-f582c21d63fc}{here} for
+more details and a \python implementation\footnote{ECE is also implemented in
+the \textsc{TorchMetrics}, \href{https://torchmetrics.readthedocs.io/en/stable/classification/calibration_error.html}{documentation},
+\textsc{TensorFlow}, \href{https://www.tensorflow.org/probability/api_docs/python/tfp/stats/expected_calibration_error}{documentation},
+libraries.}.
+
+\begin{equation} \label{eq:calibration:ECE}
+\text{ECE} = \frac{1}{m} \sum_{b \,\in\, \text{bins}} \abs{\expval{y} - \expval{\yhat}}_{b} \, m_{b} \, .
+\end{equation}
+
+\subsubsection{Brier score}
+\label{ml_general:calibration:brier_score}
+
+The Brier score\footnote{Named after the original author \cite{brier},
+though that formulation is slightly different and can handle multi-class settings.} \cref{eq:calibration:brier} is
+similar to the ECE, but takes the difference per data point $i$.
+It is equivalent to the mean squared error (MSE) of the probabilities.
+\sklearn has a convenient \texttt{brier\_score\_loss}
+\href{https://scikit-learn.org/stable/modules/generated/sklearn.metrics.brier_score_loss.html}{function}.
+
+\begin{equation} \label{eq:calibration:brier}
+\text{Brier} = \frac{1}{m} \sum_{i=1}^{m} \left(y_{i} - \yhat_{i}\right)^{2}.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Platt Scaling}
+\label{ml_general:calibration:platt}
+
+One of the simplest methods of calibrating
+an uncalibrated classifier $\yhat_{u}$ is Platt scaling \cite{platt_scaling},
+where a logistic regression model, \cref{class:logistic},
+is fit on $\mb{X} = \yhat_{u}$ to predict the true $y = 0, 1$.
+Essentially, the logistic regression model will scale $\yhat_{u}$ as
+
+\begin{equation} \label{eq:calibration:platt}
+\hat{p} = P\left(y=1 \mid \vb{x}\right) = \frac{1}{1+\exp\left(-\gamma\left(\yhat_{u} - m\right)\right)}\,,
+\end{equation}
+
+\noindent where $\gamma \geq 0$, $m$ are the fitted scaling
+parameters\footnote{Here we have used the parameterization from \cite{beta_calib},
+which highlights that $m$ controls where the midpoint $\hat{p}=\num{0.5}$ appears in $\yhat_{u}$,
+while $\gamma$ is a shape parameter that controls the curves slope.
+$\gamma \geq 0$ is required to make the curve monotonically non-decreasing.}. However,
+instead of training the logistic regression model to predict $y = 0, 1$ directly,
+Platt scaling applies a Bayesian correction\footnote{See \cite{platt_scaling} for a full explanation,
+but basically this correction arises by assuming the out-of-sample data
+has a finite possibility of having the opposite label than the in-sample data.
+Note that $t \to y$, $t_{+} \to 1$ and $t_{-} \to 0$, as $N \to \infty$.} to
+predict $t_{+}$, $t_{-}$ instead:
+
+\begin{equation} \label{eq:calibration:platt_t}
+\begin{gathered}
+t_{+} = \frac{N_{+}+1}{N_{+}+2} \enspace \text{for} \enspace y = 1, \\
+t_{-}= \frac{1}{N_{-}+2} \enspace \text{for} \enspace y = 0.
+\end{gathered}
+\end{equation}
+
+Platt scaling does well when the calibration error is symmetrical \cite{10.1145/1102351.1102430}
+and can be corrected via a sigmoid transformation.
+This has been empirically shown \cite{platt_scaling} for
+support vector machines\footnote{Platt scaling
+is even baked in to the \sklearn
+\href{https://scikit-learn.org/stable/modules/svm.html\#scores-and-probabilities}{SVM implementation}.} (SVM), \cref{class:SVM},
+but is not true in general.
+
+If $\gamma = 1$, $m = 0$ \cref{eq:calibration:platt} becomes the
+inverse logit function\footnote{Implemented in \scipy as the
+\texttt{expit} \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.expit.html}{function}.},
+also known as the sigmoid function,
+which is a useful function\footnote{\xgboost, \cref{fig:small_example_CART}
+and \figs, \cref{class:FIGS}, use this trick.} for quickly scaling a model's internal scores to
+sensible values between \num{0} and \num{1},
+although \yhat is still uncalibrated in this case.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Isotonic Regression}
+\label{ml_general:calibration:isotonic_regression}
+
+Isotonic regression \cite{isotonic_calib} is a non-parametric calibration method
+that only assumes the required correction has the form of a monotonically non-decreasing, \ie isotonic, step function,
+unlike Platt scaling which assumes the form is a sigmoid function.
+Isotonic regression can thus better fit calibration curves,
+particularity when the miscalibration is non-symmetric,
+provided there is enough\footnote{An empirical guideline is $\num{1000} < N$ \cite{10.1145/1102351.1102430}.
+For $N < \num{1000}$ beta calibration is a better choice.} data to avoid overfitting.
+The non-parametric piecewise curve is fit by minimizing
+
+\begin{equation} \label{eq:calibration:isotonic_regression}
+L = \sum_{i}^{N} \left(y_{i} - \yhat_{i,\,c} \right)^{2},
+\end{equation}
+
+\noindent where $\yhat_{i,\,c} \leq \yhat_{j,\,c}$
+whenever $\yhat_{i,\,u} \leq \yhat_{j,\,u}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Beta Calibration}
+\label{ml_general:calibration:beta_calib}
+
+Beta calibration \cite{beta_calib} is a newer parameterized method developed
+to address shortcomings in the Platt scaling approach.
+The name comes from the initial assumption that
+the classifier's scores follow a beta distribution for each class\footnote{Really,
+it is a slightly weaker assumption that
+that the ratio of positive and negative score distributions
+follows the ratio of two beta distributions.},
+but the crucial improvement is the addition of a second shape parameter \cref{eq:calibration:beta},
+for a total of 3 parameters\footnote{Note,
+we require \cref{eq:calibration:beta} to be monotonically non-decreasing $\implies 0 \leq a,b$.} versus Platt's 2.
+See \cite{beta_calib} for full details, but essentially this second shape parameter
+allows us to drop homoscedasticity assumption
+between the positive and negative class score variances
+which is inherent in Platt scaling.
+
+\begin{equation} \label{eq:calibration:beta}
+\hat{p} = P\left(y=1 \mid \vb{x}\right) = \frac{1}{1+1/\left(e^{c} \frac{\yhat_{u}^{a}}{\left(1-\yhat_{u}\right)^{b}}\right)}\,.
+\end{equation}
+
+The increased parameterization of the beta calibration allows for
+the identity function\footnote{This is also the basis for the hypothesis test for calibration \cite{beta_calib}.},
+when $a=b=1$, $c=0$, thereby leaving already calibrated models alone\footnote{This allows
+beta calibration to be integrated into automatic ML pipelines without as many safety checks.},
+unlike Platt scaling which would always introduce some distortions.
+See \cref{fig:calibration:beta_examples:beta_calib_naive_bayes} for an example of this effect.
+With $1<a=b$, we regain a sigmoid-like calibration similar to Platt,
+as well as an inverse sigmoid-like calibration with $a=b<1$.
+See \cref{fig:calibration:beta_curves} for an illustration of the possible beta calibration curves.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}\centering
+    \includegraphics[height=5.8cm,trim={0cm 0cm 6.5cm 0cm},clip]{figures/ml/beta_calib_examples}% trim={<left> <lower> <right> <upper>}
+  \caption{AdaBoost}
+  \label{fig:calibration:beta_examples:beta_calib_adaboost}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.48\textwidth}\centering
+    \includegraphics[height=5.8cm,trim={6.5cm 0cm 0cm 0cm},clip]{figures/ml/beta_calib_examples}% trim={<left> <lower> <right> <upper>}
+  \caption{\Naive Bayes}
+  \label{fig:calibration:beta_examples:beta_calib_naive_bayes}
+  \end{subfigure}
+\caption{
+A comparison of Platt, \ie logistic, isotonic, and beta calibration
+methods for two classification models \cite{beta_calib}.
+Here $s = \yhat_{u}$ is the uncalibrated score.
+In both examples Platt scaling actually makes things worse,
+while beta calibration outperforms isotonic calibration.
+Note that in \cref{fig:calibration:beta_examples:beta_calib_naive_bayes}
+the classifier is almost fully calibrated to start,
+in which case beta calibration does not disturb the scores,
+unlike Platt scaling.
+\label{fig:calibration:beta_examples}
+}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/ml/beta_calib_curves}
+\caption{
+Example beta calibration curves with
+$a, b \in \{0.2, 1, 5\}$,
+and $c = b \ln\left(1 - m\right) - a\ln\left(m\right)$
+where $m \in \{0.25, 0.5, 0.75\}$ \cite{beta_calib}.
+Note the identity function in the center where $a=b=1$, $c=0$,
+sigmoid-like (inverse sigmoid-like) curves in the bottom right (top left) corner
+where $1<a=b$ ($a=b<1$),
+and asymmetric curves where $a \neq b$.
+}
+\label{fig:calibration:beta_curves}
+\end{figure}
+
+\python and \R implementations for beta calibration
+are provided by the original authors in the \texttt{betacal} \href{https://betacal.github.io/}{package}.
+The authors have also developed a multiclass extension \cite{10.5555/3454287.3455390}.
+Lastly, according to the empirical studies of \cite{beta_calib},
+beta calibration generally does better than logistic calibration,
+and outperforms isotonic calibration on smaller datasets.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Selecting a Decision Threshold}
 \label{ml_general:decision_threshold}
 
@@ -740,17 +1011,24 @@ Ideally the curve should reach a clear asymptote before the maximum $m$ is used.
 \section{Loss Functions}
 \label{ml_general:loss_func}
 
-% TODO add more loss functions such as log loss, OLS / MSE
+% TODO add more loss functions such as OLS / MSE
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Binary Logistic}
-\label{ml_general:loss_func:binary_logistic}
+\subsection{Log Loss}
+\label{ml_general:loss_func:log_loss}
 
-In two class, positive $y=1$ and negative $y=0$, classification problems the binary logistic function is an appropriate choice of $L$:
+In two class, positive $y=1$ and negative $y=0$, classification problems
+the log loss function is an appropriate choice of $L$:
 
-\begin{equation} \label{eq:binary_logistic}
+\begin{equation} \label{eq:log_loss}
 L = -\frac{1}{m} \sum_{j=1}^{m} \big(y_{j} \ln\left(\yhat_{j}\right) +\left(1-y_{j}\right) \ln\left(1-\yhat_{j}\right)\big).
 \end{equation}
+
+Log loss is also known as binary logistic loss,
+cross-entropy loss, and binary cross-entropy loss.
+Here $L$ is shown averaged over the $m$ examples,
+but depending on the name and application this may not be the case.
+
 % TODO \xgboost specific?
 % L = \sum_{j=1}^{m} \left[y_{j} \ln\left(1 + \exp(-\yhat_{j})\right) +\left(1-y_{j}\right) \ln\left(1 + \exp(\yhat_{j})\right)\right].
 

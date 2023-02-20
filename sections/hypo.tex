@@ -53,7 +53,7 @@ Depending on if we wish to perform a one-sided or two-sided
 test\footnote{Note we can also perform two-sample and paired {\Ztest}s, see the analogous \ttest sections with $\sigma$ replacing $s$.} we
 find the probability of observing $P\left(x < Z\right)$, $P\left(Z < x\right)$, or $P\left(Z < \abs{x}\right)$
 from the cumulative distribution function (CDF).
-This \pvalue then determines if we accept, $\pvalue < \alpha$, or reject, $\alpha \leq \pvalue$,
+This \pvalue then determines if we reject, $\pvalue < \alpha$, or accept, $\alpha \leq \pvalue$,
 $H_{0}$ at a given significance level $\alpha$, typically \num{0.05} or lower.
 We can
 \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.zscore.html}{compute $Z$} with

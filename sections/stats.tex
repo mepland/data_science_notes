@@ -12,7 +12,8 @@
 The expectation value \cref{eq:stats:exp_relations} and variance \cref{eq:stats:var_relations} are introductory, yet essential, statistical measures.
 Their definitions and interesting properties are reproduced here for reference.
 Note that $s$ is the unbiased sample variance,
-and the sample mean $\bar{x}$ has $\mu_{\bar{x}} = \mu$, and standard error $\sigma_{\bar{x}} = \sigma / \sqrt{n}$,
+the sample mean $\bar{x}$ has $\mu_{\bar{x}} = \mu$,
+and the standard error is $\sigma_{\bar{x}} = \sigma / \sqrt{n}$,
 where $\mu$ and $\sigma$ are from the parent population.
 
 \begin{subequations}\label{eq:stats:exp_relations}
@@ -366,7 +367,7 @@ $N-1$ other outcomes $\to T$, and we disregard any remaining $m-N$ outcomes.
 
 The uniform distribution, \cref{eq:stats:uniform:P} and \cref{fig:dist:uniform},
 is the simplest probability distribution
-having a constant probability $1/(a+b)$ over the interval $a$ to $b$.
+having a constant probability $1/(b-a)$ over the interval $a$ to $b$.
 
 \begin{equation}\label{eq:stats:uniform:P}
 P\left(x;\,a,\,b\right) = \begin{cases}
@@ -791,7 +792,7 @@ and can be used to estimate the statistic's uncertainty.
 \label{stats:bootstrapping:hypo}
 
 As we can construct confidence intervals, bootstrapping can also be used for hypothesis testing.
-N{a\"i}vely we can test the null hypothesis by checking if the value in question,
+{\Naive}ly we can test the null hypothesis by checking if the value in question,
 typically \num{0}, lands within the confidence interval or not.
 We can also estimate the \pvalue of a parameter by shifting the original sample distribution such that
 it satisfies the null hypothesis, \eg shift all the data points by $\delta$ such that the sample has $\expval{x} = \num{0}$.
@@ -812,7 +813,7 @@ from the Poisson distribution with $\lambda = 1$.
 The set of weights is then generated $m$ times.
 Formally, the methods are equivalent as for large $n$
 the binomial probability of including a given data point approaches the Poisson probability with $\lambda = 1$.
-Poisson Bootstrapping is commonly used in particle physics,
+Poisson bootstrapping is commonly used in particle physics,
 in particular see the direct balance $\gamma\text{+Jet}$ calibration
 in the dissertation \cite{mepland_dissertation}, Appendix E.1.4.
 

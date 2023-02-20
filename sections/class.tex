@@ -79,14 +79,14 @@ Some assumptions of the logistic regression approach are:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{N{a\"i}ve Bayes Classification}
-\label{class:Bayes}
+\section{\Naive Bayes Classification}
+\label{class:naive_bayes}
 % TODO
 % TODO maximum a posteriori (italics) probability (MAP) estimator
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Gaussian N{a\"i}ve Bayes Classification (GNB)}
-\label{class:Bayes:GNB}
+\subsection{Gaussian \Naive Bayes Classification (GNB)}
+\label{class:naive_bayes:GNB}
 % TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -279,7 +279,7 @@ See \cref{misc:info_theory} for additional details on $H$.
 Like Gini impurity, the minimum $H = 0$ occurs when $K=1$, with $0 < H$ otherwise.
 It can be \href{https://scikit-learn.org/stable/modules/tree.html#classification-criteria}{shown} \cite{sklearn}
 that using $H$ while training a CART is equivalent to minimizing
-the binary logistic loss function of \cref{ml_general:loss_func:binary_logistic}.
+the binary logistic loss function of \cref{ml_general:loss_func:log_loss}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gini Impurity versus Information Entropy}
