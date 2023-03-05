@@ -132,6 +132,12 @@ to avoid utilizing any information from the test set.
 Of course later while making predictions the same PCA transforms
 will need to be applied before feeding data to the model.
 
+Recent research \cite{Elhaik_2022} has shown that clustering after PCA
+can be highly biased by the relative populations of the subgroups,
+see \cref{fig:dim_reduct:PCA_clustering_bias} for an illustration.
+As such, clustering on PCA transformed data should be avoided,
+or only done with extreme caution!
+
 \begin{figure}[H]
   \centering
   \savebox{\largestimage}{
@@ -159,6 +165,23 @@ based on the Kaiser criterion (percent explainable variance)
 we should consider reducing to $k=9$ ($k=13$) dimensions.
 \label{fig:dim_reduct:PCA}
 }
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/dim_reduct/Elhaik_2022_fig4.png}
+\caption{
+PCA transformations from $m=3 \to k=2$ of
+red $(1,0,0)$, green $(0,1,0)$, blue $(0,0,1)$, and black $(0,0,0)$ subgroups
+\cite{Elhaik_2022}.
+In plot A, $n_{\text{red}} = n_{\text{green}} = n_{\text{blue}} = \num{10}$, $n_{\text{black}} = \num{200}$,
+resulting in the black subgroup being equidistant from the three primary colors,
+as is the case in the original $m=3$ vector space.
+However, by simply varying $n_{\text{red}}$, $n_{\text{green}}$, $n_{\text{blue}}$ in the other plots,
+the black subgroup can be pushed toward any of the primary colors,
+drastically changing any subsequent clustering analysis.
+}
+  \label{fig:dim_reduct:PCA_clustering_bias}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
