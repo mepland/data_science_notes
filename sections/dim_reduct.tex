@@ -391,7 +391,9 @@ Such least square solutions will exist if and only if $\mb{A} \mb{A}^{+} \vb{b} 
 Term frequency-inverse document frequency (TF-IDF) is a statistic
 used in natural language processing (NLP) to quantify
 the importance, or uniqueness, of a term $t$ in a document $d$
-with respect to a wider set of documents $D$\footnote{Note that $d$ is not necessarily an element of $D$, we can compare novel $d$ to a reference corpus $D$.}.
+with respect to a wider set of documents $D$\footnote{Note that
+$d$ is not necessarily an element of $D$,
+we can compare novel $d$ to a reference corpus $D$.}.
 As the name suggests, TF-IDF is the product of two components,
 one representing the frequency of the term under consideration within the document of interest,
 and the other the inverse of the frequency of the term in all documents of the broader corpus.
@@ -412,13 +414,25 @@ and $\abs{\left\{d \in D \, | \, t \in d\right\}}$ is the number of number of do
 We take the natural log in the $\text{idf}\left(t,D\right)$ component to better accommodate large corpora of documents,
 and include the constant $1+$ term to avoid divide-by-zero issues.
 
+TF-IDF is implemented
+in \sklearn via the \texttt{TfidfVectorizer} and
+\newline % needed manual break
+\texttt{TfidfTransformer}
+\href{https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html}{classes}.
+Note that by default these functions
+apply a L2 normalization, \cref{ml_general:reg:L2},
+per row to the output values.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Prevalence Ratio}
 \label{dim_reduct:prevalence_ratio}
 
 The prevalence ratio (PR) is a similar concept to TF-IDF,
-allowing us to identify important characteristics of a population of interest versus the wider population.
+allowing us to identify important characteristics
+of a population of interest versus the wider population\footnote{Typically,
+prevalence ratio studies focus on a few subgroups of many individuals,
+while TF-IDF is used with many smaller units, such as individual people.}.
 For example, we can use a PR to assess the association of hypertension with heart failure by comparing
 the prevalence of hypertension in a cohort of heart failure patients
 to the prevalence of hypertension in the general population,
