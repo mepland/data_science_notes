@@ -25,135 +25,135 @@ A SQL query returns information from the database as a result set, and may conta
 
 \begin{lstlisting}[language=SQL]
 -- create a new table, define columns & types
-create table t (id int primary key
-	, name varchar(20) not null, state char(2), dob date);
+CREATE TABLE t (id INT PRIMARY KEY
+	, name VARCHAR(20) NOT NULL, state CHAR(2), dob DATE);
 
 -- manually insert new rows
-insert into t values (0, 'Matt', 'NJ', '1990-1-2');
-insert into t (id, name, state, dob) values
+INSERT INTO t VALUES (0, 'Matt', 'NJ', '1990-1-2');
+INSERT INTO t (id, name, state, dob) VALUES
                      (1, 'Jamie','NJ', '1990-3-4');
-insert into t values (2,'Mary','IL', '1970-5-6')
+INSERT INTO t VALUES (2,'Mary','IL', '1970-5-6')
 	, (3,'Eddie','IL','2010-7-8'),(4,'Bob','ND','1980-9-10');
 
 -- insert rows from another table
-insert into t select * from other_t where zip = 11111;
+INSERT INTO t SELECT * FROM t_other WHERE zip = 11111;
 
 -- update row
-update t set name = 'Mar' where id = 2;
+UPDATE t SET name = 'Mar' WHERE id = 2;
 
-/* select with where, order by, limit
-comparison ops: >, >=, =, <> or !=, between, like, in
-logical ops: and, or, not */
-select id,name from t where 0 < id order by name limit 10;
-select id,name from t where id between 1 and 3;
-select id,name from t where name like 'M%';--starts with M
-select id,name from t where state like 'N_';-- N + 1 char
-select id,name from t where (id in (0,3)) or (name='Bob');
-select name,dob from t where 1985<year(dob) order by dob;
+/* SELECT with WHERE, ORDER BY, LIMIT
+comparison ops: >, >=, =, <> or !=, BETWEEN, LIKE, IN
+logical ops: AND, OR, NOT */
+SELECT id,name FROM t WHERE 0 < id ORDER BY name LIMIT 10;
+SELECT id,name FROM t WHERE id BETWEEN 1 AND 3;
+SELECT id,name FROM t WHERE name LIKE 'M%';--starts with M
+SELECT id,name FROM t WHERE state LIKE 'N_';-- N + 1 char
+SELECT id,name FROM t WHERE (id IN (0,3)) OR (name='Bob');
+SELECT name,dob FROM t WHERE 1985<YEAR(dob) ORDER BY dob;
 
 -- aggregation commands
-select count(*) as n_rows from t;
-select count(id) as n_rows from t; -- only counts rows with non-null id values
-select count(distinct id) as n_distinct_ids from t;
-select min(id) from t; -- avg, mode, sum, ...
+SELECT COUNT(*) AS n_rows FROM t;
+SELECT COUNT(id) AS n_rows FROM t; -- only counts rows with non-null id values
+SELECT COUNT(DISTINCT id) AS n_distinct_ids FROM t;
+SELECT MIN(id) FROM t; -- AVG, MODE, SUM, ...
 
--- select unique / distinct values
-select distinct name from t;
+-- find unique / distinct values
+SELECT DISTINCT name FROM t;
 
--- when finding nulls, use is; can't use =, <>
-select id, name from t where state is null;
+-- when finding nulls, use IS; can't use =, <>
+SELECT id, name FROM t WHERE state IS NULL;
 
--- group by, use having, not where
-select state, count(*) as n_rows
-from t
-group by state
-having 1 < n_rows
-order by n_rows desc;
+-- GROUP BY, use HAVING, not WHERE
+SELECT state, COUNT(*) AS n_rows
+FROM t
+GROUP BY state
+HAVING 1 < n_rows
+ORDER BY n_rows DESC;
 
 -- CTEs
-with state_counts as (
-	select count(distinct id) as n_distinct_ids, state
-	from t group by state
+WITH state_counts AS (
+	SELECT COUNT(DISTINCT id) AS n_distinct_ids, state
+	FROM t GROUP BY state
 )
-select avg(n_distinct_ids)
-from state_counts where state != 'NC';
+SELECT AVG(n_distinct_ids)
+FROM state_counts WHERE state != 'NC';
 
--- case
-select name
-	, case
-		when state = 'IL' then 'bears fan'
-		when state = 'ND' then 'bison fan'
-		else concat(state, ' (unknown fan)')
-	end as fandom
-from t;
+-- CASE
+SELECT name
+	, CASE
+		WHEN state = 'IL' THEN 'bears fan'
+		WHEN state = 'ND' THEN 'bison fan'
+		ELSE CONCAT(state, ' (unknown fan)')
+	END AS fandom
+FROM t;
 
--- fill nulls
-select ifnull(state, 'Unknown') as state from t;
+-- fill nulls, can also use COALESCE
+SELECT IFNULL(state, 'Unknown') AS state FROM t;
 
--- group by cube
-with b as (
-	-- taking distinct before the group by can help reduce some duplicated computation later in count(distinct id), but is not required
-	select distinct id
-		, ifnull(left(upper(trim(name)), 1), ' ') as first_letter
-		-- must not have any nulls in the field to be group by cube(), or there will be multiple null rows in output
-		, ifnull(state, 'Unknown') as state
-	from t
+-- GROUP BY CUBE
+WITH b AS (
+	-- taking DISTINCT before the GROUP BY can help reduce some duplicated computation later in COUNT(DISTINCT id), but is not required
+	SELECT DISTINCT id
+		, IFNULL(LEFT(UPPER(TRIM(name)), 1), ' ') AS first_letter
+		-- must not have any nulls in the field to be GROUP BY CUBE(), or there will be multiple null rows in output
+		, IFNULL(state, 'Unknown') AS state
+	FROM t
 )
 -- format output
-select ifnull(state, 'All') as "State"
-	, first_letter as "First Letter"
-	, n_patients as "# Patients"
-from (
-	select state, first_letter
-		, count(distinct id) as n_patients
-	from b
-	-- can mix regular group by and cube
-	group by cube (state), first_letter
+SELECT IFNULL(state, 'All') AS "State"
+	, first_letter AS "First Letter"
+	, n_patients AS "# Patients"
+FROM (
+	SELECT state, first_letter
+		, COUNT(DISTINCT id) AS n_patients
+	FROM b
+	-- can mix regular GROUP BY and CUBE
+	GROUP BY CUBE (state), first_letter
 )
-order by "State", "First Letter";
+ORDER BY "State", "First Letter";
 
--- group by, get mode of state per person - deterministically (alphabetical order)
+-- GROUP BY, get mode of state per person - deterministically (alphabetical order)
 -- can be expanded to additional columns, each with their own g_state CTEs
-with p as ( select distinct patient from p0 ),
-g_state as (
-	-- note count(state) will ignore null values in state
-	select patient, state, count(state) as c
-	from p0 group by patient, state
-	-- qualify is the where statement for windows functions
-	-- can use rank() instead of row_number() to allow ties
-	qualify row_number() over (partition by patient order by c desc, state asc) = 1
+WITH p AS ( SELECT DISTINCT patient FROM p0 )
+, g_state AS (
+	-- note COUNT(state) will ignore null values in state
+	SELECT patient, state, COUNT(state) AS c
+	FROM p0 GROUP BY patient, state
+	-- QUALIFY is the WHERE statement for windows functions
+	-- can use RANK() instead of ROW_NUMBER() to allow ties
+	QUALIFY ROW_NUMBER() OVER (PARTITION BY patient ORDER BY c DESC, state ASC) = 1
 )
-select p.patient, state
-from p
-left join g_state on p.patient = g_state.patient;
+SELECT p.patient, state
+FROM p
+LEFT JOIN g_state ON p.patient = g_state.patient;
 
 -- working with arrays
-with b0 as (
-	select id, state
-		, array_construct_compact(D1,D2,D3,D4,D5) as Dx_array
-	from e
-	where arrays_overlap(Dx_array, array_construct('W5602', 'W5551XD', 'W5803XA'))
-),
-b1 as (
-	select id, state, Dx.value as Dx
-	from b
-	, lateral flatten(input => Dx_array, outer => True) as Dx
+WITH b0 AS (
+	SELECT id, state
+		, ARRAY_CONSTRUCT_COMPACT(D1,D2,D3,D4,D5) AS dx_array
+	FROM c
+	WHERE ARRAYS_OVERLAP(dx_array, ARRAY_CONSTRUCT('W5602', 'W5551XD', 'W5803XA'))
 )
-select state, Dx, count(distinct id) as n_patients
-from b1
-group by 1,2
-order by 1,2;
+, b1 AS (
+	SELECT id, state, v.VALUE AS dx
+	FROM b
+	, LATERAL FLATTEN(INPUT => dx_array, OUTER => TRUE) AS v
+)
+SELECT state, dx, COUNT(DISTINCT id) AS n_patients
+FROM b1
+GROUP BY 1,2
+ORDER BY 1,2;
 
 -- return duplicate rows
-select a.*, n_rows as n_duplicates
-from t as a
-inner join (
-	select state, count(*) as n_rows
-	from t
-	group by state
-	having 1 < n_rows
-) as b
-	on a.state = b.state;
+SELECT a.*, n_rows AS n_duplicates
+FROM t AS a
+INNER JOIN (
+	SELECT state, COUNT(*) AS n_rows
+	FROM t
+	GROUP BY state
+	HAVING 1 < n_rows
+) AS b
+	ON a.state = b.state;
 \end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -162,23 +162,24 @@ inner join (
 \label{sql:join}
 
 \begin{lstlisting}[language=SQL]
-select column1, column2
-from table1
-left join table2
-	on table1.column_nameA = table2.column_nameB;
+SELECT col_1, col_2
+FROM table1
+LEFT JOIN table2
+	ON table1.col_a = table2.col_b;
 
--- coalesce appropriately when using a full outer join
-select coalesce(a.id, b.id) as id
-	, a.field as field_a
-	, b.field as field_b
-from a
-full outer join b
-	on a.id = b.id;
+-- COALESCE appropriately when using a FULL OUTER JOIN
+SELECT COALESCE(a.id, b.id) AS id
+	, a.field AS field_a
+	, b.field AS field_b
+FROM a
+FULL OUTER JOIN b
+	ON a.id = b.id;
 \end{lstlisting}
 
 The three common join types are the standard
-\texttt{inner join}, \texttt{left join},
-and \texttt{full outer join}\footnote{Note that \texttt{full join} can also be used as an equivalent to \texttt{full outer join}.} as
+\texttt{INNER JOIN}, \texttt{LEFT JOIN},
+and \texttt{FULL OUTER JOIN}\footnote{Note that
+\texttt{FULL JOIN} can also be used as an equivalent to \texttt{FULL OUTER JOIN}.} as
 shown in \cref{fig:sql:joins}.
 
 \begin{figure}[H]
@@ -201,7 +202,8 @@ shown in \cref{fig:sql:joins}.
   \label{fig:sql:joins:full_outer_join}
   \end{subfigure}
 \caption{
-Illustration of common types of joins, adapted from \href{http://stevestedman.com/2015/03/sql-server-join-types-poster-version-2}{Steve Stedman}.
+Illustration of common types of joins,
+adapted from \href{http://stevestedman.com/2015/03/sql-server-join-types-poster-version-2}{Steve Stedman}.
 }
 \label{fig:sql:joins}
 \end{figure}
@@ -211,21 +213,21 @@ Illustration of common types of joins, adapted from \href{http://stevestedman.co
 \section{Pivoting}
 \label{ssql:pivoting}
 
-\noindent \href{https://docs.snowflake.com/en/sql-reference/constructs/pivot.html}{\texttt{pivot} documentation}.
+\noindent \href{https://docs.snowflake.com/en/sql-reference/constructs/pivot.html}{\texttt{PIVOT} documentation}.
 
 \begin{lstlisting}[language=SQL]
-with b as (
-	select left(name, 1) as first_letter, state
-		, datediff(day, dob, current_date)/365 as age
-	from t
+WITH b AS (
+	SELECT LEFT(name, 1) AS first_letter, state
+		, DATEDIFF(DAY, dob, CURRENT_DATE)/365 AS age
+	FROM t
 )
-select first_letter as "First Letter"
-	, "'NJ'" as "Avg Age NJ"
-	, "'IL'" as "Avg Age IL"
-	, "'ND'" as "Avg Age ND"
-from b
-pivot(avg(age) for state in ('NJ','IL','ND'))
-order by first_letter;
+SELECT first_letter AS "First Letter"
+	, "'NJ'" AS "Avg Age NJ"
+	, "'IL'" AS "Avg Age IL"
+	, "'ND'" AS "Avg Age ND"
+FROM b
+PIVOT(AVG(age) FOR state IN ('NJ','IL','ND'))
+ORDER BY first_letter;
 \end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -235,48 +237,48 @@ order by first_letter;
 
 \begin{lstlisting}[language=SQL]
 -- admin, setup new user
-grant all privileges on *.* to 'user'@'localhost'
-	identified by 'pw';
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost'
+	IDENTIFIED BY 'pw';
 
 -- create a new database
-create database mydb; use mydb;
+CREATE DATABASE mydb; USE mydb;
 
 -- create a new schema
-create schema myschema; use schema myschema;
+CREATE SCHEMA myschema; USE SCHEMA myschema;
 
 -- load a SQL dump
-set autocommit=0; source dump.sql; commit;
+SET AUTOCOMMIT=0; SOURCE dump.sql; COMMIT;
 
 -- load csv file into table
-load data local infile 'in.csv' into table tnew
-	fields terminated by ',' lines terminated by '\n';
+LOAD DATA LOCAL INFILE 'in.csv' INTO TABLE t_new
+	FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 
 -- rename column, change type, add new column
-alter table t rename column old_col_name to new_col_name;
-alter table t modify col_name new_type;
-alter table t add new_col double;
+ALTER TABLE t RENAME COLUMN old_col_name TO new_col_name;
+ALTER TABLE t MODIFY col_name new_type;
+ALTER TABLE t ADD new_col DOUBLE;
 
 -- delete all rows of a table, keep structure
-truncate table t;
+TRUNCATE TABLE t;
 
 -- delete a row, column, table, database, schema, ...
-delete from t where id = 4;
+DELETE FROM t WHERE id = 4;
 
-show columns from t; /* or, also for MySQL */ describe t;
-show columns from t where type like 'Varchar%';
-alter table t drop column name;
+SHOW COLUMNS FROM t; /* or, also for MySQL */ DESCRIBE t;
+SHOW COLUMNS FROM t WHERE type ILIKE 'VARCHAR%';
+ALTER TABLE t DROP COLUMN name;
 
-show tables;
-drop table if exists 't';
+SHOW TABLES;
+DROP TABLE IF EXISTS 't';
 
-show databases;
-drop database mydb;
+SHOW DATABASES;
+DROP DATABASE mydb;
 \end{lstlisting}
 
 \begin{lstlisting}[language=bash]
 # export selection to csv (from shell, no file perms)
 mysql -u user --password=pw --database=mydb
- --execute='select ...;' -q -n -B -r > out.csv
+ --execute='SELECT ...;' -q -n -B -r > out.csv
  && sed -i '/\t/ s//,/g' out.csv
 
 # load table from csv (from shell)
