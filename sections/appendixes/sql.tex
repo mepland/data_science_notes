@@ -154,6 +154,10 @@ INNER JOIN (
 	HAVING 1 < n_rows
 ) AS b
 	ON a.state = b.state;
+
+-- generate rows, in Google Big Query
+SELECT num
+FROM UNNEST(GENERATE_ARRAY(1, 10)) AS num;
 \end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
