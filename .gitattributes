@@ -1,0 +1,8 @@
+# ignore all html in diffs and github languages stats
+*.html linguist-generated=true
+# ignore specific .py files linked to jupyter notebooks in github languages stats
+plots/figs_demo.py linguist-documentation=true
+plots/plots.py linguist-documentation=true
+# ignore outside style files from github languages stats
+bib/atlasBibStyleWithTitle.bst linguist-vendored=true
+dukedissertation_modified.cls linguist-vendored=true
