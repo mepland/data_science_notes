@@ -31,7 +31,12 @@ the sum $\sum_{t \neq k} f_{t}$ will be zero and $r_{i}^{\left(-k\right)} = y_{i
 In this case, the leaf weights are simply $w_{l} = n_{l,\,1}/n_{l}$,
 \ie the proportion of positive $y_{i} = 1$ data points in leaf $l$.
 Finally, the predictions for the trained model are made by
-summing the relevant leaf weight $w_{l,k}\left(\vb{x}_{i}\right)$ from each tree.
+summing the relevant leaf weight $w_{l,k}\left(\vb{x}_{i}\right)$ from each tree,
+and then taking the sigmoid\footnote{See
+\texttt{imodels} PR \href{https://github.com/csinva/imodels/pull/150}{\#150}
+and \cref{ml_general:calibration:platt:sigmoid}
+for more.} of the result
+to constrain the output between \num{0} and \num{1}.
 See \cref{algo:FIGS:fit_algo} for an outline of the training algorithm.
 
 \begin{subequations}\label{eq:FIGS_eqs}

@@ -547,12 +547,16 @@ is even baked in to the \sklearn
 \href{https://scikit-learn.org/stable/modules/svm.html\#scores-and-probabilities}{SVM implementation}.} (SVM), \cref{class:SVM},
 but is not true in general.
 
+\subsubsection{Sigmoidal Scaling}
+\label{ml_general:calibration:platt:sigmoid}
+
 If $\gamma = 1$, $m = 0$ \cref{eq:calibration:platt} becomes the
 inverse logit function\footnote{Implemented in \scipy as the
 \texttt{expit} \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.expit.html}{function}.},
 also known as the sigmoid function,
 which is a useful function\footnote{\xgboost, \cref{fig:small_example_CART}
-and \figs, \cref{class:FIGS}, use this trick.} for quickly scaling a model's internal scores to
+and \figs, \cref{class:FIGS}, use this trick.} for
+quickly scaling a model's internal scores to
 sensible values between \num{0} and \num{1},
 although \yhat is still uncalibrated in this case.
 
