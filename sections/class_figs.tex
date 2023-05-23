@@ -65,9 +65,9 @@ while \figs captures the additive structure of $y$ directly, thereby saving \num
   \label{algo:FIGS:fit_algo}
   \small
 \begin{algorithmic}
-  \State {\figs}(X: features, y: outcomes, $\nu$: max\_splits)
+  \State {\figs}(X: features, y: outcomes, $\nu$: max\_splits, $k_{\text{max}}$: max\_trees)
   \State trees = []
-  \While{count\_total\_splits(trees) $< \nu$:}
+  \While{count\_total\_splits(trees) $< \nu$ and count(trees) $< k_{\text{max}}$:}
     \State all\_trees = join(trees, build\_new\_tree()) \textcolor{codegreen}{\# add new tree}
     \State potential\_splits = []
     \For{}\hspace{-3pt}tree in all\_trees:
@@ -93,6 +93,10 @@ This makes the construction of small, interpretable, models much easier.
 Similar to CART, \figs can also set hyperparameters for
 the minimum decrease in impurity and
 number of features to consider at each split.
+Additionally, the number of trees can  be independently constrained\footnote{See
+\texttt{imodels} PR \href{https://github.com/csinva/imodels/pull/153}{\#153}.} via
+the hyperparameter $k_{\text{max}}$.
+
 With $\nu < 20$, readily interpretable \figs models have been observed
 to have state-of-the-art performance on multiple datasets \cite{FIGS}.
 A \python implementation of the \figs algorithm can be found in the \texttt{imodels} package \cite{imodels}.
