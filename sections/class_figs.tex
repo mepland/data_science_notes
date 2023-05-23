@@ -18,7 +18,10 @@ in addition to adding the next split at the bottom of an existing tree.
 This reduces the number of splits when the data has an additive structure,
 as can be seen in \cref{fig:FIGS:intro}, thereby also increasing the interpretability.
 The splits are chosen greedily according to the usual splitting criteria;
-typically the Gini impurity of \cref{class:CART:gini_impurity} is used for classification.
+typically the Gini impurity of \cref{class:CART:gini_impurity} is used for classification\footnote{The
+Gini feature importance of \cref{ml_general:interp:feature_importance:MDI}
+can also be computed across \figs trees, see
+\texttt{imodels} PR \href{https://github.com/csinva/imodels/pull/154}{\#154}.}.
 
 During training, each tree $k$ is fit to the residuals remaining after summing the other tree's predictions,
 $r_{i}^{\left(-k\right)}$ \cref{eq:FIGS:FIGS_eqs:r}.
