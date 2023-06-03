@@ -14,13 +14,14 @@ communicate with a Relational Database Management System (RDBMS).
 There data is stored as collection of tables with
 at least one common column to allow relational operators
 to join information across tables.
-In some SQL implementations, such as MySQL, each table must have an unique primary key for each row.
+In some \sql implementations, such as MySQL, each table must have an unique primary key for each row.
 When a column in one table relates to the primary key of another, it is known as a foreign key.
-A SQL query returns information from the database as a result set, and may contain subqueries.
+A \sql query returns information from the database as a result set, and may contain subqueries.
 
-When evaluating a SQL statement, each clause is
+When evaluating a \sql statement, each clause is
 \href{https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#where_clause}{generally executed in this order}:
-\begin{lstlisting}[language=SQL]
+
+\begin{SQLcode}
 FROM
 WHERE
 GROUP BY
@@ -30,16 +31,16 @@ QUALIFY
 DISTINCT
 ORDER BY
 LIMIT
-\end{lstlisting}
+\end{SQLcode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Basic Commands}
 \label{sql:basic}
 
-\begin{lstlisting}[language=SQL]
+\begin{SQLcode}
 -- create a new table, define columns & types
-CREATE TABLE t (id INT PRIMARY KEY
+CREATE OR REPLACE TABLE t (id INT PRIMARY KEY
 	, name VARCHAR(20) NOT NULL, state CHAR(2), dob DATE);
 
 -- manually insert new rows
@@ -189,14 +190,14 @@ ORDER BY 1,2;
 -- generate rows, in Google Big Query
 SELECT num
 FROM UNNEST(GENERATE_ARRAY(1, 10)) AS num;
-\end{lstlisting}
+\end{SQLcode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Intermediate Recipes}
 \label{ssql:intermediate_recipes}
 
-\begin{lstlisting}[language=SQL]
+\begin{SQLcode}
 -- GROUP BY, get mode of state per person - deterministically (alphabetical order)
 -- can be expanded to additional columns, each with their own g_state CTEs
 WITH p AS ( SELECT DISTINCT patient FROM p0 )
@@ -261,14 +262,14 @@ SELECT *
 FROM t_out
 WHERE dup_id <= 20 AND dup_row_number <= 5
 ORDER BY dup_id ASC, dup_row_number ASC;
-\end{lstlisting}
+\end{SQLcode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Joining}
 \label{sql:join}
 
-\begin{lstlisting}[language=SQL]
+\begin{SQLcode}
 SELECT col_1, col_2
 FROM table1
 LEFT JOIN table2
@@ -281,7 +282,7 @@ SELECT COALESCE(a.id, b.id) AS id
 FROM a
 FULL OUTER JOIN b
 	ON a.id = b.id;
-\end{lstlisting}
+\end{SQLcode}
 
 The three common join types are the standard
 \texttt{INNER JOIN}, \texttt{LEFT JOIN},
@@ -322,7 +323,7 @@ adapted from \href{http://stevestedman.com/2015/03/sql-server-join-types-poster-
 
 \noindent \href{https://docs.snowflake.com/en/sql-reference/constructs/pivot.html}{Snowflake \texttt{PIVOT} documentation}.
 
-\begin{lstlisting}[language=SQL]
+\begin{SQLcode}
 WITH b AS (
 	SELECT LEFT(name, 1) AS first_letter, state
 		, DATEDIFF(DAY, dob, CURRENT_DATE)/365 AS age
@@ -335,14 +336,14 @@ SELECT first_letter AS "First Letter"
 FROM b
 PIVOT(AVG(age) FOR state IN ('NJ','IL','ND'))
 ORDER BY first_letter;
-\end{lstlisting}
+\end{SQLcode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{IO Commands (MySQL)}
 \label{sql:io}
 
-\begin{lstlisting}[language=SQL]
+\begin{SQLcode}
 -- admin, setup new user
 GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost'
 	IDENTIFIED BY 'pw';
@@ -380,7 +381,7 @@ DROP TABLE IF EXISTS 't';
 
 SHOW DATABASES;
 DROP DATABASE mydb;
-\end{lstlisting}
+\end{SQLcode}
 
 \begin{lstlisting}[language=bash]
 # export selection to csv (from shell, no file perms)

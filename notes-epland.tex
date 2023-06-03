@@ -43,8 +43,36 @@
 \usepackage{enumitem}
 \usepackage{lscape} % landscape https://ctan.org/pkg/lscape
 \usepackage{moresize}
-\usepackage{listings}
 \usepackage{fontawesome}
+\usepackage{listings}
+% https://tex.stackexchange.com/a/224098
+\lstdefinelanguage{SQL_extended}{language=SQL,
+morekeywords={
+ARRAY_CONSTRUCT,
+ARRAY_CONSTRUCT_COMPACT,
+ARRAYS_OVERLAP,
+CONCAT,
+DATEDIFF,
+FLATTEN,
+FOR,
+GENERATE_ARRAY,
+IFF,
+IS,
+LAG,
+LATERAL,
+LEAD,
+OVER,
+PARTITION,
+PIVOT,
+QUALIFY,
+REPLACE,
+ROW_NUMBER,
+STRING,
+UNNEST,
+WINDOW,
+WITH
+}}
+\lstnewenvironment{SQLcode}{\lstset{language=SQL_extended}}{}
 
 % for algorithms
 \usepackage{algorithm}
