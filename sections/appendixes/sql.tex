@@ -14,18 +14,33 @@ communicate with a Relational Database Management System (RDBMS).
 There data is stored as collection of tables with
 at least one common column to allow relational operators
 to join information across tables.
-In some SQL implementations, such as MySQL, each table must have an unique primary key for each row.
+In some \sql implementations, such as MySQL, each table must have an unique primary key for each row.
 When a column in one table relates to the primary key of another, it is known as a foreign key.
-A SQL query returns information from the database as a result set, and may contain subqueries.
+A \sql query returns information from the database as a result set, and may contain subqueries.
+
+When evaluating a \sql statement, each clause is
+\href{https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#where_clause}{generally executed in this order}:
+
+\begin{SQLcode}
+FROM
+WHERE
+GROUP BY
+HAVING
+WINDOW
+QUALIFY
+DISTINCT
+ORDER BY
+LIMIT
+\end{SQLcode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Basic Commands}
 \label{sql:basic}
 
-\begin{lstlisting}[language=SQL]
+\begin{SQLcode}
 -- create a new table, define columns & types
-CREATE TABLE t (id INT PRIMARY KEY
+CREATE OR REPLACE TABLE t (id INT PRIMARY KEY
 	, name VARCHAR(20) NOT NULL, state CHAR(2), dob DATE);
 
 -- manually insert new rows
@@ -87,31 +102,102 @@ SELECT name
 	END AS fandom
 FROM t;
 
--- fill nulls, can also use COALESCE
-SELECT IFNULL(state, 'Unknown') AS state FROM t;
+-- fill nulls, can also use IFNULL
+SELECT COALESCE(state, 'Unknown') AS state FROM t;
 
--- GROUP BY CUBE
+-- GROUP BY CUBE in Snowflake, not available in Google Big Query
+-- GROUP BY ROLLUP is similar
+-- https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause
+-- https://stackoverflow.com/a/65590293
 WITH b AS (
 	-- taking DISTINCT before the GROUP BY can help reduce some duplicated computation later in COUNT(DISTINCT id), but is not required
 	SELECT DISTINCT id
-		, IFNULL(LEFT(UPPER(TRIM(name)), 1), ' ') AS first_letter
+		, COALESCE(LEFT(UPPER(TRIM(name)), 1), ' ') AS first_letter
 		-- must not have any nulls in the field to be GROUP BY CUBE(), or there will be multiple null rows in output
-		, IFNULL(state, 'Unknown') AS state
+		, COALESCE(state, 'Unknown') AS state
 	FROM t
 )
 -- format output
-SELECT IFNULL(state, 'All') AS "State"
+SELECT COALESCE(state, 'All') AS "State"
 	, first_letter AS "First Letter"
 	, n_patients AS "# Patients"
 FROM (
 	SELECT state, first_letter
 		, COUNT(DISTINCT id) AS n_patients
 	FROM b
-	-- can mix regular GROUP BY and CUBE
+	-- can mix regular GROUP BY and CUBE, but not ROLLUP
 	GROUP BY CUBE (state), first_letter
 )
 ORDER BY "State", "First Letter";
 
+-- LAG/LEAD
+WITH b AS (
+    SELECT state, sales_year, sales
+    FROM t
+)
+, l AS (
+    SELECT state, sales_year, sales
+		, LAG(sales) OVER (PARTITION BY state ORDER BY sales_year ASC) AS sales_year_prior
+    FROM b
+)
+SELECT state, sales_year, sales, sales_year_prior
+	, sales - sales_year_prior AS delta_sales
+FROM l
+ORDER BY state, sales_year;
+
+-- working with arrays, in Snowflake
+WITH b0 AS (
+	SELECT id, state
+		, ARRAY_CONSTRUCT_COMPACT(D1,D2,D3,D4,D5) AS dx_array
+	FROM c
+	WHERE ARRAYS_OVERLAP(dx_array, ARRAY_CONSTRUCT('W5602', 'W5551XD', 'W5803XA'))
+)
+, b1 AS (
+	SELECT id, state, v.VALUE AS dx
+	FROM b0
+	, LATERAL FLATTEN(INPUT => dx_array, OUTER => TRUE) AS v
+)
+SELECT state, dx, COUNT(DISTINCT id) AS n_patients
+FROM b1
+GROUP BY 1,2
+ORDER BY 1,2;
+
+-- working with arrays, in Google Big Query
+-- https://cloud.google.com/bigquery/docs/arrays
+-- https://cloud.google.com/bigquery/docs/reference/standard-sql/array_functions
+WITH b0 AS (
+	SELECT id, state
+		-- will have nulls, unlike ARRAY_CONSTRUCT_COMPACT
+		, [D1,D2,D3,D4,D5] AS dx_array
+	FROM c
+)
+, b1 AS (
+	SELECT *
+	FROM b0
+	-- no good ARRAYS_OVERLAP alternative
+	WHERE 'W5602' IN UNNEST(dx_array)
+)
+, b2 AS (
+	SELECT id, state, dx
+	FROM b1
+	CROSS JOIN UNNEST(dx_array) AS dx
+)
+SELECT state, dx, COUNT(DISTINCT id) AS n_patients
+FROM b1
+GROUP BY 1,2
+ORDER BY 1,2;
+
+-- generate rows, in Google Big Query
+SELECT num
+FROM UNNEST(GENERATE_ARRAY(1, 10)) AS num;
+\end{SQLcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Intermediate Recipes}
+\label{ssql:intermediate_recipes}
+
+\begin{SQLcode}
 -- GROUP BY, get mode of state per person - deterministically (alphabetical order)
 -- can be expanded to additional columns, each with their own g_state CTEs
 WITH p AS ( SELECT DISTINCT patient FROM p0 )
@@ -127,45 +213,63 @@ SELECT p.patient, state
 FROM p
 LEFT JOIN g_state ON p.patient = g_state.patient;
 
--- working with arrays
-WITH b0 AS (
-	SELECT id, state
-		, ARRAY_CONSTRUCT_COMPACT(D1,D2,D3,D4,D5) AS dx_array
-	FROM c
-	WHERE ARRAYS_OVERLAP(dx_array, ARRAY_CONSTRUCT('W5602', 'W5551XD', 'W5803XA'))
-)
-, b1 AS (
-	SELECT id, state, v.VALUE AS dx
-	FROM b
-	, LATERAL FLATTEN(INPUT => dx_array, OUTER => TRUE) AS v
-)
-SELECT state, dx, COUNT(DISTINCT id) AS n_patients
-FROM b1
-GROUP BY 1,2
-ORDER BY 1,2;
-
 -- return duplicate rows
-SELECT a.*, n_rows AS n_duplicates
+SELECT a.*, n_dup_rows
 FROM t AS a
 INNER JOIN (
-	SELECT state, COUNT(*) AS n_rows
+	SELECT state, COUNT(*) AS n_dup_rows
 	FROM t
 	GROUP BY state
-	HAVING 1 < n_rows
+	HAVING 1 < n_dup_rows
 ) AS b
 	ON a.state = b.state;
 
--- generate rows, in Google Big Query
-SELECT num
-FROM UNNEST(GENERATE_ARRAY(1, 10)) AS num;
-\end{lstlisting}
+-- return 5 examples each from the 20 most duplicated rows
+WITH t_in AS (
+	SELECT *
+		, CONCAT(
+			COALESCE(CAST(key_1_to_dedup_over AS STRING), ''),
+			'|',
+			COALESCE(CAST(key_2_to_dedup_over AS STRING), '')
+		) AS dup_key
+	FROM t_source
+)
+, g_0 AS (
+	SELECT dup_key, COUNT(*) AS n_dup_rows
+	FROM t_in
+	GROUP BY dup_key
+	HAVING 1 < n_dup_rows
+)
+, g AS (
+	SELECT dup_key
+		, ROW_NUMBER() OVER (ORDER BY n_dup_rows DESC, dup_key ASC) AS dup_id
+		, n_dup_rows
+	FROM g_0
+)
+, t_1 AS (
+	SELECT g.dup_id, g.n_dup_rows, t_in.*
+	FROM t_in
+	INNER JOIN g
+		ON t_in.dup_key = g.dup_key
+)
+, t_out AS (
+	SELECT dup_id
+		, ROW_NUMBER() OVER (PARTITION BY dup_key ORDER BY order_by_col ASC) AS dup_row_number
+		, n_dup_rows, t_1.* EXCEPT(dup_id, n_dup_rows, dup_key)
+	FROM t_1
+)
+SELECT *
+FROM t_out
+WHERE dup_id <= 20 AND dup_row_number <= 5
+ORDER BY dup_id ASC, dup_row_number ASC;
+\end{SQLcode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Joining}
 \label{sql:join}
 
-\begin{lstlisting}[language=SQL]
+\begin{SQLcode}
 SELECT col_1, col_2
 FROM table1
 LEFT JOIN table2
@@ -178,7 +282,7 @@ SELECT COALESCE(a.id, b.id) AS id
 FROM a
 FULL OUTER JOIN b
 	ON a.id = b.id;
-\end{lstlisting}
+\end{SQLcode}
 
 The three common join types are the standard
 \texttt{INNER JOIN}, \texttt{LEFT JOIN},
@@ -217,9 +321,9 @@ adapted from \href{http://stevestedman.com/2015/03/sql-server-join-types-poster-
 \section{Pivoting}
 \label{ssql:pivoting}
 
-\noindent \href{https://docs.snowflake.com/en/sql-reference/constructs/pivot.html}{\texttt{PIVOT} documentation}.
+\noindent \href{https://docs.snowflake.com/en/sql-reference/constructs/pivot.html}{Snowflake \texttt{PIVOT} documentation}.
 
-\begin{lstlisting}[language=SQL]
+\begin{SQLcode}
 WITH b AS (
 	SELECT LEFT(name, 1) AS first_letter, state
 		, DATEDIFF(DAY, dob, CURRENT_DATE)/365 AS age
@@ -232,14 +336,14 @@ SELECT first_letter AS "First Letter"
 FROM b
 PIVOT(AVG(age) FOR state IN ('NJ','IL','ND'))
 ORDER BY first_letter;
-\end{lstlisting}
+\end{SQLcode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{IO Commands (MySQL)}
 \label{sql:io}
 
-\begin{lstlisting}[language=SQL]
+\begin{SQLcode}
 -- admin, setup new user
 GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost'
 	IDENTIFIED BY 'pw';
@@ -277,7 +381,7 @@ DROP TABLE IF EXISTS 't';
 
 SHOW DATABASES;
 DROP DATABASE mydb;
-\end{lstlisting}
+\end{SQLcode}
 
 \begin{lstlisting}[language=bash]
 # export selection to csv (from shell, no file perms)
