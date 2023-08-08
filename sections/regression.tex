@@ -288,8 +288,10 @@ The coefficient of determination\footnote{For additional details see
 measures how much of $\vb{y}$'s variance is explained by the fitted model $\hat{\vb{y}}$,
 versus by random errors $\vb*{\epsilon}$ or other unknown sources,
 as $\vb{y} = \hat{\vb{y}} + \vb*{\epsilon}$.
-$R^{2} \approx 1$ is ideal and, depending on the particular definition,
-it can take values outside the typical $0 \leq R^{2} \leq 1$ range.
+$R^{2} \approx 1$ is ideal, while
+$R^{2} = 0$ implies the model does no better than a constant prediction of $\hat{\vb{y}} = \expval{\vb{y}}$.
+Depending on the particular definition,
+$R^{2}$ can take values outside the typical $0 \leq R^{2} \leq 1$ range.
 
 \begin{equation}\label{eq:regression:goodness_of_fit:R2}
 R^{2} = \frac{
