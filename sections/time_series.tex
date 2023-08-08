@@ -431,9 +431,23 @@ between the predictions and observed values:
 \begin{subequations}\label{eq:time_series:RMSE_MAPE}
 \begin{align}
 \text{RMSE}\left(\yhat\right) &= \sqrt{\expval{\left(y - \yhat\right)^{2}}} = \sqrt{\frac{1}{n}\sum_{t=1}^{n} \left(y_{t} - \yhat_{t}\right)^{2}}, \label{eq:time_series:RMSE} \\
-\text{MAPE}\left(\yhat\right) &= \frac{\SI{100}{\percent}}{n} \sum_{t=1}^{n} \abs{\frac{y_{t} - \yhat_{t}}{y_{t}}}\,. \label{eq:time_series:MAPE}
+\text{MAPE}\left(\yhat\right) &= \frac{\SI{100}{\percent}}{n} \sum_{t=1}^{n} \abs{\frac{y_{t} - \yhat_{t}}{y_{t}}}, \label{eq:time_series:MAPE} \\
+\text{sMAPE}\left(\yhat\right) &= \frac{\SI{100}{\percent}}{n} \sum_{t=1}^{n} \frac{\abs{y_{t} - \yhat_{t}}}{\left(\abs{y_{t}} + \abs{\yhat_{t}}\right)/2}\,. \label{eq:time_series:sMAPE}
 \end{align}
 \end{subequations}
+
+The symmetric mean absolute percent error (sMAPE)
+\cref{eq:time_series:sMAPE} is an improvement on MAPE,
+bounding values between \SI{0}{\percent} and \SI{200}{\percent}\footnote{Or
+a more interpretable \SI{100}{\percent} if the factor of $2$ is omitted, as is common practice.}.
+Note that $\text{sMAPE}\left(\yhat - \epsilon \right) \neq \text{sMAPE}\left(\yhat + \epsilon \right)$,
+as symmetric here refers to sMAPE having an upper and lower bound.
+This is in contrast to MAPE which is
+bound at \SI{100}{\percent} for underestimates, $\yhat = y - \epsilon$\footnote{Assuming
+$0 \leq y$ as is the case in many applications.}, but
+unbound for overestimates, $\yhat = y + \epsilon$,
+thereby tending to favor models that underestimate $y$.
+Lastly, MAPE and sMAPE are both poorly behaved metrics if $y_{i} \simeq 0$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
