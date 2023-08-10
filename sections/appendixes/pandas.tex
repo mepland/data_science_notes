@@ -66,6 +66,10 @@ dfp = dfp.sort_values(by=['x', 'y'], ascending=[True, False]).reset_index(drop=T
 # group by, while dropping new count column and duplicates
 dfp = dfp.groupby(['x', 'y', 'z']).size().to_frame(name = 'count').reset_index().drop(['count'], axis=1).drop_duplicates()
 
+# group by, aggregating multiple columns simultaneously
+dfp = dfp.groupby(['x']).agg({'y': 'mean', 'z': 'max'}).reset_index()
+dfp = dfp.groupby(['x']).agg({'y': 'mean', 'z': ['max', 'min']}) # needs multi-index
+
 # return duplicate rows
 columns_to_check_for_duplicates = ['x', 'y']
 dfp_duplicates = dfp[dfp.duplicated(subset=columns_to_check_for_duplicates, keep=False)]
