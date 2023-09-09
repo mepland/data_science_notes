@@ -139,7 +139,7 @@ or more formally with the Ljung--Box test of \cref{time_series:ljung_box}.
 \section{Autoregressive (AR) Models}
 \label{time_series:AR}
 Building on the PACF, we can construct an autoregressive (AR) model $\text{AR}\left(p\right)$
-from multiple lag components of the time series:
+as a linear combination of lag components of the time series:
 
 \begin{equation}\label{eq:time_series:AR}
 \yhat_{t} = \phi_{0} + \sum_{i=1}^{p} \phi_{i}\, y_{t-i} + \epsilon_{t}.
@@ -498,6 +498,12 @@ for just two examples.}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Auto-ARIMA}
+\label{time_series:auto_ARIMA}
+% TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Unit Roots}
 \label{time_series:unit_root}
 
@@ -644,6 +650,12 @@ For example, there maybe latent confounding effects behind both $x_{t}$ and $y_{
 which would require a more sophisticated analysis to detect or rule out.
 Even with this limited causal interpretation,
 there are still challenges \cite{GRASSMANN2020} to the validity of Granger causality.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Prophet}
+\label{time_series:prophet}
+% TODO Probably add greykite as well
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
