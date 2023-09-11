@@ -11,7 +11,17 @@
 %\end{filecontents*}
 %\fi\endgroup
 
+% https://tex.stackexchange.com/questions/52317/pdftex-warning-version-allowed
+% https://tex.stackexchange.com/questions/301386/why-is-1-5-the-default-pdf-version
+% https://tex.stackexchange.com/a/375018
+\directlua{pdf.setminorversion(6)}
+
 % \Subject{TODO}
+
+% https://tex.stackexchange.com/a/572817
+\RequirePackage{silence}
+\WarningFilter{latexfont}{Font shape}
+\WarningFilter{latexfont}{Some font shapes were}
 
 %-----------------------------------------------------------------------------%
 % Set documentclass
@@ -37,6 +47,11 @@
 \usepackage[separate-uncertainty,multi-part-units=single,free-standing-units,product-units=repeat,use-xspace]{siunitx} % units package, see https://www.ctan.org/pkg/siunitx
 \sisetup{range-phrase={\text{--}},range-units=single}
 \usepackage{physics}
+% silence warning about qty conflict
+% https://tex.stackexchange.com/a/681701
+\ExplSyntaxOn
+\msg_redirect_name:nnn { siunitx } { physics-pkg } { none }
+\ExplSyntaxOff
 \usepackage{booktabs,array,multirow,diagbox}
 \renewcommand{\arraystretch}{1.5} % gives extra height to tabular rows for super/subscripts
 %\usepackage{longtable}
