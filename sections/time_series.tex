@@ -348,15 +348,28 @@ as well as deterministic polynomials of $t$,
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Other Models (VAR, ARCH, GARCH, Bayesian Approaches)}
-\label{time_series:other_models}
+\section{Extensions of SARIMAX (VAR, VARMAX, ARCH, GARCH)}
+\label{time_series:SARIMAX_extensions}
 
 In addition to the SARIMAX family of models detailed above,
-there are a few other useful time series models to note here.
+there are additional useful extensions to note here.
 The vector autoregression (VAR) model is a matrix based
-generalization of $\text{AR}\left(p\right)$ to multiple dimensions.
-See the \texttt{vector\_ar}
+generalization of $\text{AR}\left(p\right)$ to multiple dimensions,
+which allows for $\hat{\vb{y}}_{t} \vdot \vu{e}_{i}$ to depend on
+$L^{k} \, \vb{y}_{t} \vdot \vu{e}_{j \neq i}$ via cross terms.
+See the \texttt{VAR}
 \href{https://www.statsmodels.org/stable/generated/statsmodels.tsa.vector_ar.var_model.VAR.html}{class} for more.
+VARMA models are also possible,
+however the degrees of $p$ and $q$ can not be uniquely determined \cite{doi:10.1080/01621459.2021.1942013}.
+\texttt{statsmodels} has a \texttt{VARMAX}
+\href{https://www.statsmodels.org/stable/generated/statsmodels.tsa.statespace.varmax.VARMAX.html}{class},
+which helpfully accepts exogenous inputs,
+but will issue warnings about non-identifiability\footnote{
+Identifiability here means that different model parameters must generate different distributions,
+\ie there are no degeneracies.
+We can see why this might be a problem with VARMA models from \cref{time_series:invert}.}.
+Integrated vector models are generally discouraged, as the components of $\vb{y}_{t}$
+may need to be differenced to differing orders of $d$.
 
 The autoregressive conditional heteroskedasticity (ARCH) and generalized ARCH (GARCH) models,
 popular in finance, are appropriate when the underlying time series
@@ -367,14 +380,6 @@ which allow them to cope with ``bursty'' periods of increased volatility.
 See the \texttt{arch}
 \href{https://arch.readthedocs.io/en/stable/univariate/introduction.html}{package}
 for one implementation.
-
-We can also look at time series analysis within a Bayesian framework;
-assuming prior distributions for the model parameters $\vb*{\beta}$
-then updating based on the observed data,
-thereby producing distributions of our predictions and parameters instead of only MLE point estimates.
-The \pymcThree \href{https://docs.pymc.io}{module}
-has \href{https://docs.pymc.io/api/distributions/timeseries.html}{timeseries functions}
-for implementing this approach, including AR and GARCH models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -650,6 +655,19 @@ For example, there maybe latent confounding effects behind both $x_{t}$ and $y_{
 which would require a more sophisticated analysis to detect or rule out.
 Even with this limited causal interpretation,
 there are still challenges \cite{GRASSMANN2020} to the validity of Granger causality.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bayesian Approaches}
+\label{time_series:bayesian_approaches}
+
+We can also look at time series analysis within a Bayesian framework;
+assuming prior distributions for the model parameters $\vb*{\beta}$
+then updating based on the observed data,
+thereby producing distributions of our predictions and parameters instead of only MLE point estimates.
+The \pymcThree \href{https://docs.pymc.io}{module}
+has \href{https://docs.pymc.io/api/distributions/timeseries.html}{timeseries functions}
+for implementing this approach, including AR and GARCH models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
