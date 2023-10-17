@@ -675,6 +675,39 @@ for implementing this approach, including AR and GARCH models.
 \label{time_series:prophet}
 % TODO Probably add greykite as well
 
+\cite{meta_prophet}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Using Any ML Model for Time Series}
+\label{time_series:any_ml}
+
+Any supervised machine learning model can be fit to time series data
+by transforming the time series $y_{t}$ into
+an autoregressive $\mb{X}\left(p\right)$ of order $p$,
+with associated $\mb{y}\left(p,h\right)$, as
+
+\begin{align}\label{eq:any_ml:autoregressive_X}
+  \mb{X}\left(p\right) = \begin{pmatrix}
+    y_{1}  & y_{2}  & y_{3}  & \ldots & y_{p}   \\
+    y_{2}  & y_{3}  & y_{4}  & \ldots & y_{p+1} \\
+    y_{3}  & y_{4}  & y_{5}  & \ldots & y_{p+2} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots
+  \end{pmatrix}\,,\quad
+  \mb{y}\left(p,h\right) = \begin{pmatrix}
+    y_{p+1} & y_{p+2} & \ldots & y_{p+h}   \\
+    y_{p+2} & y_{p+3} & \ldots & y_{p+h+1} \\
+    y_{p+3} & y_{p+4} & \ldots & y_{p+h+2} \\
+    \vdots  & \vdots  & \ddots & \vdots
+  \end{pmatrix},
+\end{align}
+
+\noindent where $h$ is
+the number of time steps into the future we wish the model to predict.
+Note that some models are restricted to $h=1$ if they can not return vector outputs.
+
+% TODO Confirm this used by Darts for the NN models behind the scenes, then mention and cite if so.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Anomaly Detection}
