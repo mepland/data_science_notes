@@ -153,6 +153,29 @@ but excluding non-significant coefficients and reducing model complexity
 is still a good idea if possible.} by setting $\phi_{i} = 0$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{AR Models and Convolution}
+\label{time_series:AR:convolution}
+$\text{AR}\left(p\right)$ \cref{eq:time_series:AR} has the same
+form as a discrete convolution,
+
+% TODO move eq:time_series:AR:convolution to class:CNN?
+% Would then need to explain convolution as used in mathematics vs cross correlation as is actually used for "convolution" in ML/CNNs
+\begin{equation}\label{eq:time_series:AR:convolution}
+\left(f*g\right)\left(n\right) = \sum_{m=-\infty}^{\infty} f\left(m\right) g\left(n-m\right),
+\end{equation}
+
+% Adapted from "Time Series Analysis, Forecasting, and Machine Learning" https://www.udemy.com/course/time-series-analysis/ Lecture 111. Convolution for Time Series and ARIMA
+% A paper citation would be ideal, but none were found during an initial search
+
+\noindent where $f\left(m\right) \sim \phi_{i}$ and
+$g\left(n-m\right) \sim y_{t-i}$.
+Indeed, an $\text{AR}\left(p\right)$ model can be thought of as
+a special case of a CNN, from \cref{class:CNN},
+with a single layer and identity activation function.
+Alternately, it is possible to convert 1D time series data into 2D images
+for use with traditional CNN models \cite{wang_encoding_ts}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Moving Average (MA) Models}
 \label{time_series:MA}
@@ -517,7 +540,7 @@ is said to have a unit root and is non-stationary.
 More formally, we can construct the characteristic
 equation\footnote{As if we were solving a
 homogeneous linear ordinary differential equation with constant coefficients.} \cref{eq:time_series:unit_roots:characteristic}
-for a $\text{AR}\left(p\right)$ time series $y_{t}$ and look for roots $m$.
+for an $\text{AR}\left(p\right)$ time series $y_{t}$ and look for roots $m$.
 If $m=1$ is one of the roots, the time series then has a unit root.
 
 \begin{subequations}\label{eq:time_series:unit_roots}
@@ -572,7 +595,7 @@ a $\text{I}\left(d\right)$ model will make the time series stationary.
 
 The augmented\footnote{The ADF is an extension of the normal Dickey--Fuller test where $p = 1$.} Dickey--Fuller (ADF) test
 is a hypothesis tests for the stationarity of a time series.
-We begin by assuming the time series for $y$ is a $\text{AR}\left(p\right)$ model \cref{eq:time_series:AR}
+We begin by assuming the time series for $y$ is an $\text{AR}\left(p\right)$ model \cref{eq:time_series:AR}
 and construct the difference:
 
 \begin{subequations}\label{eq:time_series:ADF}
