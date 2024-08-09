@@ -125,18 +125,49 @@ sensitivity (recall) versus specificity, by \href{http://en.wikipedia.org/wiki/F
 \label{fig:graphical_CM_quantities}
 \end{figure}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Cohen's \texorpdfstring{$\kappa$}{Kappa}}
-\label{ml_general:eval:cohens_kappa}
+\subsection{Inter-rater Reliability}
+\label{ml_general:eval:interrater_reliability}
+
+Inter-rater reliability, also known as inter-rater concordance,
+is a measure of the agreement between multiple raters on the same set of examples,
+\ie comparing multiple classifiers \yhat on the same $\vb{x}$.
+These can be independent raters, the same rater at different points in time,
+or a comparison between a classifier's predicted label \yhat and the true label $y$.
+Adapting the notation from \cite{Gwet_A1C_vs_Cohen_kappa},
+the agreement rate between two classifiers $A$ and $B$ simply
+$a = \sum_{i} P\left(\yhat_{A} = \yhat_{B} = i\right)$.
+However, $a$ is a poor measure of inter-rater reliability
+as it is highly dependent on the classifier's prevalences,
+$\pi_{A} = P\left(\yhat_{A} = 1\right)$.
+For example, on a binary problem with $\pi_{A} = \pi_{B} = \num{0.15}$
+even completely independent classifiers will have at worst $a = 1 - 2*\num{0.15} = \num{0.7}$.
+Multiple metrics have been proposed to address this issue,
+starting with Cohen's $\kappa$ \cite{Cohen_kappa} as described below.
+Note we will not cover Gwet’s AC1 \cite{Gwet_A1C},
+despite its increased popularity in the 2010s,
+due to the significant drawbacks illustrated by \cite{Gwet_A1C_vs_Cohen_kappa}.
+
+\subsubsection{Cohen's \texorpdfstring{$\kappa$}{Kappa}}
+\label{ml_general:eval:interrater_reliability:cohen_kappa}
 % TODO
 
-\begin{subequations} \label{eq:cohens_kappa}
+\begin{subequations} \label{eq:cohen_kappa}
 \begin{align}
-\kappa &= \frac{p_{o} - p_{e}}{1-p_{e}} = 1 - \frac{1-p_{o}}{1-p_{e}} \label{eq:cohens_kappa:def} \\
-&= 2\, \frac{\text{TP} \times \text{TN} - \text{FP} \times \text{FN} }{ \left(\text{TP} + \text{FP}\right) \times \left(\text{FP} + \text{TN}\right) \times \left(\text{TP} + \text{FN}\right) \times \left(\text{FN} + \text{TN}\right) } \label{eq:cohens_kappa:cm} \\
-p_{e} &= \frac{1}{N^{2}} \sum_{k} n_{k1} n_{k2} \label{eq:cohens_kappa:pe}
+\kappa &= \frac{p_{o} - p_{e}}{1-p_{e}} = 1 - \frac{1-p_{o}}{1-p_{e}} \label{eq:cohen_kappa:def} \\
+&= 2\, \frac{\text{TP} \times \text{TN} - \text{FP} \times \text{FN} }{ \left(\text{TP} + \text{FP}\right) \times \left(\text{FP} + \text{TN}\right) \times \left(\text{TP} + \text{FN}\right) \times \left(\text{FN} + \text{TN}\right) } \label{eq:cohen_kappa:cm} \\
+p_{e} &= \frac{1}{N^{2}} \sum_{k} n_{k1} n_{k2} \label{eq:cohen_kappa:pe}
 \end{align}
 \end{subequations}
+
+\subsubsection{Fleiss' \texorpdfstring{$\kappa$}{Kappa}}
+\label{ml_general:eval:interrater_reliability:fleiss_kappa}
+% TODO
+
+\subsubsection{Krippendorff's \texorpdfstring{$\alpha$}{Alpha}}
+\label{ml_general:eval:interrater_reliability:krippendorff_alpha}
+% TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Other Scores}
